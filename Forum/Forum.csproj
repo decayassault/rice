@@ -125,6 +125,10 @@
     <Compile Include="Models\Data\Forum\ForumLogic.cs" />
     <Compile Include="Models\Data\LoginData.cs" />
     <Compile Include="Models\Attributes\NoCacheAttribute.cs" />
+    <Compile Include="Models\Data\NewPrivateDialog\NewPrivateDialogData.cs" />
+    <Compile Include="Models\Data\NewPrivateDialog\NewPrivateDialogLogic.cs" />
+    <Compile Include="Models\Data\NewPrivateMessage\NewPrivateMessageData.cs" />
+    <Compile Include="Models\Data\NewPrivateMessage\NewPrivateMessageLogic.cs" />
     <Compile Include="Models\Data\NewTopicData.cs" />
     <Compile Include="Models\Data\PrivateDialog\PrivateDialogData.cs" />
     <Compile Include="Models\Data\PrivateDialog\PrivateDialogLogic.cs" />
@@ -137,7 +141,9 @@
     <Compile Include="Models\Data\Thread\ThreadData.cs" />
     <Compile Include="Models\Data\Thread\ThreadLogic.cs" />
     <Compile Include="Models\Reader.cs" />
+    <Compile Include="Models\Threads\DialogStarter.cs" />
     <Compile Include="Models\Threads\Messenger.cs" />
+    <Compile Include="Models\Threads\PersonalMessenger.cs" />
     <Compile Include="Models\Threads\Registrator.cs" />
     <Compile Include="Models\Threads\TopicStarter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

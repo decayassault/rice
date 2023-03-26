@@ -207,6 +207,18 @@
 
             return cmd;
         }
+        internal static SqlCommand InitializeCommandForInputNick
+            (string Function, SqlConnection SqlCon, string Nick)
+        {
+            SqlCommand cmd = new SqlCommand(Function, SqlCon);
+            cmd.CommandType = CommandType.StoredProcedure;
+            SqlParameter par = cmd.Parameters.Add(NickParameter, SqlDbType.NVarChar);
+            par.Value = Nick;
+            cmd.CommandTimeout = CmdTimeout;
+            cmd.Prepare();
+
+            return cmd;
+        }
         
     }
 }

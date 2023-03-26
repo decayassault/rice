@@ -329,7 +329,7 @@ namespace Forum.Data
             }
         }
 
-        private static bool CheckNick(string nick)
+        internal static bool CheckNick(string nick)
         {
             bool result = MvcApplication.False;
             int len = nick.Length;

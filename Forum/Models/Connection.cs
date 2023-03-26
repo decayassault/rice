@@ -36,9 +36,9 @@
         }
 
         internal static
-           SqlConnection GetConnectionNoAsyncTest()
+           SqlConnection GetConnectionNoAsync()
         {
-            AddConnectionToCacheNoAsyncTest();
+            AddConnectionToCacheNoAsync();
             SqlConnection result;
             ConnectionsCache.TryDequeue(out result);
 
@@ -56,11 +56,11 @@
             return sc;
         }
 
-        internal static SqlConnection InitializeConnectionNoAsyncTest()
+        internal static SqlConnection InitializeConnectionNoAsync()
         {
             SqlConnection sc;
             sc = new SqlConnection();
-            sc.ConnectionString = DecryptStringNoAsyncTest(GetSecureStringLocked());
+            sc.ConnectionString = DecryptStringNoAsync(GetSecureStringLocked());
             sc.StatisticsEnabled = MvcApplication.False;
             sc.Open();
 
@@ -83,7 +83,7 @@
             return Task.FromResult(result);
         }
 
-        internal static string DecryptStringNoAsyncTest(SecureString s)
+        internal static string DecryptStringNoAsync(SecureString s)
         {
 
             IntPtr stringPointer = Marshal.SecureStringToBSTR(s);
@@ -116,10 +116,10 @@
             ConnectionsCache.Enqueue(sc);
         }
 
-        private static void AddConnectionToCacheNoAsyncTest()
+        private static void AddConnectionToCacheNoAsync()
         {
             SqlConnection sc;
-            sc = InitializeConnectionNoAsyncTest();
+            sc = InitializeConnectionNoAsync();
             ConnectionsCache.Enqueue(sc);
         }
 

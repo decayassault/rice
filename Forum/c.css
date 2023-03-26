@@ -253,7 +253,7 @@ body h2
     font-stretch:normal;
     cursor:pointer;
 }
-#topic input {
+#topic input, #dialog input {
     width:500px;
     height:30px;
     font-family: "Candara";
@@ -262,14 +262,14 @@ body h2
     color:black; 
 }
 
-#topic p {
+#topic p, #dialog p {
     font-family: "Candara";
     font-size: 14pt;	
     text-align:justify;
     text-indent: 1.5cm;        
     color:black;
 }
-#topic span, #needauth{
+#topic span, #dialog span, #needauth{
     color: red;
     display: block;
     font-family: "Candara";
@@ -284,7 +284,7 @@ body h2
     font-size: 14pt;
     cursor:default;
 }
-#topic a, #needauth a{
+#topic a,#dialog a, #needauth a{
         cursor: pointer;
 }
 div#logon,div#registration, #arrows

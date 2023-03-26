@@ -59,12 +59,12 @@ namespace Forum.Data.Account
             TimeSpan t = sw.Elapsed;
             return result;
         }
-        internal static int GetAccountsCountNoAsyncTest()
+        internal static int GetAccountsCountNoAsync()
         {
             var sw = new System.Diagnostics.Stopwatch();
             sw.Start();
             int result = MvcApplication.One;
-            using (var SqlCon = Connection.GetConnectionNoAsyncTest())
+            using (var SqlCon = Connection.GetConnectionNoAsync())
             {
                 using (var cmdSection =
                         Command.InitializeCommandForGetAccountsCount
@@ -206,7 +206,16 @@ namespace Forum.Data.Account
                 return MvcApplication.True;
             else return MvcApplication.False;
         }
+        internal static bool CheckNickHashIfExists(string nick)
+        {
+            bool result = false;
+            int hash=nick.GetHashCode();
+            if (NicksHashes.Keys.Contains(hash))
+                result = true;
+            else result = false;
 
+            return result;
+        }
         private async static Task ProcessNicksReader(SqlDataReader reader)
         {
             NicksHashes = new ConcurrentDictionary<int, byte>();

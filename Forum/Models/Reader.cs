@@ -14,7 +14,7 @@
             return reader;
         }
         internal static
-            SqlDataReader InitializeReaderNoAsyncTest(SqlCommand cmd)
+            SqlDataReader InitializeReaderNoAsync(SqlCommand cmd)
         {
             while (cmd.Connection.State != ConnectionState.Open) { }
             SqlDataReader reader = cmd.ExecuteReader();

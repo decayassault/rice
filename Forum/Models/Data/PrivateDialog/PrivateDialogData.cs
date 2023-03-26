@@ -33,7 +33,7 @@ namespace Forum.Data.PrivateDialog
                                 (number, new string[pagesCount]);
                 PrivateDialogLogic.SetDialogPagesPageDepthLocked(number, pagesCount);
                 string buttonTxt
-                    = "<div id='topic'><span><a onClick='newDialog();return false;'>Новый диалог</a></span></div>";
+                    = "<div id='dialog'><span><a onClick='newDialog();return false;'>Новый диалог</a></span></div>";
 
                 for (int i = MvcApplication.Zero; i < pagesCount; i++)
                     PrivateDialogLogic

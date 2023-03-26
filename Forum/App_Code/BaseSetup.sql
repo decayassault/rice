@@ -30,6 +30,7 @@ drop procedure GetPrivateMessagesCompanions;
 drop procedure GetPrivateMessagesTexts;
 drop procedure GetPrivateMessagesAuthorsCount;
 drop procedure GetPrivateDialogsCount;
+drop procedure CheckNickIfExists;
 
 create table Account
 (
@@ -96,6 +97,12 @@ BEGIN
    set nocount on;
 end
 GO
+create procedure CheckNickIfExists(@Nick nvarchar(25) = N'Пользователь')
+as
+begin
+	select Id from Account where Nick=@Nick;
+end
+go
 CREATE PROCEDURE GetNick (@AccountId int =1)
 AS 
 BEGIN tran
@@ -444,7 +451,7 @@ end
 go
 CREATE PROCEDURE GetPrivateMessagesAuthors(@AccountId int=1)
 AS 
-BEGIN	
+BEGIN
 	(select distinct Account.Id,Nick 
 	from Account 
 	inner join PrivateMessage 
@@ -511,6 +518,24 @@ end
 go
 insert into PrivateMessage values (1,2,N'Первое'),
 (2,1,N'Второе'),
+(2,1,'asdfaf'),
+(3,1,'fgfdsg'),
+(3,1,'fgfdsg'),
+(3,1,'fgfdsg'),
+(3,1,'fgfdsg'),
+(3,1,'fgfdsg'),
+(3,1,'fgfdsg'),
+(3,1,'fgfdsg'),
+(3,1,'fgfdsg'),
+(3,1,'fgfdsg'),
+(3,1,'fgfdsg'),
+(3,1,'fgfdsg'),
+(3,1,'fgfdsg'),
+(3,1,'fgfdsg'),
+(3,1,'fgfdsg'),
+(3,1,'fgfdsg'),
+(3,1,'fgfdsg'),
+(3,1,'fgfdsg'),
 (3,1,'fgfdsg'),
 (4,1,'fgfdsg'),
 (5,1,'fgfdsg'),
@@ -570,4 +595,20 @@ insert into PrivateMessage values (1,2,N'Первое'),
 (1,2,N'Текст'),
 (2,1,N'Текст'),
 (1,2,N'Текст'),
-(2,1,N'Текст');
+(2,1,N'Последнее'),
+(4,3,'fgfdsg'),
+(5,3,'fgfdsg'),
+(6,3,'fgfdsg'),
+(7,3,'fgfdsg'),
+(8,3,'fgfdsg'),
+(9,3,'fgfdsg'),
+(10,3,'fgfdsg'),
+(11,3,'fgfdsg'),
+(4,2,N'Текст'),
+(5,2,N'Текст'),
+(6,2,N'Текст'),
+(7,2,N'Текст'),
+(8,2,N'Текст'),
+(9,2,N'Текст'),
+(10,2,N'Текст'),
+(11,2,N'Текст');

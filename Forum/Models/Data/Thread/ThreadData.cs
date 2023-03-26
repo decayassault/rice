@@ -328,11 +328,11 @@ namespace Forum.Data
 
             return result;
         }
-        internal static string GetNickNoAsyncTest(int AccountId)
+        internal static string GetNickNoAsync(int AccountId)
         {
             string result = ThreadLogic.SE;
             object o = null;
-            using (var SqlCon = Connection.GetConnectionNoAsyncTest())
+            using (var SqlCon = Connection.GetConnectionNoAsync())
             {
                 using (var cmdThreads =
                       Command.InitializeCommandForInputAccountId(@"GetNick", SqlCon, AccountId))

@@ -336,7 +336,7 @@ namespace Forum.Data
                 "</p><br /><br />";
         }
 
-        private static int CountStringOccurrences
+        internal static int CountStringOccurrences
             (string text, string pattern)
         {            
             int count = 0;
@@ -430,7 +430,7 @@ namespace Forum.Data
                 return MvcApplication.False;
             else return MvcApplication.True;
         }
-        private static bool CheckText(string message)
+        internal static bool CheckText(string message)
         {
             string temp = string.Empty;
             char c;

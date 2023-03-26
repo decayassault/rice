@@ -34,10 +34,10 @@ namespace Forum.Data.PrivateMessage
             {                
                 int index = await ReplyData.GetAccountId(username);
                 int Id = (int)id;                
-                int test1 = GetPersonalPagesPageDepth(index, Id);
+                int limit = GetPersonalPagesPageDepth(index, Id);
                 if (page > MvcApplication.Zero
                         && page
-                        <= GetPersonalPagesPageDepth(index,Id))
+                        <= limit)
                 {                    
                     return PersonalPages
                         [new OwnerId { Id = index }]
@@ -47,6 +47,51 @@ namespace Forum.Data.PrivateMessage
                 else
                     return SE;
             }
+        }
+        internal static string[] GetPersonalPagesArray(int id, int accountId)
+        {
+            return PersonalPages
+                [new OwnerId { Id = accountId }]
+                [new CompanionId { Id = id }]
+                .Messages;
+        }
+        internal static string GetLastPersonalPage
+                            (int id,  int accountId)
+        {         
+           return PersonalPages
+                        [new OwnerId { Id = accountId }]
+                        [new CompanionId { Id = id }]
+                        .Messages[GetPersonalPagesPageDepth(accountId, id)
+                        - MvcApplication.One];     
+        }
+        internal static void AddToPersonalPagesDepth(int id,int accountId)
+        {
+            PersonalPagesDepths
+                [new OwnerId { Id = accountId }]
+                [new CompanionId { Id = id }]
+                ++;
+        }
+        internal static int GetPersonalPagesDepth(int id,int accountId)
+        {
+            return PersonalPagesDepths
+                [new OwnerId { Id = accountId }]
+                [new CompanionId { Id = id }];
+        }
+        internal static void SetPersonalPagesPage
+                (int id, int accountId, int depth, string page)
+        {
+            PersonalPages
+                        [new OwnerId { Id = accountId }]
+                        [new CompanionId { Id = id }]
+                        .Messages[depth] = page;  
+        }
+        internal static void SetPersonalPagesMessagesArray
+                    (int id,int accountId,string[] value)
+        {
+            PersonalPages
+                        [new OwnerId { Id = accountId }]
+                        [new CompanionId { Id = id }]
+                        = new PrivateMessages { Messages = value };  
         }
         internal static void AllowPrivateMessages()
         {
@@ -60,9 +105,9 @@ namespace Forum.Data.PrivateMessage
         {      
             await LoadEachPersonalPage();      
         }
-        internal static void LoadPersonalPagesNoAsyncTest()
+        internal static void LoadPersonalPagesNoAsync()
         {
-            LoadEachPersonalPageNoAsyncTest();
+            LoadEachPersonalPageNoAsync();
         }
         internal async static Task LoadEachPersonalPage()
         {
@@ -78,9 +123,9 @@ namespace Forum.Data.PrivateMessage
             }         
             //</test>
         }
-        internal static void LoadEachPersonalPageNoAsyncTest()
+        internal static void LoadEachPersonalPageNoAsync()
         {
-            int ownersCount = AccountData.GetAccountsCountNoAsyncTest();
+            int ownersCount = AccountData.GetAccountsCountNoAsync();
             /*for (int i = 0; i < ownersCount; i++)
             {
                 SetMessagesDictionary(i+1);                
@@ -88,7 +133,7 @@ namespace Forum.Data.PrivateMessage
             //<test>
             for (int i = 0; i < ownersCount; i++)
             {
-                SetMessagesDictionaryNoAsyncTest(i + 1);
+                SetMessagesDictionaryNoAsync(i + 1);
             }
             //</test>
         }
@@ -130,10 +175,10 @@ namespace Forum.Data.PrivateMessage
             PersonalPages.TryAdd(new OwnerId { Id = accountId }, temp1);
             PersonalPagesDepths.TryAdd(new OwnerId { Id = accountId }, temp2);
         }
-        private static void SetMessagesDictionaryNoAsyncTest(int accountId)
+        private static void SetMessagesDictionaryNoAsync(int accountId)
         {
             CompanionId[] companions
-                = PrivateMessageData.GetCompanionsNoAsyncTest(accountId);
+                = PrivateMessageData.GetCompanionsNoAsync(accountId);
 
             Dictionary<CompanionId, PrivateMessages>
                     temp1 = new Dictionary<CompanionId, PrivateMessages>();
@@ -143,7 +188,7 @@ namespace Forum.Data.PrivateMessage
             {
                 PrivateMessages pm =
                         PrivateMessageData
-                                .GetMessagesNoAsyncTest
+                                .GetMessagesNoAsync
                                     (companions[i].Id, accountId);
 
                 temp1.Add(companions[i], pm);

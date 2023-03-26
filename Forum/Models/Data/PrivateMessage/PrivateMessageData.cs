@@ -9,21 +9,7 @@ namespace Forum.Data.PrivateMessage
     internal sealed class PrivateMessageData
     {
         private const int five = 5;
-        private async static Task PutPrivateMessageInBase
-            (int senderAccId, int acceptorAccId, string privateText)
-        {
-            using (var SqlCon = await Connection.GetConnection())
-            {
-                using (var cmdAddPrivateMessage =
-                    Command.InitializeCommandForPutPrivateMessage
-                        (@"AddPrivateMessage", SqlCon, senderAccId,
-                        acceptorAccId
-                        , privateText))
-                {
-                    await cmdAddPrivateMessage.ExecuteNonQueryAsync();
-                }
-            }
-        }
+        
         internal async static
             Task<PrivateMessageLogic.CompanionId[]> GetCompanions(int accountId)
         {
@@ -46,20 +32,20 @@ namespace Forum.Data.PrivateMessage
             return result;
         }
         internal static
-           PrivateMessageLogic.CompanionId[] GetCompanionsNoAsyncTest
+           PrivateMessageLogic.CompanionId[] GetCompanionsNoAsync
                             (int accountId)
         {
             PrivateMessageLogic.CompanionId[] result = null;
 
-            using (var SqlCon = Connection.GetConnectionNoAsyncTest())
+            using (var SqlCon = Connection.GetConnectionNoAsync())
             {
                 using (var cmdMessages =
                     Command.InitializeCommandForInputAccountId
                         (@"GetPrivateMessagesCompanions", SqlCon, accountId))
                 {
-                    using (var reader = Reader.InitializeReaderNoAsyncTest(cmdMessages))
+                    using (var reader = Reader.InitializeReaderNoAsync(cmdMessages))
                     {
-                        result = ProcessPrivateMessagesReaderNoAsyncTest
+                        result = ProcessPrivateMessagesReaderNoAsync
                             (reader);
                     }
                 }
@@ -111,11 +97,11 @@ namespace Forum.Data.PrivateMessage
         }
         internal static
             PrivateMessageLogic.PrivateMessages
-                GetMessagesNoAsyncTest(int companionId, int accountId)
+                GetMessagesNoAsync(int companionId, int accountId)
         {
             PrivateMessageLogic.PrivateMessages result;
 
-            using (var SqlCon = Connection.GetConnectionNoAsyncTest())
+            using (var SqlCon = Connection.GetConnectionNoAsync())
             {
                 int count;
                 object o = null;
@@ -143,9 +129,9 @@ namespace Forum.Data.PrivateMessage
                     Command.InitializeCommandForInputIds
                         (@"GetPrivateMessagesTexts", SqlCon, companionId, accountId))
                 {
-                    using (var reader = Reader.InitializeReaderNoAsyncTest(cmdMessages))
+                    using (var reader = Reader.InitializeReaderNoAsync(cmdMessages))
                     {
-                        result = ProcessCompanionPrivateMessagesReaderNoAsyncTest
+                        result = ProcessCompanionPrivateMessagesReaderNoAsync
                             (reader, companionId, accountId, pagesCount);
                     }
                 }
@@ -179,7 +165,7 @@ namespace Forum.Data.PrivateMessage
             return result.ToArray();
         }
         private static PrivateMessageLogic.CompanionId[]
-                    ProcessPrivateMessagesReaderNoAsyncTest
+                    ProcessPrivateMessagesReaderNoAsync
                         (SqlDataReader reader)
         {
             List<PrivateMessageLogic.CompanionId> result =
@@ -299,7 +285,7 @@ namespace Forum.Data.PrivateMessage
 
             return Task.FromResult(result);
         }
-        private static string SetNavigationNoAsyncTest
+        private static string SetNavigationNoAsync
             (int pageNumber, int pagesCount, int authorId, string companionNick)
         {
             string result = GetArrows(pageNumber, pagesCount, authorId);
@@ -411,7 +397,7 @@ namespace Forum.Data.PrivateMessage
             return result;
         }
         private static PrivateMessageLogic.PrivateMessages
-                    ProcessCompanionPrivateMessagesReaderNoAsyncTest
+                    ProcessCompanionPrivateMessagesReaderNoAsync
                         (SqlDataReader reader, int companionId,
                         int accountId, int pagesCount)
         {
@@ -419,9 +405,9 @@ namespace Forum.Data.PrivateMessage
                 { Messages = new string[pagesCount] };
 
             int pageNumber = MvcApplication.Zero;
-            string companionNick = ThreadData.GetNickNoAsyncTest(companionId);
+            string companionNick = ThreadData.GetNickNoAsync(companionId);
             
-            string accountNick = ThreadData.GetNickNoAsyncTest(accountId);
+            string accountNick = ThreadData.GetNickNoAsync(accountId);
             string dialogName = "Переписка с " + companionNick;
             
             result.Messages[pageNumber]="<div class='s'>" + companionId.ToString() +
@@ -476,7 +462,7 @@ namespace Forum.Data.PrivateMessage
                     if (i == five)
                     {
                         string test = 
-                            SetNavigationNoAsyncTest
+                            SetNavigationNoAsync
                                 (pageNumber, pagesCount, companionId,companionNick);
                         result.Messages[pageNumber]+= test;
                         if (first)
@@ -496,7 +482,7 @@ namespace Forum.Data.PrivateMessage
                         && (i < five) && (i > MvcApplication.Zero))
                 {
                     result.Messages[pageNumber] +=
-                                SetNavigationNoAsyncTest
+                                SetNavigationNoAsync
                                 (pageNumber, pagesCount, companionId, companionNick);
                     if (first)
                         result.Messages[pageNumber] += "</div><div class='s'>" +

@@ -6,6 +6,8 @@ using Forum.Data.Forum;
 using Forum.Data.Section;
 using Forum.Data.PrivateDialog;
 using Forum.Data.PrivateMessage;
+using Forum.Data.NewPrivateMessage;
+using Forum.Data.NewPrivateDialog;
 using System.Web.Mvc;
 using System.Web.Security;
 using System.Threading.Tasks;
@@ -124,6 +126,36 @@ namespace Forum.Controllers
         {
             return PrivateMessageLogic.GetPersonalPage
                     (id,page,User.Identity.Name);
+        }
+        [Authorize]
+        [HttpGet]
+        public string replypersonal()
+        {
+            return NewPrivateMessageData.PrivateReplyPage;
+        }
+        [Authorize]
+        [HttpGet]
+        public void sendpersonal(int? id, string t)
+        {
+            NewPrivateMessageLogic.Start(id, User.Identity.Name, t); 
+        }
+        [Authorize]
+        [HttpGet]
+        public string newdialog()
+        {
+            return NewPrivateDialogData.PageToReturn;
+        }
+        [Authorize]
+        [HttpGet]
+        public void startdialog(string nick,string msg)
+        {
+            NewPrivateDialogLogic.Start(nick, User.Identity.Name, msg);
+        }
+        [Authorize]
+        [HttpGet]
+        public void exit()
+        {
+            FormsAuthentication.SignOut();
         }
     }
 }
