@@ -4,7 +4,7 @@ namespace MarkupHandlers
     internal sealed class NewPrivateDialogMarkupHandler
     {
         internal string GenerateNewPrivateDialogEntry
-                        (int secondId, string secondNick)
+                        (in int secondId, in string secondNick)
         {
             return string.Concat(Constants.brMarker,
                                 Constants.pStart,
@@ -15,7 +15,7 @@ namespace MarkupHandlers
                                 Constants.brMarker);
         }
         internal string GenerateNewPrivateDialogEntryWithEnd
-            (int secondId, string secondNick)
+            (in int secondId, in string secondNick)
         {
             return string.Concat(Constants.brMarker,
                                 Constants.pStart,
@@ -26,8 +26,8 @@ namespace MarkupHandlers
                                 Constants.brMarker,
                                 Constants.brMarker);
         }
-        internal string GenerateNewPrivateDialogPage(int companionId,
-            string companionNick, int ownerId, string ownerNick, string message)
+        internal string GenerateNewPrivateDialogPage(in int companionId,
+            in string companionNick, in int ownerId, in string ownerNick, in string message)
         {
             return string.Concat(Constants.indic,
                 companionId,
@@ -35,7 +35,7 @@ namespace MarkupHandlers
                 companionNick,
                 "</h2>",
                 Constants.articleStart,
-                "<span onClick='n(&quot;/Profile/",
+                "<span onClick='n(&quot;/k/",
                 ownerId,
                 "&quot;);'>",
                 ownerNick,
@@ -54,7 +54,7 @@ namespace MarkupHandlers
         internal string GenerateNewPrivateDialogArticle(int accountId, string accountNick, string message)
         {
             return string.Concat(Constants.articleStart,
-                    "<span onClick='n(&quot;/Profile/",
+                    "<span onClick='n(&quot;/k/",
                     accountId,
                     "&quot;);'>",
                     accountNick,

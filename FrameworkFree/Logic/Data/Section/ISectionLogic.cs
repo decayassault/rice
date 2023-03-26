@@ -2,7 +2,7 @@ namespace Data
 {
     public interface ISectionLogic
     {
-        string GetSectionPage(int? Id, int? page);
+        string GetSectionPage(in int? Id, in int? page);
         void LoadSectionPages();
     }
 }

@@ -4,7 +4,7 @@ namespace Data
 {
     public interface INewPrivateMessageLogic
     {
-        void Start(int? id, Pair pair, string t);
+        void Start(in int? id, in Pair pair, in string t);
         void PublishNextPrivateMessageByTimer();
     }
 }

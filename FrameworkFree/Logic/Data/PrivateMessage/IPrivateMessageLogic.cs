@@ -3,9 +3,9 @@ namespace Data
     public interface IPrivateMessageLogic
     {
         void LoadPersonalPages();
-        string GetPersonalPage(int? id, int? page, Pair pair);
+        string GetPersonalPage(in int? id, in int? page, in Pair pair);
         void AddNewCompanionsIfNotExists
-            (int ownerId, int companionId, string ownerNick,
-                string companionNick, bool notEqualFlag);
+            (in int ownerId, in int companionId, in string ownerNick,
+                in string companionNick, in bool notEqualFlag);
     }
 }

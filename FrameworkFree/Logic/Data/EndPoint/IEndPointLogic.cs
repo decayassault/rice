@@ -1,6 +1,8 @@
-namespace Data{
-    public interface IEndPointLogic{
-        string GetEndPointPage(int? Id);
+namespace Data
+{
+    public interface IEndPointLogic
+    {
+        string GetEndPointPage(in int? Id);
         void LoadEndPointPages();
     }
 }

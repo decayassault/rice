@@ -7,8 +7,6 @@ namespace Models
         public int Id { get; set; }
         public int ThreadId { get; set; }
         public int AccountId { get; set; }
-        [Required]
-        [StringLength(1000)]
         public string MsgText { get; set; }
     }
 }

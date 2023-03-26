@@ -23,14 +23,14 @@ namespace Data
             ReplyMarkupHandler = replyMarkupHandler;
             ThreadMarkupHandler = threadMarkupHandler;
         }
-        internal void
-            CheckReplyAndPublish(int id, Pair pair, string text)
+        private void
+            CheckReplyAndPublish(in int id, in Pair pair, in string text)
         {
             if (Check(id, text))
                 PublishReply(id, pair, text);
         }
 
-        public void Start(int? id, Pair pair, string t)
+        public void Start(in int? id, in Pair pair, in string t)
         {
             if (Storage.Fast.GetMessagesToPublishCount() < Constants.MaxFirstLineLength)
             {
@@ -59,7 +59,7 @@ namespace Data
             }
         }
 
-        public int? GetAccountId(Pair pair)
+        public int? GetAccountId(in Pair pair)
         {
             int? accId = null;
 
@@ -77,19 +77,19 @@ namespace Data
         }
 
         private void PublishReply
-                (int id, Pair pair, string text)
+                (in int id, in Pair pair, in string text)
         {
             int? accId = GetAccountId(pair);
 
             if (accId.HasValue)
             {
                 Storage.Slow.PutMessageInBase(new Msg
-                { ThreadId = id + Constants.One, AccountId = accId.Value, MsgText = text });
+                { ThreadId = id, AccountId = accId.Value, MsgText = text });
                 CorrectArray(id, accId.Value, text);
             }
         }
 
-        private void CorrectArray(int id, int accId, string text)
+        private void CorrectArray(in int id, in int accId, in string text)
         {
             string nick = ThreadLogic.GetNick(accId);
             string page;
@@ -158,10 +158,10 @@ namespace Data
                     - Constants.One, last);
             }
         }
-        private bool Check(int id, string text)
+        private bool Check(in int id, in string text)
         {
-            if (id >= Constants.Zero
-                && id < Storage.Fast.GetThreadPagesLengthLocked())
+            if (id > Constants.Zero
+                && Storage.Fast.ThreadPagesContainsThreadIdLocked(id))
             {
                 int textLength = text.Length;
 

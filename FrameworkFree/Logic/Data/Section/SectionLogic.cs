@@ -5,7 +5,7 @@ namespace Data
 {
     internal sealed class SectionLogic : ISectionLogic
     {
-        public readonly IStorage Storage;
+        private readonly IStorage Storage;
         private readonly SectionMarkupHandler SectionMarkupHandler;
         private readonly NewTopicMarkupHandler NewTopicMarkupHandler;
         public SectionLogic(IStorage storage,
@@ -16,9 +16,8 @@ namespace Data
             SectionMarkupHandler = sectionMarkupHandler;
             NewTopicMarkupHandler = newTopicMarkupHandler;
         }
-        public void AddSection(int Num)
+        public void AddSection(in int number)
         {
-            int number = Num;
             int id = number + Constants.One;
             int count = Storage.Slow.CountThreadsById(id);
             string newTopicText = count == 0 ? NewTopicMarkupHandler.GetLastPage(id)
@@ -41,7 +40,7 @@ namespace Data
             ProcessSectionReader(Storage.Slow.GetThreadIdNamesById(id),
                 number, pagesCount);
         }
-        public void RemoveBrOfIncompletePages(int number)
+        public void RemoveBrOfIncompletePages(in int number)
         {
             string temp = Storage.Fast.GetSectionPagesPageLocked(number,
                    Storage.Fast.GetSectionPagesArrayLocked(number).Length - Constants.One);
@@ -52,7 +51,7 @@ namespace Data
         }
 
         public void ProcessSectionReader
-            (IEnumerable<IdName> idNames, int number, int pagesCount)
+            (in IEnumerable<IdName> idNames, in int number, in int pagesCount)
         {
             if (idNames.Any())
             {
@@ -68,7 +67,7 @@ namespace Data
                     int id_ = idName.Id;
 
                     endpointHidden = SectionMarkupHandler
-                        .GetEndpointHidden(Storage.Slow.GetSectionNumById(id_));
+                        .GetEndpointHidden(number + Constants.One);
 
                     Storage.Fast.AddToSectionPagesPageLocked
                         (number, pageNumber, SectionMarkupHandler
@@ -107,7 +106,7 @@ namespace Data
             }
         }
 
-        public string GetSectionPage(int? Id, int? page)
+        public string GetSectionPage(in int? Id, in int? page)
         {
             if (Id == null || page == null)
                 return Constants.SE;

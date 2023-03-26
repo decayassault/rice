@@ -9,11 +9,21 @@ var P = "POST";
 var D = window.document;
 var a = undefined;
 
-function w(x, u) {
-    x.open(g, u, T);
-    x.setRequestHeader("a", a);
-    x.timeout = H;
-    x.send();
+function w(x, u, e) {
+    if (e === undefined) {
+        x.open(g, u, T);
+        x.setRequestHeader("a", a);
+        x.timeout = H;
+        x.send();
+    }
+    else {
+        x.open(P, u, T);
+        x.setRequestHeader("a", a);
+        x.timeout = H;
+        var f = new FormData();
+        f.append("f", e);
+        x.send(f);
+    }
 }
 
 function u() {
@@ -26,7 +36,7 @@ function s() {
         z();
     });
     w(x, '/y/' + D.getElementsByClassName('s')[Z].innerHTML
-        + '?t=' + encodeURIComponent(D.getElementById('x').value), T);
+        + '?t=' + encodeURIComponent(D.getElementById('x').value));
 }
 
 function t(x, handler) {
@@ -110,6 +120,29 @@ function b() {
 }
 function f() {
     m('/m/', 'a');
+}
+function p(e) {
+    if (e === undefined)
+        n('/q/');
+    else {
+        var x = new XMLHttpRequest();
+        t(x, function () {
+            z();
+        });
+        var i = D.getElementsByTagName('input');
+        var d = "";
+        var l = i.length - 2;
+        var s = '&b=';
+
+        for (var k = 1; k <= l; k += 2)
+            if (i[k].checked ^ i[k + 1].checked)
+                d = d + s + i[k].checked;
+
+        w(x, '/k/' + e
+            + '?t=' + encodeURIComponent(D.getElementById('x').value)
+            + d,
+            D.getElementById('f').files[Z]);
+    }
 }
 function e() {
     var x = new XMLHttpRequest();

@@ -21,6 +21,8 @@ drop table if exists Msg;
 drop table if exists Endpoint_;
 drop table if exists PrivateMessage;
 drop table if exists LoginLog;
+drop table if exists BlockedIpHash;
+drop table if exists Profile;
 create login forumadminuser with password = 'Dctv1ghbdtn';
 go
 create user forumadminuser for login forumadminuser;
@@ -73,7 +75,7 @@ GO
 INSERT INTO Forum VALUES (N'Ищу девушку'),(N'Ищу парня'),
 (N'Ищу компаньона'),(N'Ищу друзей'),(N'Беседы');
 
-create table Thread
+create table Thread -- можно полностью чистить без удаления сообщений и последующей поломки приложения
 (
 	Id INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
 	Name Nvarchar(99) NOT NULL UNIQUE,
@@ -94,7 +96,7 @@ create table Msg
 create nonclustered index GetMessages on Msg(Id,ThreadId,AccountId);
 create nonclustered index GetMessagesCount on Msg(ThreadId);
 GO
-create table PrivateMessage
+create table PrivateMessage -- личные сообщения можно удалять из БД без последующей поломки системы
 (
 	Id INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
 	SenderAccountId INT NOT NULL,
@@ -112,5 +114,56 @@ create table LoginLog
 	AccountIdentifier INT NOT NULL,
 	IpHash int NOT NULL
 );
-create nonclustered index GetAccountIdentifiersWithIpHashes
-	on LoginLog(AccountIdentifier,IpHash);
+go
+ALTER TABLE LoginLog
+ADD CONSTRAINT UQ_LoginLog_AccountIdentifierIpHash 
+UNIQUE (AccountIdentifier, IpHash); 
+go
+create table BlockedIpHash
+(
+	Id int identity(1,1) not null primary key,
+	IpHash int not null
+);
+go
+ALTER TABLE BlockedIpHash
+ADD CONSTRAINT UQ_BlockedIpHash_IpHash 
+UNIQUE (IpHash); 
+go
+create table Profile
+(
+	Id int identity(1,1) not null primary key,
+	AccountId int not null,
+	PublicationDate date not null,
+	PhotoBase64Gif nvarchar(max),
+	AboutMe nvarchar(1000) not null,
+	CanPlayChess bit not null,
+	WantToMeetInFirstWeek bit not null,
+	CanSupportALargeFamily bit not null,
+	HaveBadHabits bit not null,
+	HaveChildren bit not null,
+	IsAdult bit not null,
+	HadRelationship bit not null,
+	LikeReading bit not null,
+	HaveProfession bit not null,
+	HavePermanentResidenceInRussia bit not null,
+	DoPhysicalEducation bit not null,
+	HaveManyHobbies bit not null,
+	SpeakAForeignLanguage bit not null,
+	LikeDriving bit not null,
+	LikeTravelling bit not null,
+	PreferMindActivity bit not null,
+	CanMakeMinorRepairs bit not null,
+	IsOppositeGenderCute bit not null,
+	FollowADiet bit not null,
+	HavePets bit not null,
+	TakeCareOfPlants bit not null,
+	ReadyToWaitForALove bit not null,
+	ReadyToSaveFamilyForKids bit not null,
+	IsAltruist bit not null,
+	AcceptAgression bit not null
+);
+go
+ALTER TABLE Profile
+ADD CONSTRAINT UQ_Profile_AccountId
+UNIQUE (AccountId); 
+go

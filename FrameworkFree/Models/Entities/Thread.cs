@@ -5,8 +5,6 @@ namespace Models
     {
         [Key]
         public int Id { get; set; }
-        [Required]
-        [StringLength(99)]
         public string Name { get; set; }
         public int EndpointId { get; set; }
     }

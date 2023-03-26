@@ -3,26 +3,28 @@ using SysTime = System.Timers;
 using System;
 using System.Diagnostics;
 using System.Net;
+using static Data.DataLockers.Lockers;
 namespace Data
 {//временная замена Storage - проброс вызовов - Slow делает Fast = Slow
-    public sealed class FriendlyFire : IFriendlyFire
+    internal sealed class FriendlyFire : IFriendlyFire
     {
-        public readonly IPrivateDialogLogic PrivateDialogLogic;
-        public readonly IPrivateMessageLogic PrivateMessageLogic;
-        public readonly IAccountLogic AccountLogic;
-        public readonly IEndPointLogic EndPointLogic;
-        public readonly IForumLogic ForumLogic;
-        public readonly IStorage Storage;
-        public readonly INewPrivateDialogLogic NewPrivateDialogLogic;
-        public readonly INewPrivateMessageLogic NewPrivateMessageLogic;
-        public readonly ISectionLogic SectionLogic;
-        public readonly INewTopicLogic NewTopicLogic;
-        public readonly IThreadLogic ThreadLogic;
-        public readonly IReplyLogic ReplyLogic;
-        public readonly IRegistrationLogic RegistrationLogic;
-        public readonly ILoginLogic LoginLogic;
-        public readonly Captcha Captcha;
-        public readonly IAuthenticationLogic AuthenticationLogic;
+        private readonly IPrivateDialogLogic PrivateDialogLogic;
+        private readonly IPrivateMessageLogic PrivateMessageLogic;
+        private readonly IAccountLogic AccountLogic;
+        private readonly IEndPointLogic EndPointLogic;
+        private readonly IForumLogic ForumLogic;
+        private readonly IStorage Storage;
+        private readonly INewPrivateDialogLogic NewPrivateDialogLogic;
+        private readonly INewPrivateMessageLogic NewPrivateMessageLogic;
+        private readonly ISectionLogic SectionLogic;
+        private readonly INewTopicLogic NewTopicLogic;
+        private readonly IThreadLogic ThreadLogic;
+        private readonly IReplyLogic ReplyLogic;
+        private readonly IRegistrationLogic RegistrationLogic;
+        private readonly ILoginLogic LoginLogic;
+        private readonly Captcha Captcha;
+        private readonly IAuthenticationLogic AuthenticationLogic;
+        private readonly IProfileLogic ProfileLogic;
         public FriendlyFire(IAccountLogic accountLogic,
         IStorage storage,
         IEndPointLogic endPointLogic,
@@ -38,7 +40,8 @@ namespace Data
         IRegistrationLogic registrationLogic,
         ILoginLogic loginLogic,
         Captcha captcha,
-        IAuthenticationLogic authenticationLogic)
+        IAuthenticationLogic authenticationLogic,
+        IProfileLogic profileLogic)
         {
             Storage = storage;
             AccountLogic = accountLogic;
@@ -56,10 +59,12 @@ namespace Data
             Captcha = captcha;
             AuthenticationLogic = authenticationLogic;
             NewPrivateDialogLogic = newPrivateDialogLogic;
+            ProfileLogic = profileLogic;
             Initialize();
         }
         public void FillStorage()
-        {
+        { // перед изменением порядка следования проверять корректность правки
+            Storage.Fast.InitializeRandom();
             AccountLogic.LoadAccounts();
             AccountLogic.LoadNicks();
             ForumLogic.LoadMainPage();
@@ -68,8 +73,10 @@ namespace Data
             EndPointLogic.LoadEndPointPages();
             PrivateDialogLogic.LoadDialogPages();
             PrivateMessageLogic.LoadPersonalPages();
+            ProfileLogic.LoadProfiles();
             Storage.Fast.InitializeCaptchaMessagesRegistrationData();
             Storage.Fast.InitializeCaptchaMessages();
+            Storage.Slow.InitializeBlockedIpsHashes();
         }
         public void StartTimer()
         {
@@ -84,18 +91,32 @@ namespace Data
         }
         private void TimerEventHandler(Object source, SysTime.ElapsedEventArgs e)
         {
-            Captcha.RefreshLogRegPagesByTimer();
-            AccountLogic.CheckAccountIdByTimer();
-            RegistrationLogic.RegisterInBaseByTimer();
-            NewTopicLogic.StartNextTopicByTimer();
-            ReplyLogic.PublishNextMessageByTimer();
-            NewPrivateMessageLogic.PublishNextPrivateMessageByTimer();
-            NewPrivateDialogLogic.StartNextDialogByTimer();
-            RegistrationLogic.PutRegInfoByTimer();
-            Storage.Fast.DecrementAllRemoteIpHashesAttemptsCountersAndRemoveUnnecessaryByTimer();
+            if (Storage.Fast.CheckIfTimerIsWorking())
+            { }
+            else
+            {
+                Storage.Fast.SetTimerIsWorkingFlag();
+                AuthenticationLogic.FlushAccountIdentifierRemoteIpLogByTimer();
+                LoginLogic.InitPageByTimer();
+                RegistrationLogic.RefreshLogRegPagesByTimer();
+                AccountLogic.CheckAccountIdByTimer();
+                RegistrationLogic.RegisterInBaseByTimer();
+                NewTopicLogic.StartNextTopicByTimer();
+                ReplyLogic.PublishNextMessageByTimer();
+                NewPrivateMessageLogic.PublishNextPrivateMessageByTimer();
+                NewPrivateDialogLogic.StartNextDialogByTimer();
+                RegistrationLogic.PutRegInfoByTimer();
+                Storage.Fast.DecrementAllRemoteIpHashesAttemptsCountersAndRemoveUnnecessaryByTimer();
+                ProfileLogic.HandleAndSaveProfilesByTimer();
+                Storage.Fast.ResetTimerIsWorkingFlag();
+            }
         }
         public void InitializeStorage()
         {
+            Storage.Fast.InitializePreSaveProfilesLine();
+            Storage.Fast.InitializeOwnProfilePages();
+            Storage.Fast.InitializePublicProfilePages();
+            Storage.Fast.InitializeAccountIdentifierRemoteIpLog();
             Storage.Fast.InitializePreRegistrationLine();
             Storage.Fast.InitializeTopicsToStart();
             Storage.Fast.InitializeMessagesToPublish();
@@ -104,19 +125,27 @@ namespace Data
             Storage.Fast.InitializeDialogsToStart();
             Storage.Fast.InitializeRemoteIpHashesAttemptsCounter();
         }
-
         public void Initialize()
         {
-            InitializeStorage();
-            FillStorage();
-            StartTimer();
+            lock (InitializationTransactionLocker)
+            {
+                InitializeStorage();
+                FillStorage();
+                StartTimer();
+            }
         }
+        public bool CheckIp(IPAddress ipAddress, byte incValue = Constants.Fifty)
+        => Storage.Fast.CheckIp(ipAddress, incValue);
         public void RemoveAccountByNickIfExists(string uniqueNick)
             => Storage.Slow.RemoveAccountByNickIfExists(uniqueNick);
         public string ForumLogic_GetMainPageLocked()
            => Storage.Fast.GetMainPageLocked();
-        public bool CheckAndIncrementIpHashesCounter(IPAddress ipAddress, byte incValue)
-        => Storage.Fast.IncrementWithValueRemoteIpHashesAttemptsCountersAndGrantAccessAndAddIfNotPresented(ipAddress, incValue);
+        public Tuple<bool, int> AuthneticationLogic_AccessGrantedExtended(string token)
+            => AuthenticationLogic.AccessGrantedEntended(token);
+        public string GetPublicProfilePageIfExists(int accountId)
+            => Storage.Fast.GetPublicProfilePage(accountId);
+        public string GetOwnProfilePage(int accountId)
+            => Storage.Fast.GetOwnProfilePage(accountId);
         public string ThreadData_GetThreadPage(int? id, int? page)
            => ThreadLogic.GetThreadPage(id, page);
         public string ForumLogic_GetMainContentLocked()
@@ -125,8 +154,8 @@ namespace Data
          => SectionLogic.GetSectionPage(id, page);
         public string EndPointLogic_GetEndPointPage(int? id)
         => EndPointLogic.GetEndPointPage(id);
-        public string LoginData_CheckAndAuth(string captcha, string login, string password)
-         => LoginLogic.CheckAndAuth(captcha, login, password);
+        public string LoginData_CheckAndAuth(IPAddress ip, string captcha, string login, string password)
+         => LoginLogic.CheckAndAuth(ip, captcha, login, password);
         public string GetRegistrationDataPageToReturn()
         => Storage.Fast.GetPageToReturnRegistrationData();
         public bool AuthenticationLogic_AccessGranted(string token)
@@ -137,6 +166,9 @@ namespace Data
         => AuthenticationLogic.GetPair(token);
         public string LoginData_GetPageToReturn()
         => Storage.Fast.GetCaptchaPageToReturn();
+        public void ProfileLogic_Start(int accountId, string aboutMe,
+            bool[] flags, byte[] file)
+        => ProfileLogic.Start(accountId, aboutMe, flags, file);
         public int GetDialogPagesLengthFast()
         => Storage.Fast.GetDialogPagesLengthLocked();
         public void RegistrationData_PreRegistration(string captcha, string login,

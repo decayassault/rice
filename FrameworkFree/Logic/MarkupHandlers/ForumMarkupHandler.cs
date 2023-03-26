@@ -5,7 +5,7 @@ namespace MarkupHandlers
 {
     internal sealed class ForumMarkupHandler
     {
-        internal string GenerateForumLinks(IEnumerable<IdName> idNames)
+        internal string GenerateForumLinks(in IEnumerable<IdName> idNames)
         {
             var result = "<nav class='o'>";
 

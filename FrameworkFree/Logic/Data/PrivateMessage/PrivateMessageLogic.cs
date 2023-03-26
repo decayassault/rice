@@ -4,10 +4,10 @@ namespace Data
 {
     internal sealed class PrivateMessageLogic : IPrivateMessageLogic
     {
-        public readonly IStorage Storage;
-        public readonly IThreadLogic ThreadLogic;
-        public readonly IReplyLogic ReplyLogic;
-        public readonly PrivateMessageMarkupHandler PrivateMessageMarkupHandler;
+        private readonly IStorage Storage;
+        private readonly IThreadLogic ThreadLogic;
+        private readonly IReplyLogic ReplyLogic;
+        private readonly PrivateMessageMarkupHandler PrivateMessageMarkupHandler;
         public PrivateMessageLogic(IStorage storage,
         IThreadLogic threadLogic,
         IReplyLogic replyLogic,
@@ -20,7 +20,7 @@ namespace Data
         }
         public
             PrivateMessages
-                GetMessages(int companionId, int accountId)
+                GetMessages(in int companionId, in int accountId)
         {
             int count = Storage.Slow.CountPrivateMessagesByIds(companionId, accountId);
 
@@ -38,8 +38,8 @@ namespace Data
 
         public PrivateMessages
                     ProcessCompanionPrivateMessagesReader
-                        (IEnumerable<IdText> idTexts, int companionId,
-                        int accountId, int pagesCount)
+                        (in IEnumerable<IdText> idTexts, in int companionId,
+                        in int accountId, in int pagesCount)
         {
             string companionNick = ThreadLogic.GetNick(companionId);
             string accountNick = ThreadLogic.GetNick(accountId);
@@ -48,7 +48,7 @@ namespace Data
                 companionNick, companionId, idTexts, pagesCount, accountNick);
         }
         public string GetPersonalPage
-                            (int? id, int? page, Pair pair)
+                            (in int? id, in int? page, in Pair pair)
         {
             if (page == null || id == null)
                 return Constants.SE;
@@ -84,8 +84,8 @@ namespace Data
             }
         }
         public void AddNewCompanionsIfNotExists
-                    (int ownerId, int companionId, string ownerNick,
-            string companionNick, bool notEqualFlag)
+                    (in int ownerId, in int companionId, in string ownerNick,
+            in string companionNick, in bool notEqualFlag)
         {
             OwnerId ownerIdObj = new OwnerId { Id = ownerId };
             CompanionId companionIdObj = new CompanionId { Id = companionId };
@@ -101,7 +101,7 @@ namespace Data
             }
         }
         public void SetNewCompanionPage
-            (OwnerId ownerId, CompanionId companionId, string companionNick)
+            (in OwnerId ownerId, in CompanionId companionId, in string companionNick)
         {
             bool flag = Storage.Fast.PersonalPagesKeysContains(ownerId);
 
@@ -113,14 +113,14 @@ namespace Data
                 }, flag);
         }
         public void SetNewCompanionDepth
-            (OwnerId ownerId, CompanionId companionId)
+            (in OwnerId ownerId, in CompanionId companionId)
         {
             bool flag = Storage.Fast.PersonalPagesDepthsKeysContains(ownerId);
 
             if (!Storage.Fast.PersonalPagesDepthsContainsKey(ownerId, companionId, flag))
                 Storage.Fast.PersonalPagesDepthsAdd(ownerId, companionId, flag);
         }
-        public void SetMessagesDictionary(int accountId)
+        public void SetMessagesDictionary(in int accountId)
         {
             CompanionId[] companions
                 = Storage.Slow.GetCompanionsByAccountId(accountId);

@@ -1,27 +1,31 @@
 ﻿using XXHash;
 using MarkupHandlers;
+using System.Net;
 namespace Data
 {
     internal sealed class LoginLogic : ILoginLogic
     {
-        public readonly IStorage Storage;
-        public readonly IRegistrationLogic RegistrationLogic;
-        public readonly IAccountLogic AccountLogic;
-        public readonly IAuthenticationLogic AuthenticationLogic;
-        public readonly LoginMarkupHandler LoginMarkupHandler;
+        private readonly IStorage Storage;
+        private readonly IRegistrationLogic RegistrationLogic;
+        private readonly IAccountLogic AccountLogic;
+        private readonly IAuthenticationLogic AuthenticationLogic;
+        private readonly Captcha Captcha;
+        private readonly LoginMarkupHandler LoginMarkupHandler;
         public LoginLogic(IStorage storage,
         IRegistrationLogic registrationLogic,
         IAccountLogic accountLogic,
         IAuthenticationLogic authenticationLogic,
+        Captcha captcha,
         LoginMarkupHandler loginMarkupHandler)
         {
             Storage = storage;
             RegistrationLogic = registrationLogic;
             AccountLogic = accountLogic;
             AuthenticationLogic = authenticationLogic;
+            Captcha = captcha;
             LoginMarkupHandler = loginMarkupHandler;
         }
-        public void InitPage()
+        public void InitPageByTimer()
         {
             var captchaData = Captcha.GenerateCaptchaStringAndImage();
             Storage.Fast.CaptchaMessagesEnqueue(captchaData.stringHash);
@@ -32,10 +36,10 @@ namespace Data
         }
 
         public string CheckAndAuth
-               (string captcha, string login,
-                string password)
+               (in IPAddress ip, in string captcha, in string login,
+            in string password)
         {
-            if (captcha == null || login == null || password == null)
+            if (ip == null || captcha == null || login == null || password == null)
             { }
             else
             {
@@ -52,7 +56,7 @@ namespace Data
 
                             if (pair.HasValue)
                             {
-                                return AuthenticationLogic.Accept(pair.Value);
+                                return AuthenticationLogic.Accept(ip, pair.Value);
                             }
                         }
                     }

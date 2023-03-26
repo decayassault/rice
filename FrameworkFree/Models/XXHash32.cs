@@ -10,7 +10,7 @@ namespace XXHash
         private const uint PRIME32_4 = 668265263U;
         private const uint PRIME32_5 = 374761393U;
 
-        public unsafe static uint Hash(string input, uint seed = Constants.Zero)
+        public unsafe static uint Hash(in string input, in uint seed = Constants.Zero)
         {
             fixed (char* buffer = input)
             {
@@ -19,7 +19,7 @@ namespace XXHash
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static unsafe uint Hash(byte* buffer, int len, uint seed = Constants.Zero)
+        public static unsafe uint Hash(byte* buffer, in int len, in uint seed = Constants.Zero)
         {
             unchecked
             {
@@ -94,19 +94,19 @@ namespace XXHash
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static uint rol1(uint x) { return (x << Constants.One) | (x >> (32 - Constants.One)); }
+        private static uint rol1(in uint x) { return (x << Constants.One) | (x >> (32 - Constants.One)); }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static uint rol7(uint x) { return (x << 7) | (x >> (32 - 7)); }
+        private static uint rol7(in uint x) { return (x << 7) | (x >> (32 - 7)); }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static uint rol11(uint x) { return (x << 11) | (x >> (32 - 11)); }
+        private static uint rol11(in uint x) { return (x << 11) | (x >> (32 - 11)); }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static uint rol12(uint x) { return (x << 12) | (x >> (32 - 12)); }
+        private static uint rol12(in uint x) { return (x << 12) | (x >> (32 - 12)); }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static uint rol18(uint x) { return (x << 18) | (x >> (32 - 18)); }
+        private static uint rol18(in uint x) { return (x << 18) | (x >> (32 - 18)); }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static uint rol13(uint x) { return (x << 13) | (x >> (32 - 13)); }
+        private static uint rol13(in uint x) { return (x << 13) | (x >> (32 - 13)); }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static uint rol17(uint x) { return (x << 17) | (x >> (32 - 17)); }
+        private static uint rol17(in uint x) { return (x << 17) | (x >> (32 - 17)); }
 
     }
 

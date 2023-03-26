@@ -5,7 +5,7 @@ namespace MarkupHandlers
 {
     internal sealed class PrivateMessageMarkupHandler
     {
-        internal string SetNewCompanionPageMarkup(int id, string companionNick)
+        internal string SetNewCompanionPageMarkup(in int id, in string companionNick)
         {
             return string.Concat("<div class='s'>",
                     id,
@@ -16,7 +16,7 @@ namespace MarkupHandlers
                     "</a></div></div><div class='s'>5</div>");
         }
         internal string GetArrows
-            (int pageNumber, int pagesCount, int companionId)
+            (in int pageNumber, in int pagesCount, in int companionId)
         {
             string result = Constants.SE;
             string personal = companionId.ToString();
@@ -139,15 +139,15 @@ namespace MarkupHandlers
             return result;
         }
         internal string SetNavigation
-            (int pageNumber, int pagesCount, int authorId, string companionNick)
+            (in int pageNumber, in int pagesCount, in int authorId, in string companionNick)
         {
             return string.Concat(GetArrows(pageNumber, pagesCount, authorId),
                     "<div id='a'><a onClick='f();return false'>Ответить ",
                     companionNick,
                     "</a></div>");
         }
-        internal PrivateMessages ProcessCompanionReaderMarkup(string companionNick, int companionId,
-        IEnumerable<IdText> idTexts, int pagesCount, string accountNick)
+        internal PrivateMessages ProcessCompanionReaderMarkup(in string companionNick, in int companionId,
+        in IEnumerable<IdText> idTexts, in int pagesCount, in string accountNick)
         {
             int pageNumber = Constants.Zero;
             var result = new PrivateMessages
@@ -188,7 +188,7 @@ namespace MarkupHandlers
                     else
                         nick = accountNick;
                     result.Messages[pageNumber] = string.Concat(result.Messages[pageNumber],
-                                                    "<article><span onClick='n(&quot;/Profile/",
+                                                    "<article><span onClick='n(&quot;/k/",
                                                     authorId,
                                                     "&quot;);'>",
                                                     nick,

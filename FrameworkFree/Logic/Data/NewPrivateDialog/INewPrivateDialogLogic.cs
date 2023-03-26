@@ -5,6 +5,6 @@ namespace Data
     public interface INewPrivateDialogLogic
     {
         void StartNextDialogByTimer();
-        void Start(string acceptorNick, Pair pair, string message);
+        void Start(in string acceptorNick, in Pair pair, in string message);
     }
 }

@@ -3,8 +3,8 @@ namespace MarkupHandlers
 {
     internal sealed class NewPrivateMessageMarkupHandler
     {
-        internal string GenerateNewPrivateMessagePageIfEmpty(int companionId,
-            string companionNick, byte order, int ownerId, string ownerNick, string text)
+        internal string GenerateNewPrivateMessagePageIfEmpty(in int companionId,
+            in string companionNick, in byte order, in int ownerId, in string ownerNick, in string text)
         {
             var result = string.Concat(Constants.indic,
                             companionId,
@@ -15,7 +15,7 @@ namespace MarkupHandlers
             if (order == Constants.One)
                 result = string.Concat(result,
                             Constants.articleStart,
-                            "<span onClick='n(&quot;/Profile/",
+                            "<span onClick='n(&quot;/k/",
                             ownerId,
                             "&quot;);'>",
                             ownerNick,
@@ -23,7 +23,7 @@ namespace MarkupHandlers
             else
                 result = string.Concat(result,
                             Constants.articleStart,
-                            "<span onClick='n(&quot;/Profile/",
+                            "<span onClick='n(&quot;/k/",
                             companionId,
                             "&quot;);'>",
                             companionNick,
@@ -41,21 +41,21 @@ namespace MarkupHandlers
                         companionNick,
                         "</a></div></div><div class='s'>4</div>");
         }
-        internal string GenerateNewPrivateMessagePage(byte order, int ownerId,
-            string ownerNick, int companionId, string companionNick, string text)
+        internal string GenerateNewPrivateMessagePage(in byte order, in int ownerId,
+            in string ownerNick, in int companionId, in string companionNick, in string text)
         {
             var result = Constants.SE;
 
             if (order == Constants.One)
                 result = string.Concat(Constants.articleStart,
-                            "<span onClick='n(&quot;/Profile/",
+                            "<span onClick='n(&quot;/k/",
                             ownerId,
                             "&quot;);'>",
                             ownerNick,
                             "</span><br />");
             else
                 result = string.Concat(Constants.articleStart,
-                            "<span onClick='n(&quot;/Profile/",
+                            "<span onClick='n(&quot;/k/",
                             companionId,
                             "&quot;);'>",
                             companionNick,

@@ -3,8 +3,8 @@ namespace MarkupHandlers
 {
     internal sealed class ReplyMarkupHandler
     {
-        internal string GetPageWithHeader(int id, int sectionNum, string threadName,
-            int accId, string nick, string text)
+        internal string GetPageWithHeader(in int id, in int sectionNum, in string threadName,
+            in int accId, in string nick, in string text)
         {
             return string.Concat(Constants.indic,
                         id,
@@ -14,7 +14,7 @@ namespace MarkupHandlers
                         threadName,
                         "</h2>",
                         Constants.articleStart,
-                        "<span onClick='n(&quot;/Profile/",
+                        "<span onClick='n(&quot;/k/",
                         accId,
                         "&quot;);'>",
                         nick,
@@ -31,7 +31,7 @@ namespace MarkupHandlers
         internal string GetPage(int accId, string nick, string text)
         {
             return string.Concat(Constants.articleStart,
-                        "<span onClick='n(&quot;/Profile/",
+                        "<span onClick='n(&quot;/k/",
                         accId,
                         "&quot;);'>",
                         nick,

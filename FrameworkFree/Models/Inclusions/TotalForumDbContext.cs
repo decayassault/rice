@@ -21,13 +21,15 @@ namespace Data
         public virtual DbSet<PrivateMessage> PrivateMessage { get; set; }
         public virtual DbSet<Thread> Thread { get; set; }
         public virtual DbSet<LoginLog> LoginLog { get; set; }
-
+        public virtual DbSet<BlockedIpHash> BlockedIpHash { get; set; }
+        public virtual DbSet<Profile> Profile { get; set; }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
             {
                 //#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseSqlServer("Server=localhost; Database=TotalForum;User ID=forumadminuser; Password=Dctv1ghbdtn");
+                //optionsBuilder.UseSqlServer("Server=localhost; Database=TotalForum;User ID=forumadminuser; Password=Dctv1ghbdtn");
+                optionsBuilder.UseSqlServer("Data Source=localhost; Database=u1446013_webtest; Integrated Security=False; User ID=u1446013_webtestuser; Password=Dctv1ghbdtn!Pass1Word!");
             }
         }
 
@@ -103,7 +105,22 @@ namespace Data
             modelBuilder.Entity<LoginLog>(entity =>
             {
                 entity.HasIndex(e => new { e.AccountIdentifier, e.IpHash })
-                    .HasDatabaseName("GetAccountIdentifiersWithIpHashes");
+                    .HasDatabaseName("UQ_LoginLog_AccountIdentifierIpHash ")
+                    .IsUnique();
+            });
+
+            modelBuilder.Entity<BlockedIpHash>(entity =>
+            {
+                entity.HasIndex(e => new { e.IpHash })
+                    .HasDatabaseName("UQ_BlockedIpHash_IpHash")
+                    .IsUnique();
+            });
+
+            modelBuilder.Entity<Profile>(entity =>
+            {
+                entity.HasIndex(e => new { e.AccountId })
+                    .HasDatabaseName("UQ_Profile_AccountId")
+                    .IsUnique();
             });
 
             OnModelCreatingPartial(modelBuilder);

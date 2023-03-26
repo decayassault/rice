@@ -11,6 +11,5 @@ namespace Data
             Fast = memory;
             Slow = database;
         }
-
     }
 }

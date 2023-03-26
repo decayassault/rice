@@ -4,7 +4,7 @@ namespace MarkupHandlers
     internal sealed class SectionMarkupHandler
     {
         internal string GetArrows
-            (int pageNumber, int pagesCount, int number)
+            (in int pageNumber, in int pagesCount, in int number)
         {
             string result = Constants.SE;
             string section = (number + Constants.One).ToString();
@@ -128,7 +128,7 @@ namespace MarkupHandlers
 
             return result;
         }
-        internal string GetThreadLinkText(int id_, string name)
+        internal string GetThreadLinkText(in int id_, in string name)
         {
             return string.Concat("<p onClick='n(&quot;/f/",
                               id_,
@@ -136,7 +136,7 @@ namespace MarkupHandlers
                               name,
                               "</p><br /><br />");
         }
-        internal string GetEndpointHidden(int sectionNum)
+        internal string GetEndpointHidden(in int sectionNum)
         {
             return string.Concat(Constants.indic,
                                   sectionNum,
@@ -148,20 +148,20 @@ namespace MarkupHandlers
                                   Constants.brMarker);
         }
         internal string SetNavigation
-            (int pageNumber, int pagesCount, int number)
+            (in int pageNumber, in int pagesCount, in int number)
         {
             return string.Concat(GetArrows(pageNumber, pagesCount, number),
                         Constants.brMarker);
         }
         internal string SetNavigationWithEndpoint
-            (int pageNumber, int pagesCount, int number, string endpointHidden)
+            (in int pageNumber, in int pagesCount, in int number, in string endpointHidden)
         {
             return string.Concat(SetNavigation
                                   (pageNumber, pagesCount, number),
                                   Constants.endNavMarker,
                                   endpointHidden);
         }
-        internal string GetNavWithEndpoint(string endpointHidden)
+        internal string GetNavWithEndpoint(in string endpointHidden)
         {
             return string.Concat(Constants.endNavMarker,
                                                   endpointHidden);

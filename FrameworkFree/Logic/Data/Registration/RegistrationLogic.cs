@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Text.RegularExpressions;
-using System.Globalization;
 using MarkupHandlers;
 using Models;
 using XXHash;
@@ -11,14 +10,17 @@ namespace Data
     {
         private readonly IStorage Storage;
         private readonly RegistrationMarkupHandler RegistrationMarkupHandler;
+        private readonly Captcha Captcha;
         public RegistrationLogic(IStorage storage,
-            RegistrationMarkupHandler registrationMarkupHandler)
+            RegistrationMarkupHandler registrationMarkupHandler,
+            Captcha captcha)
         {
             Storage = storage;
             RegistrationMarkupHandler = registrationMarkupHandler;
+            Captcha = captcha;
         }
         public void PreRegistration
-            (string captcha, string login, string password, string email, string nick)
+            (in string captcha, in string login, in string password, in string email, in string nick)
         {
             if (Storage.Fast.GetPreRegistrationLineCount() < Constants.MaxFirstLineLength)
             {
@@ -36,17 +38,6 @@ namespace Data
 
         private static readonly object locker = new object();
 
-        public void InitPage()
-        {
-            var captchaData = Captcha.GenerateCaptchaStringAndImage();
-            Storage.Fast.CaptchaMessagesRegistrationDataEnqueue(captchaData.stringHash);
-
-            if (Storage.Fast.GetCaptchaMessagesRegistrationDataCount()
-                == Constants.RegistrationPagesCount)
-                Storage.Fast.CaptchaMessagesRegistrationDataDequeue();
-            Storage.Fast.SetPageToReturnRegistrationData(RegistrationMarkupHandler
-                .GetPageToReturnRegistrationData(captchaData.image));
-        }
         public void RegisterInBaseByTimer()
         {
             int len = Storage.Fast.GetRegistrationLineCount();
@@ -63,7 +54,7 @@ namespace Data
             }
         }
 
-        private void SendToBase(RegBag account)
+        private void SendToBase(in RegBag account)
         {
             var dbAccount = new Account
             {
@@ -98,8 +89,20 @@ namespace Data
             }
         }
 
+        public void RefreshLogRegPagesByTimer()
+        {
+            var captchaData = Captcha.GenerateCaptchaStringAndImage();
+            Storage.Fast.CaptchaMessagesRegistrationDataEnqueue(captchaData.stringHash);
+
+            if (Storage.Fast.GetCaptchaMessagesRegistrationDataCount()
+                == Constants.RegistrationPagesCount)
+                Storage.Fast.CaptchaMessagesRegistrationDataDequeue();
+            Storage.Fast.SetPageToReturnRegistrationData(RegistrationMarkupHandler
+                .GetPageToReturnRegistrationData(captchaData.image));
+        }
+
         private bool Register
-                (uint loginHash, uint passwordHash, uint nickHash)
+                (in uint loginHash, in uint passwordHash, in uint nickHash)
         {
             bool result = false;
             var pair = new Pair
@@ -120,8 +123,8 @@ namespace Data
         }
 
         private void CheckInputAndRegister
-            (string captcha, string login, string password,
-            string email, string nick)
+            (in string captcha, in string login, in string password,
+            in string email, in string nick)
         {
             if (CheckNick(nick))
             {
@@ -160,7 +163,7 @@ namespace Data
             }
         }
 
-        public bool CheckLogin(string login)
+        public bool CheckLogin(in string login)
         {
             bool result = false;
             int len = login.Length;
@@ -188,7 +191,7 @@ namespace Data
             return result;
         }
 
-        public bool CheckPassword(string password)
+        public bool CheckPassword(in string password)
         {
             bool result = false;
             int len = password.Length;
@@ -221,8 +224,11 @@ namespace Data
 
             return result;
         }
-        private static bool CheckEmail(string email)
+        private static bool CheckEmail(in string email)
         {
+            if (email.Length > 320)
+                return false;
+
             try
             {
                 var addr = new System.Net.Mail.MailAddress(email);
@@ -233,7 +239,7 @@ namespace Data
                 return false;
             }
         }
-        public bool CheckNick(string nick)
+        public bool CheckNick(in string nick)
         {
             bool result = false;
             int len = nick.Length;

@@ -4,10 +4,10 @@ namespace Data
 {
     public interface INewTopicLogic
     {
-        bool CheckText(string message);
+        bool CheckText(in string message);
         int CountStringOccurrences
-            (string text, string pattern);
-        void Start(string threadName, int? endpointId, Pair pair, string message);
+            (in string text, in string pattern);
+        void Start(in string threadName, in int? endpointId, in Pair pair, in string message);
         void StartNextTopicByTimer();
     }
 }

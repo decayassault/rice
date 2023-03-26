@@ -6,9 +6,9 @@ namespace Data
 {
     internal sealed class PrivateDialogLogic : IPrivateDialogLogic
     {
-        public readonly IStorage Storage;
-        public readonly IReplyLogic ReplyLogic;
-        public readonly PrivateDialogMarkupHandler PrivateDialogMarkupHandler;
+        private readonly IStorage Storage;
+        private readonly IReplyLogic ReplyLogic;
+        private readonly PrivateDialogMarkupHandler PrivateDialogMarkupHandler;
         private static readonly object locker = new object();
         public PrivateDialogLogic(IStorage storage,
         IReplyLogic replyLogic,
@@ -18,7 +18,7 @@ namespace Data
             ReplyLogic = replyLogic;
             PrivateDialogMarkupHandler = privateDialogMarkupHandler;
         }
-        public void AddDialog(int Num)
+        public void AddDialog(in int Num)
         {
             int count;
             int number = Num;
@@ -44,7 +44,7 @@ namespace Data
                 number, pagesCount);
         }
         public void ProcessDialogReader
-            (IEnumerable<IdNick> idNicks, int number, int pagesCount)
+            (in IEnumerable<IdNick> idNicks, in int number, in int pagesCount)
         {
             if (idNicks.Any())
             {
@@ -96,7 +96,7 @@ namespace Data
                 }
             }
         }
-        public void RemoveBrOfIncompletePages(int number)
+        public void RemoveBrOfIncompletePages(in int number)
         {
             string temp = Storage.Fast.GetDialogPagesPageLocked(number,
                    Storage.Fast
@@ -109,7 +109,7 @@ namespace Data
         }
 
         public string GetDialogPage
-                            (int? page, Pair pair)
+                            (in int? page, in Pair pair)
         {
             if (page == null)
                 return Constants.SE;

@@ -8,7 +8,8 @@ namespace Data
     {
         void RemoveAccountByNickIfExists(string nick);
         int GetAccountsCount();
-        IList<Pair> GetPairs();
+        void InitializeBlockedIpsHashes();
+        ICollection<Pair> GetPairs();
         void PutAccountIdentifierIpHashInBaseIfNotExists
             (uint accountIdentifierHash, IPAddress ip);
         IEnumerable<string> GetNicks();
@@ -31,10 +32,13 @@ namespace Data
         int CountThreadsById(int id);
         IEnumerable<IdName> GetThreadIdNamesById(int id);
         int CountMessagesByAmount(int amount);
+        Profile GetProfileOrNullByAccountId(int id);
         IEnumerable<Message> GetMessagesByAmount(int amount);
         int GetSectionNumById(int id);
         string GetThreadNameById(int id);
+        void PutProfileInBase(Profile profile);
         string GetNickByAccountId(int accountId);
         int GetThreadsCount();
+        IEnumerable<int> GetExistingThreadsIds();
     }
 }

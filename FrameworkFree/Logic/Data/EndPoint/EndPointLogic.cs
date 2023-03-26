@@ -5,8 +5,8 @@ namespace Data
 {
     internal sealed class EndPointLogic : IEndPointLogic
     {
-        public readonly IStorage Storage;
-        public readonly EndPointMarkupHandler EndPointMarkupHandler;
+        private readonly IStorage Storage;
+        private readonly EndPointMarkupHandler EndPointMarkupHandler;
         public EndPointLogic(IStorage storage, EndPointMarkupHandler endPointMarkupHandler)
         {
             Storage = storage;
@@ -14,7 +14,7 @@ namespace Data
         }
         private static readonly object locker = new object();
 
-        public string GetEndPointPage(int? Id)
+        public string GetEndPointPage(in int? Id)
         {
             if (Id == null)
                 return Constants.SE;
@@ -39,14 +39,14 @@ namespace Data
         }
 
         public void ProcessEndPointReader
-            (IEnumerable<IdName> idNames, int number)
+            (in IEnumerable<IdName> idNames, in int number)
         {
             if (idNames.Any())
                 Storage.Fast.SetEndPointPageLocked(number,
                     EndPointMarkupHandler.GenerateEndPointLinks(idNames));
         }
 
-        public string GetEndPointPageLocked(int index)
+        public string GetEndPointPageLocked(in int index)
         {
             lock (locker)
                 return Storage.Fast.GetEndPointPageLocked(index);

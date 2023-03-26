@@ -2,8 +2,8 @@ namespace Data
 {
     public interface IThreadLogic
     {
-        string GetNick(int AccountId);
+        string GetNick(in int AccountId);
         void LoadThreadPages();
-        string GetThreadPage(int? Id, int? page);
+        string GetThreadPage(in int? Id, in int? page);
     }
 }

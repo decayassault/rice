@@ -3,7 +3,7 @@ namespace MarkupHandlers
 {
     internal sealed class ThreadMarkupHandler
     {
-        internal string GetThreadDiv(int i)
+        internal string GetThreadDiv(in int i)
         {
             return string.Concat("</div><div class='s'>",
                         Constants.five - i,
@@ -13,9 +13,9 @@ namespace MarkupHandlers
         {
             return string.Concat(Constants.indicEnd, Constants.a);
         }
-        internal string GetArticle(int accountId, string nick, string msgText)
+        internal string GetArticle(in int accountId, in string nick, in string msgText)
         {
-            return string.Concat("<article><span onClick='n(&quot;/Profile/",
+            return string.Concat("<article><span onClick='n(&quot;/k/",
                         accountId,
                         "&quot;);'>",
                         nick,
@@ -23,7 +23,7 @@ namespace MarkupHandlers
                         msgText,
                         "</p></article><br />"); //br2
         }
-        internal string GetSectionHeader(int number, int sectionNum, string threadName)
+        internal string GetSectionHeader(in int number, in int sectionNum, in string threadName)
         {
             return string.Concat(Constants.indic,
                         number,
@@ -34,13 +34,13 @@ namespace MarkupHandlers
                         "</h2>");
         }
         internal string SetNavigation
-                    (int pageNumber, int pagesCount, int number)
+                    (in int pageNumber, in int pagesCount, in int number)
         {
             return string.Concat(GetArrows(pageNumber, pagesCount, number),
                         "<div id='a'><a onClick='u();return false'>Ответить</a></div>"); //br1
         }
         internal string GetArrows
-                  (int pageNumber, int pagesCount, int number)
+                  (in int pageNumber, in int pagesCount, in int number)
         {
             string result = Constants.SE;
             string thread = (number + Constants.One).ToString();

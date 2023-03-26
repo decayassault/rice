@@ -4,7 +4,7 @@ namespace MarkupHandlers // move to string.Concat() if more than one constant is
 {
     internal sealed class EndPointMarkupHandler
     {
-        internal string GenerateEndPointLinks(IEnumerable<IdName> idNames)
+        internal string GenerateEndPointLinks(in IEnumerable<IdName> idNames)
         {
             var result = Constants.SE;
 

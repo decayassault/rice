@@ -2,6 +2,11 @@ namespace Data.DataLockers
 {
     internal static class Lockers // использовать только в Storage - все lock переместить сюда
     {
+        internal static readonly object RandomLocker = new object();
+        internal static readonly object InitializationTransactionLocker = new object();
+        internal static readonly object BlockedRemoteIpsHashesLocker = new object();
+        internal static readonly object AccountIdentifierRemoteIpLogLocker = new object();
+        internal static readonly object TimerIsWorkingLocker = new object();
         internal static readonly object RemoteIpHashesAttemptsCounterLocker = new object();
         internal static readonly object LoginPasswordHashesDeltaLocker = new object();
         internal static readonly object LoginPasswordAccIdHashesLocker = new object();
@@ -35,6 +40,8 @@ namespace Data.DataLockers
         internal static readonly object posLocker = new object();
         internal static readonly object DialogPagesLengthLocker = new object();
         internal static readonly object SectionPagesLengthLocker = new object();
-        internal static readonly object ThreadPagesLengthLocker = new object();
+        internal static readonly object OwnProfilePagesLocker = new object();
+        internal static readonly object PublicProfilePagesLocker = new object();
+        internal static readonly object PreSaveProfilesLineLocker = new object();
     }
 }

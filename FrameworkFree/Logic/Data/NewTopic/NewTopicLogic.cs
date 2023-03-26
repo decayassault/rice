@@ -6,11 +6,11 @@ namespace Data
 {
     internal sealed class NewTopicLogic : INewTopicLogic
     {
-        public readonly IStorage Storage;
-        public readonly ISectionLogic SectionLogic;
-        public readonly IThreadLogic ThreadLogic;
-        public readonly IReplyLogic ReplyLogic;
-        public readonly NewTopicMarkupHandler NewTopicMarkupHandler;
+        private readonly IStorage Storage;
+        private readonly ISectionLogic SectionLogic;
+        private readonly IThreadLogic ThreadLogic;
+        private readonly IReplyLogic ReplyLogic;
+        private readonly NewTopicMarkupHandler NewTopicMarkupHandler;
         private readonly SectionMarkupHandler SectionMarkupHandler;
         public NewTopicLogic(IStorage storage,
         ISectionLogic sectionLogic,
@@ -27,8 +27,8 @@ namespace Data
             SectionMarkupHandler = sectionMarkupHandler;
         }
         private void PublishTopic
-                (string threadName, int endpointId,
-                Pair pair, string message)
+                (in string threadName, in int endpointId,
+                in Pair pair, in string message)
         {
             int? accountId = ReplyLogic.GetAccountId(pair);
 
@@ -39,31 +39,12 @@ namespace Data
                     new Thread { Name = threadName, EndpointId = endpointId },
                         accountId.Value, message);
                 CorrectSectionArray(endpointId, threadId, threadName);
-                CorrectMessagesArray(endpointId, threadId,
+                Storage.Fast.CorrectMessagesArray(NewTopicMarkupHandler.GetNewPage, endpointId, threadId,
                         message, accountId.Value, threadName, nick);
             }
         }
-        private void CorrectMessagesArray
-            (int endpointId, int threadId, string message,
-                int accountId, string threadName, string nick)
-        {
-            string[][] threadPages = Storage.Fast.GetThreadPagesLocked();
-            Storage.Fast.SetThreadPagesLengthLocked(threadId);
-            int[] depthOld = Storage.Fast.GetThreadPagesPageDepthLocked();
-            int[] depthNew = new int[threadId];
-            depthOld.CopyTo(depthNew, Constants.Zero);
-            int index = threadId - Constants.One;
-            depthNew[index] = Constants.One;
-            Storage.Fast.InitializeThreadPagesPageDepthLocked(depthNew);
-            string[][] threadPagesNew = new string[threadId][];
-            threadPages.CopyTo(threadPagesNew, Constants.Zero);
-            threadPagesNew[index] = new string[] {
-                NewTopicMarkupHandler.GetNewPage(threadId, endpointId, threadName,
-                    accountId, nick, message) };
-            Storage.Fast.InitializeThreadPagesLocked(threadPagesNew);
-        }
         private void CorrectSectionArray
-                                (int endpointId, int threadId, string threadName)
+                                (in int endpointId, in int threadId, in string threadName)
         {
             Storage.Fast.SetSectionPagesArray(endpointId);
             Storage.Fast.SetThreadsCount(CountStringOccurrences
@@ -96,13 +77,13 @@ namespace Data
                                 (endpointId - Constants.One, Storage.Fast.GetPages());
         }
         private void AddThreadToSingle
-            (int threadId, string threadName, int endpointId)
+            (in int threadId, in string threadName, in int endpointId)
         {
             ThreadPreload(threadId, threadName, endpointId);
             MoveThreadAndSetArrows(threadId, endpointId);
         }
         private void ThreadPreload
-            (int threadId, string threadName, int endpointId)
+            (in int threadId, in string threadName, in int endpointId)
         {
             int len = Storage.Fast.GetPagesLength();
             string[] temp = new string[len + Constants.One];
@@ -113,7 +94,7 @@ namespace Data
             AddThread(Constants.Zero, threadId, threadName);
         }
         private void MoveThreadAndSetArrows
-            (int threadId, int endpointId)
+            (in int threadId, in int endpointId)
         {
             SetArrowsForSingle(threadId, endpointId);
             MoveThreadToNext();
@@ -123,7 +104,7 @@ namespace Data
             GetLastThread(Constants.Zero, true); // Проверить, нужно ли читать ответ.
             SetFirstThread(Constants.One, Storage.Fast.GetTemp());
         }
-        private void SetArrowsForSingle(int threadId, int endpointId)
+        private void SetArrowsForSingle(in int threadId, in int endpointId)
         {
             int index = endpointId - Constants.One;
             int pagesCount = Storage.Fast
@@ -144,18 +125,18 @@ namespace Data
             }
         }
         private void AddThreadToFull
-            (int threadId, string threadName, int endpointId)
+            (in int threadId, in string threadName, in int endpointId)
         {
             ThreadPreload(threadId, threadName, endpointId);
             MoveThreadsAndSetArrows(threadId, endpointId);
         }
         private void MoveThreadsAndSetArrows
-                (int threadId, int endpointId)
+                (in int threadId, in int endpointId)
         {
             SetArrows(threadId, endpointId);
             MoveThreadsInFull(threadId, endpointId);
         }
-        private void MoveThreadsInFull(int threadId, int endpointId)
+        private void MoveThreadsInFull(in int threadId, in int endpointId)
         {
             int len = Storage.Fast.GetPagesLength();
             int i = Constants.Zero;
@@ -167,12 +148,12 @@ namespace Data
                 SetFirstThread(i, Storage.Fast.GetTemp());
             }
         }
-        private void SetFirstThread(int i, string lastThread)
+        private void SetFirstThread(in int i, in string lastThread)
         {
             int pos = Storage.Fast.GetPage(i).IndexOf(Constants.navMarker) + Constants.navMarker.Length;
             Storage.Fast.SetPage(i, Storage.Fast.GetPage(i).Insert(pos, lastThread));
         }
-        private void SetArrows(int threadId, int endpointId)
+        private void SetArrows(in int threadId, in int endpointId)
         {
             int index = endpointId - Constants.One;
             int pagesCount = Storage.Fast
@@ -207,13 +188,13 @@ namespace Data
                 }
             }
         }
-        private void AddEndLinkAndNextLink(int i, int pagesCount,
-            int number)
+        private void AddEndLinkAndNextLink(in int i, in int pagesCount,
+            in int number)
         {
             AddEndLinkAndUpdateNextLink(i, pagesCount, number);
         }
         private void AddEndLinkAndUpdateNextLink
-            (int i, int pagesCount, int number)
+            (in int i, in int pagesCount, in int number)
         {
             string arrows = SectionMarkupHandler
                        .SetNavigation(i, pagesCount, number);
@@ -222,7 +203,7 @@ namespace Data
             Storage.Fast.SetPage(i, Storage.Fast.GetPage(i).Remove(pos1, pos2 - pos1));
             Storage.Fast.SetPage(i, Storage.Fast.GetPage(i).Insert(pos1, arrows));
         }
-        private void UpdateEndLink(int i)
+        private void UpdateEndLink(in int i)
         {
             int pos = Storage.Fast.GetPage(i).LastIndexOf(Constants.pageMarker)
                                     + Constants.pageMarker.Length;
@@ -249,7 +230,7 @@ namespace Data
             pageNum = pageNumInt.ToString();
             Storage.Fast.SetPage(i, Storage.Fast.GetPage(i).Insert(pos, pageNum));
         }
-        private void InsertArrows(string arrows)
+        private void InsertArrows(in string arrows)
         {
             int len = Storage.Fast.GetPagesLength() - Constants.One;
             int pos = Storage.Fast.GetPage(len).IndexOf(Constants.navMarker)
@@ -257,12 +238,12 @@ namespace Data
             Storage.Fast.SetPage(len, Storage.Fast.GetPage(len).Insert(pos, arrows));
         }
         private void AddThreadToBegin
-            (int threadId, string threadName)
+            (in int threadId, in string threadName)
         {
             AddThread(Constants.Zero, threadId, threadName);
             MoveThreads(threadId, threadName);
         }
-        private void MoveThreads(int threadId, string threadName)
+        private void MoveThreads(in int threadId, in string threadName)
         {
             int len = Storage.Fast.GetPagesLength() - Constants.One;
             int j;
@@ -276,7 +257,7 @@ namespace Data
                         + Constants.navMarker.Length, GetLastThread(i)));
             }
         }
-        private string GetLastThread(int i, bool flag = false)
+        private string GetLastThread(in int i, in bool flag = false)
         {
             int brLen = Constants.brMarker.Length;
             string page = Storage.Fast.GetPage(i);
@@ -290,21 +271,21 @@ namespace Data
             return result;
         }
         private void AddThread
-            (int i, int threadId, string threadName)
+            (in int i, in int threadId, in string threadName)
         {
             SetPosAndTemp(i, threadId, threadName);
             Storage.Fast.SetPage(i, Storage.Fast.GetPage(i)
                 .Insert(Storage.Fast.GetPos(), Storage.Fast.GetTemp()));
         }
         private void SetPosAndTemp
-            (int i, int threadId, string threadName)
+            (in int i, in int threadId, in string threadName)
         {
             Storage.Fast.SetPos(Storage.Fast.GetPage(i).IndexOf(Constants.navMarker)
                 + Constants.navMarker.Length);
             Storage.Fast.SetTemp(NewTopicMarkupHandler.GetTemp(threadId, threadName));
         }
         public int CountStringOccurrences
-            (string text, string pattern)
+            (in string text, in string pattern)
         {
             int count = Constants.Zero;
             int i = Constants.Zero;
@@ -319,15 +300,15 @@ namespace Data
         }
 
         private void
-            CheckTopicAndPublish(string threadName, int endpointId,
-                        Pair pair, string message)
+            CheckTopicAndPublish(in string threadName, in int endpointId,
+                        in Pair pair, in string message)
         {
             if (CheckTopicInfo(threadName, endpointId, message))
                 PublishTopic
                         (threadName, endpointId, pair, message);
         }
         public void Start
-                (string threadName, int? endpointId, Pair pair, string message)
+                (in string threadName, in int? endpointId, in Pair pair, in string message)
         {
             if (Storage.Fast.GetTopicsToStartCount() < Constants.MaxFirstLineLength)
             {
@@ -358,10 +339,10 @@ namespace Data
         }
 
         private bool CheckTopicInfo
-            (string threadName, int endpointId, string message)
+            (in string threadName, in int endpointId, in string message)
         {
             if (endpointId > Constants.Zero
-                    && endpointId < Storage.Fast.GetSectionPagesLengthLocked())
+                    && endpointId < Storage.Fast.GetSectionPagesLengthLocked() + Constants.One)
             {
                 if (CheckText(message) && CheckThreadName(threadName))
                     return true;
@@ -371,7 +352,7 @@ namespace Data
             else
                 return false;
         }
-        private bool CheckThreadName(string message)
+        private bool CheckThreadName(in string message)
         {
             int messageLength = message.Length;
 
@@ -395,7 +376,7 @@ namespace Data
 
             return true;
         }
-        public bool CheckText(string message)
+        public bool CheckText(in string message)
         {
             int messageLength = message.Length;
 

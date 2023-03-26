@@ -3,7 +3,7 @@ namespace MarkupHandlers
 {
     internal sealed class PrivateDialogMarkupHandler
     {
-        internal string GetArrows(int pageNumber, int pagesCount)
+        internal string GetArrows(in int pageNumber, in int pagesCount)
         {
             var result = Constants.SE;
 
@@ -94,7 +94,7 @@ namespace MarkupHandlers
                         "<br />");
         }
 
-        internal string GetPersonalLinkText(int accountId, string nick)
+        internal string GetPersonalLinkText(in int accountId, in string nick)
         {
             return string.Concat("<p onClick='n(&quot;/p/",
                         accountId,

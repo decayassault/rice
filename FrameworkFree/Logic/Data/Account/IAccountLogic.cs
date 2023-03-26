@@ -7,8 +7,8 @@ namespace Data
         void CheckAccountIdByTimer();
         void LoadAccounts();
         void LoadNicks();
-        bool CheckNickHashIfExists(string nick);
+        bool CheckNickHashIfExists(in string nick);
         int? GetAccIdAndStore(Pair pair);
-        Pair? CheckPair(string login, string password);
+        Pair? CheckPair(in string login, in string password);
     }
 }

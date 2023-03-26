@@ -14,17 +14,17 @@ namespace Data
             ThreadMarkupHandler = threadMarkupHandler;
         }
 
-        public string GetThreadPage(int? Id, int? page)
+        public string GetThreadPage(in int? id, in int? page)
         {
-            if (Id == null || page == null)
+            if (id == null || page == null)
                 return Constants.SE;
             else
             {
-                if (Id > Constants.Zero
-                    && Id <= Storage.Fast.GetThreadPagesLengthLocked())
-                {
-                    int index = (int)Id - Constants.One;
+                int index = (int)id;
 
+                if (index > Constants.Zero
+                    && Storage.Fast.ThreadPagesContainsThreadIdLocked(index))
+                {
                     if (page > Constants.Zero
                         && page <= Storage.Fast.GetThreadPagesPageDepthLocked(index))
                         return Storage.Fast
@@ -41,24 +41,19 @@ namespace Data
         public void LoadThreadPages()
         {
             int threadsCount = Storage.Slow.GetThreadsCount();
-            Storage.Fast.InitializeThreadPagesLocked
-                (new string[threadsCount][]);
-            Storage.Fast.SetThreadPagesLengthLocked(threadsCount);
-            Storage.Fast.InitializeThreadPagesPageDepthLocked
-                    (new int[Storage.Fast.GetThreadPagesLengthLocked()]);
+            Storage.Fast.InitializeThreadPagesLocked(threadsCount);
+            Storage.Fast.InitializeThreadPagesPageDepthLocked(threadsCount);
+            IEnumerable<int> threadsIds = Storage.Slow.GetExistingThreadsIds();
 
-            for (int i = Constants.Zero; i < threadsCount; i++)
+            foreach (int id in threadsIds)
             {
-                AddThread(i);
+                AddThread(id);
             }
         }
 
-        internal void AddThread(int Num)
+        private void AddThread(in int number)
         {
-
-            int amount = Num + Constants.One;
-            int number = Num;
-            int count = Storage.Slow.CountMessagesByAmount(amount);
+            int count = Storage.Slow.CountMessagesByAmount(number);
 
             if (count == Constants.Zero)
                 count++;
@@ -70,16 +65,16 @@ namespace Data
                     (number, new string[pagesCount]);
             Storage.Fast.SetThreadPagesPageDepthLocked(number, pagesCount);
             ProcessThreadReader
-                            (Storage.Slow.GetMessagesByAmount(amount),
-                             number, pagesCount, Storage.Slow.GetSectionNumById(Num + Constants.One));
+                            (Storage.Slow.GetMessagesByAmount(number),
+                             number, pagesCount, Storage.Slow.GetSectionNumById(number));
         }
         private void ProcessThreadReader
-       (IEnumerable<Message> messages, int number,
-           int pagesCount, int sectionNum)
+       (in IEnumerable<Message> messages, in int number,
+           in int pagesCount, in int sectionNum)
         {
 
             int pageNumber = Constants.Zero;
-            string threadName = Storage.Slow.GetThreadNameById(number + Constants.One);
+            string threadName = Storage.Slow.GetThreadNameById(number);
             Storage.Fast.AddToThreadPagesPageLocked(number, pageNumber,
                 ThreadMarkupHandler.GetSectionHeader(number, sectionNum, threadName));
             bool first = false;
@@ -135,23 +130,7 @@ namespace Data
                 Storage.Fast.AddToThreadPagesPageLocked
                     (number, pageNumber, Constants.indicEnd);
         }
-        public string GetNick(int accountId)
+        public string GetNick(in int accountId)
         => Storage.Slow.GetNickByAccountId(accountId);
-        internal string GetThreadPage(int Id, int page)
-        {
-            if (Id > Constants.Zero
-                && Id <= Storage.Fast.GetThreadPagesLengthLocked())
-            {
-                int index = Id - Constants.One;
-
-                if (page > Constants.Zero
-                        && page <= Storage.Fast.GetThreadPagesPageDepthLocked(index))
-                    return Storage.Fast.GetThreadPagesPageLocked
-                            (index, page - Constants.One);
-                else return Constants.SE;
-            }
-            else
-                return Constants.SE;
-        }
     }
 }

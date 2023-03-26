@@ -3,7 +3,7 @@ namespace MarkupHandlers
 {
     internal sealed class NewTopicMarkupHandler
     {
-        internal string GetTemp(int threadId, string threadName)
+        internal string GetTemp(in int threadId, in string threadName)
         {
             return string.Concat("<br /><p onclick='n(&quot;/f/",
                      threadId,
@@ -11,7 +11,7 @@ namespace MarkupHandlers
                      threadName,
                      "</p><br /><br />");
         }
-        internal string GetLastPage(int endpointId)
+        internal string GetLastPage(in int endpointId)
         {
             return string.Concat("<div id='t'><span><a onclick='q();return false;'>Новая тема</a>",
                                         "</span></div><nav class='n'></nav><div class='s'>",
@@ -28,7 +28,7 @@ namespace MarkupHandlers
                     endpointId,
                     "?p=1&quot;);'>",
                     threadName,
-                    "</h2><article><span onclick='n(&quot;/Profile/",
+                    "</h2><article><span onclick='n(&quot;/k/",
                     accountId,
                     "&quot;);'>",
                     nick,

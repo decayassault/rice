@@ -20,6 +20,7 @@ namespace Data
         public const string endSpanMarker = "</span>";
         public const string brMarker = "<br />";
         public const string endNavMarker = "</nav>";
+        public const byte Fifty = 50;
         public const string h2End = "</h2>";
         public const string pStart = "<p onclick='n(&quot;/p/";
         public const string pMiddle = "?p=1&quot;);'>";
@@ -61,20 +62,20 @@ namespace Data
                 "<div id='c'></div><br /><span><a id='s' onClick='l();return false'>Отправить</a></span>";
         public const int RegistrationPagesCount = 120;
         public const string MainPage = "<!DOCTYPE html><html lang='ru' dir='ltr' spellcheck='false'><head><meta content='text/html;charset=utf-8' http-equiv='Content-Type'><meta charset='utf-8' http-equiv='encoding'>" +
-                "<meta name='description' content='Первый мобильный форум бесплатных онлайн-знакомств на русском языке с экономией трафика поможет вам построить хорошие отношения с партнерами для любых целей посредством добрых бесед; форум любви - это место, где встречаются люди.' />" +
-                "<meta name='keywords' content='знакомства онлайн, хочу познакомиться, бесплатные знакомства, знакомства для серьезных отношений, поиск друзей, девушка знакомство, форум знакомств, форум знакомств с иностранцами, форум любви, сайт знакомств' />" +
+                "<meta name='description' content='Первый мобильный форум бесплатных онлайн-знакомств на русском языке с экономией трафика поможет Вам построить хорошие отношения с партнерами для любых целей посредством добрых бесед; форум любви - это место, где встречаются люди.' />" +
+                "<meta name='keywords' content='честные знакомства, порядочные знакомства, бесплатные знакомства, брачные знакомства, поиск друзей, форум любви, форум знакомств, дружеское общение, как познакомиться' />" +
                 "<link rel='stylesheet' type='text/css' href='m.css'>" +
                 "<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no' />" +
                 "<base target='_blank' />" +
                 "<title>Форум любви</title></head><body><header><h1 onClick='z();' title='На главную'>Форум любви</h1>"
                 //+ "<div id='back' title='Назад' onClick='back();'>&#8617;</div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" 
-                + "<div id='p' title='Личные сообщения' onClick='b();'>&#9993;</div>"
-                //+"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
-                //+"<div>&#9786;</div>&#9829;" 
-                //+"<div id='forward' title='Вперёд' onClick='forward();'>&#8618;</div>"
+                + "<div class='p' title='Личные сообщения' onClick='b();'>&#9993;</div>"
+                + "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+                + "<div class='p' title='Анкета' onClick='p();'>&#9786;</div>"//+"&#9829;" 
+                                                                              //+"<div id='forward' title='Вперёд' onClick='forward();'>&#8618;</div>"
                 + "</header><div id='o'>";
-        public const string MainPageEnd = "</div><small><a id='m' href='mailto:'>Обратная связь</a></small>" +
-                "<script src='j.js' async></script></body></html>";
+        public const string MainPageEnd = "</div><small><a id='m' href='mailto:russianloveforum@gmail.com'>Обратная связь</a></small>" +
+                "<script src='m.js' async></script></body></html>";
         public const string NewDialog = "<div id='d'><span><a onclick=" +
                 "'k();return false;'>Новый диалог</a>" +
                         "</span></div><nav class='n'></nav></div>";
@@ -93,6 +94,16 @@ namespace Data
         public const byte MaxForumThreadNameTextLength = 99;
         public const byte MaxNickTextLength = 25;
         public const short MaxFirstLineLength = 10000;
+        public const int MaxProfileImageSizeBytes = 500 * 1024;
         public const byte MaxAttemptsCountPerIp = byte.MaxValue;
+        public const byte ProfileQuestionsCount = 25;
+        public const byte CaptchaLength = 4;
+        public const short MinProfileImageSizeBytes = 1024;
+        public const short ProfileImageHeightPixels = 809;
+        public const short ProfileImageWidthPixels = 500;
+        public const string Checked = " checked";
+        public const string Yes = " Да.";
+        public const string No = " Нет.";
+        public const string CaptchaLetters = "12456789АБВГДЕЖИКЛМНПРСТУФХЦЧШЭЮЯ";
     }
 }

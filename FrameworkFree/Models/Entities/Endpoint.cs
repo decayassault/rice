@@ -9,8 +9,6 @@ namespace Models
         [Key]
         public int Id { get; set; }
         public int ForumId { get; set; }
-        [Required]
-        [StringLength(39)]
         public string Name { get; set; }
     }
 }

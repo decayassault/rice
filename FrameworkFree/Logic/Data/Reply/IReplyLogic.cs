@@ -1,11 +1,9 @@
-using System;
-using System.Timers;
 namespace Data
 {
     public interface IReplyLogic
     {
-        int? GetAccountId(Pair pair);
-        void Start(int? id, Pair pair, string t);
+        int? GetAccountId(in Pair pair);
+        void Start(in int? id, in Pair pair, in string t);
         void PublishNextMessageByTimer();
     }
 }

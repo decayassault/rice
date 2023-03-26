@@ -5,11 +5,11 @@
     using System.Linq;
     internal sealed class NewPrivateMessageLogic : INewPrivateMessageLogic
     {
-        public readonly IStorage Storage;
-        public readonly IThreadLogic ThreadLogic;
-        public readonly IReplyLogic ReplyLogic;
-        public readonly NewPrivateMessageMarkupHandler NewPrivateMessageMarkupHandler;
-        public readonly PrivateMessageMarkupHandler PrivateMessageMarkupHandler;
+        private readonly IStorage Storage;
+        private readonly IThreadLogic ThreadLogic;
+        private readonly IReplyLogic ReplyLogic;
+        private readonly NewPrivateMessageMarkupHandler NewPrivateMessageMarkupHandler;
+        private readonly PrivateMessageMarkupHandler PrivateMessageMarkupHandler;
         public NewPrivateMessageLogic(IStorage storage,
         IThreadLogic threadLogic,
         IReplyLogic replyLogic,
@@ -22,7 +22,7 @@
             NewPrivateMessageMarkupHandler = newPrivateMessageMarkupHandler;
             PrivateMessageMarkupHandler = privateMessageMarkupHandler;
         }
-        public void Start(int? id, Pair pair, string t)
+        public void Start(in int? id, in Pair pair, in string t)
         {
             if (Storage.Fast.GetPersonalMessagesToPublishCount() < Constants.MaxFirstLineLength)
             {
@@ -51,13 +51,13 @@
             }
         }
         public void
-            CheckPersonalReplyAndPublish(int id, Pair pair, string text)
+            CheckPersonalReplyAndPublish(in int id, in Pair pair, in string text)
         {
             if (Check(id, text))
                 PublishPersonalReply(id, pair, text);
         }
         public void PublishPersonalReply
-                (int id, Pair pair, string text)
+                (in int id, in Pair pair, in string text)
         {
             int? accId = ReplyLogic.GetAccountId(pair);
 
@@ -76,9 +76,9 @@
                 }
             }
         }
-        public void CorrectArray(int companionId,
-            int ownerId, string text,
-            string ownerNick, string companionNick, byte order)
+        public void CorrectArray(in int companionId,
+            in int ownerId, in string text,
+            in string ownerNick, in string companionNick, in byte order)
         {
             //TODO неправ. Profile/x и ник x            
             int depth;
@@ -148,7 +148,7 @@
             }
         }
 
-        public bool Check(int id, string text)
+        public bool Check(in int id, in string text)
         {
             int limit = Storage.Fast.GetDialogPagesLengthLocked();
             if (id > Constants.Zero

@@ -1,16 +1,18 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using MarkupHandlers;
 namespace Data
 {
     internal sealed class AccountLogic : IAccountLogic
     {
-        public readonly IStorage Storage;
-        public AccountLogic(IStorage storage)
+        private readonly IStorage Storage;
+        private readonly ProfileMarkupHandler ProfileMarkupHandler;
+        public AccountLogic(IStorage storage,
+        ProfileMarkupHandler profileMarkupHandler)
         {
             Storage = storage;
+            ProfileMarkupHandler = profileMarkupHandler;
         }
-        private static readonly object locker = new object();
-
         public void LoadAccounts()
         {
             ProcessAccountsReader(Storage.Slow.GetPairs());
@@ -38,11 +40,14 @@ namespace Data
                 Storage.Fast.LoginPasswordAccIdHashesAdd(pair, accountId.Value);
                 byte result;
                 Storage.Fast.LoginPasswordHashesDeltaRemove(pair, out result);//проверить на коллизии
+                Storage.Fast.AddOrUpdateOwnProfilePage(accountId.Value,
+                            ProfileMarkupHandler
+                                .GetOwnProfilePrimaryUnfilledMarkup(accountId.Value));
             }
 
             return accountId;
         }
-        public void ProcessAccountsReader(IList<Pair> pairs)
+        public void ProcessAccountsReader(in ICollection<Pair> pairs)
         {
             Storage.Fast.InitializeLoginPasswordAccIdHashes();
             Storage.Fast.InitializeLoginPasswordHashes();
@@ -72,7 +77,7 @@ namespace Data
             }
         }
 
-        public Pair? CheckPair(string login, string password)
+        public Pair? CheckPair(in string login, in string password)
         {
             uint loginHash = XXHash.XXHash32.Hash(login);
             uint passwordHash = XXHash.XXHash32.Hash(password);
@@ -85,7 +90,7 @@ namespace Data
                 return null;
         }
 
-        public bool CheckNickHashIfExists(string nick)
+        public bool CheckNickHashIfExists(in string nick)
         {
             bool result = false;
             uint hash = XXHash.XXHash32.Hash(nick);
@@ -98,7 +103,7 @@ namespace Data
             return result;
         }
 
-        public void ProcessNicksReader(IEnumerable<string> nicks)
+        public void ProcessNicksReader(in IEnumerable<string> nicks)
         {
             Storage.Fast.InitializeNicksHashes();
 

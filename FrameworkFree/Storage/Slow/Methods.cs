@@ -46,10 +46,15 @@ namespace Data
                 }
             }
         }
-        public IList<Pair> GetPairs()
+        public ICollection<Pair> GetPairs()
         {
             using (var bag = new TotalForumDbContext())
                 return bag.Account.AsNoTracking().Select(a => new Pair { LoginHash = unchecked((uint)a.Identifier), PasswordHash = unchecked((uint)a.Passphrase) }).ToList();
+        }
+        public void InitializeBlockedIpsHashes()
+        {
+            using (var bag = new TotalForumDbContext())
+                Data.Memory.BlockedRemoteIpsHashes = bag.BlockedIpHash.AsNoTracking().Select(i => unchecked((uint)i.IpHash)).ToList();
         }
         public IEnumerable<string> GetNicks()
         {
@@ -122,7 +127,9 @@ namespace Data
                     IpHash = unchecked((int)XXHash32.Hash(ip.ToString()))
                 };
 
-                if (!bag.LoginLog.AsNoTracking().Contains(loginLog))
+                if (bag.LoginLog.AsNoTracking().FirstOrDefault
+                (p => p.AccountIdentifier == loginLog.AccountIdentifier
+                && p.IpHash == loginLog.IpHash) == null)
                 {
                     bag.Add(loginLog);
                     bag.SaveChanges();
@@ -261,6 +268,60 @@ namespace Data
         {
             using (var bag = new TotalForumDbContext())
                 return bag.Thread.AsNoTracking().Count();
+        }
+        public IEnumerable<int> GetExistingThreadsIds()
+        {
+            using (var bag = new TotalForumDbContext())
+                return bag.Thread.AsNoTracking().Select(t => t.Id).ToList();
+        }
+        public Profile GetProfileOrNullByAccountId(int id)
+        {
+            using (var bag = new TotalForumDbContext())
+                return bag.Profile.AsNoTracking().FirstOrDefault(p => p.AccountId == id);
+        }
+        public void PutProfileInBase(Profile profile)
+        {
+            using (var bag = new TotalForumDbContext())
+            {
+                Profile retrieved = bag.Profile.FirstOrDefault(p => p.AccountId == profile.AccountId);
+
+                if (retrieved == null)
+                    bag.Profile.Add(profile);
+                else
+                {
+                    retrieved.AccountId = profile.AccountId;
+                    retrieved.AboutMe = profile.AboutMe;
+                    retrieved.AcceptAgression = profile.AcceptAgression;
+                    retrieved.CanMakeMinorRepairs = profile.CanMakeMinorRepairs;
+                    retrieved.CanPlayChess = profile.CanPlayChess;
+                    retrieved.CanSupportALargeFamily = profile.CanSupportALargeFamily;
+                    retrieved.DoPhysicalEducation = profile.DoPhysicalEducation;
+                    retrieved.FollowADiet = profile.FollowADiet;
+                    retrieved.HadRelationship = profile.HadRelationship;
+                    retrieved.HaveBadHabits = profile.HaveBadHabits;
+                    retrieved.HaveChildren = profile.HaveChildren;
+                    retrieved.HaveManyHobbies = profile.HaveManyHobbies;
+                    retrieved.HavePermanentResidenceInRussia = profile.HavePermanentResidenceInRussia;
+                    retrieved.HavePets = profile.HavePets;
+                    retrieved.HaveProfession = profile.HaveProfession;
+                    retrieved.IsAdult = profile.IsAdult;
+                    retrieved.IsAltruist = profile.IsAltruist;
+                    retrieved.IsOppositeGenderCute = profile.IsOppositeGenderCute;
+                    retrieved.LikeDriving = profile.LikeDriving;
+                    retrieved.LikeReading = profile.LikeReading;
+                    retrieved.LikeTravelling = profile.LikeTravelling;
+                    retrieved.SpeakAForeignLanguage = profile.SpeakAForeignLanguage;
+                    retrieved.TakeCareOfPlants = profile.TakeCareOfPlants;
+                    retrieved.WantToMeetInFirstWeek = profile.WantToMeetInFirstWeek;
+                    retrieved.ReadyToWaitForALove = profile.ReadyToWaitForALove;
+                    retrieved.PublicationDate = DateTime.Now;
+                    retrieved.ReadyToSaveFamilyForKids = profile.ReadyToSaveFamilyForKids;
+                    retrieved.PhotoBase64Gif = profile.PhotoBase64Gif;
+                    retrieved.PreferMindActivity = profile.PreferMindActivity;
+                }
+
+                bag.SaveChanges();
+            }
         }
     }
 }

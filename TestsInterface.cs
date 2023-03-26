@@ -15,7 +15,6 @@ namespace TestsInterface
                 accessGranted = true;
                 var memory = new Memory();
                 var storage = new Storage(memory, new Database(memory));
-                var accountLogic = new AccountLogic(storage);
                 var threadMarkupHandler = new ThreadMarkupHandler();
                 var replyMarkupHandler = new ReplyMarkupHandler();
                 var endPointMarkupHandler = new EndPointMarkupHandler();
@@ -28,7 +27,9 @@ namespace TestsInterface
                 var sectionMarkupHandler = new SectionMarkupHandler();
                 var newTopicMarkupHandler = new NewTopicMarkupHandler();
                 var loginMarkupHandler = new LoginMarkupHandler();
+                var profileMarkupHandler = new ProfileMarkupHandler();
 
+                var accountLogic = new AccountLogic(storage, profileMarkupHandler);
                 var threadLogic = new ThreadLogic(storage,
                 threadMarkupHandler);
                 var replyLogic = new ReplyLogic(storage,
@@ -47,8 +48,14 @@ namespace TestsInterface
                 privateMessageMarkupHandler);
                 var forumLogic = new ForumLogic(storage,
                 forumMarkupHandler);
+                var captchaGenerator = new CaptchaGenerator();
+                var captchaMarkupHandler = new CaptchaMarkupHandler();
+                var captcha = new Captcha(captchaGenerator,
+                storage,
+                captchaMarkupHandler);
                 var registrationLogic = new RegistrationLogic(storage,
-                registrationMarkupHandler);
+                registrationMarkupHandler,
+                captcha);
                 var sectionLogic = new SectionLogic(storage,
                 sectionMarkupHandler,
                 newTopicMarkupHandler);
@@ -78,9 +85,10 @@ namespace TestsInterface
                 registrationLogic,
                 accountLogic,
                 authenticationLogic,
+                captcha,
                 loginMarkupHandler);
-                var captcha = new Captcha(loginLogic,
-                registrationLogic);
+                var profileLogic = new ProfileLogic(storage,
+                profileMarkupHandler);
 
                 TestForce = new FriendlyFire(accountLogic,
                 storage,
@@ -97,7 +105,8 @@ namespace TestsInterface
                 registrationLogic,
                 loginLogic,
                 captcha,
-                authenticationLogic);
+                authenticationLogic,
+                profileLogic);
             }
         }
         public static void Register(string captcha, string login,
@@ -110,7 +119,7 @@ namespace TestsInterface
         public static string Authenticate(string captcha, string login, string password)
         {
             if (accessGranted)
-                return TestForce.LoginData_CheckAndAuth(captcha, login, password);
+                return TestForce.LoginData_CheckAndAuth(new System.Net.IPAddress(0x2414188f/*143.24.20.36*/), captcha, login, password);
             else
                 return Constants.SE;
         }
