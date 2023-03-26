@@ -10,9 +10,8 @@
     {
         internal static
             ConcurrentQueue<SqlConnection> ConnectionsCache;
-        private static SecureString cString;
-        private static object SecureStringLock = new object();
-        private const int ConnectionsCacheSize = 100;  
+        internal static SecureString cString;
+        private const int ConnectionsCacheSize = 100;        
 
         internal async static Task InitializeConnectionsCache()
         {
@@ -35,34 +34,13 @@
             return result;
         }
 
-        internal static
-           SqlConnection GetConnectionNoAsync()
-        {
-            AddConnectionToCacheNoAsync();
-            SqlConnection result;
-            ConnectionsCache.TryDequeue(out result);
-
-            return result;
-        }
-
         internal async static Task<SqlConnection> InitializeConnection()
         {
             SqlConnection sc;
             sc = new SqlConnection();
-            sc.ConnectionString = await DecryptString(GetSecureStringLocked());
+            sc.ConnectionString = await DecryptString(cString);
             sc.StatisticsEnabled = MvcApplication.False;
             await sc.OpenAsync();
-
-            return sc;
-        }
-
-        internal static SqlConnection InitializeConnectionNoAsync()
-        {
-            SqlConnection sc;
-            sc = new SqlConnection();
-            sc.ConnectionString = DecryptStringNoAsync(GetSecureStringLocked());
-            sc.StatisticsEnabled = MvcApplication.False;
-            sc.Open();
 
             return sc;
         }
@@ -83,23 +61,6 @@
             return Task.FromResult(result);
         }
 
-        internal static string DecryptStringNoAsync(SecureString s)
-        {
-
-            IntPtr stringPointer = Marshal.SecureStringToBSTR(s);
-            string result = null;
-            try
-            {
-                result = Marshal.PtrToStringBSTR(stringPointer);
-            }
-            finally
-            {
-                Marshal.ZeroFreeBSTR(stringPointer);
-            }
-
-            return result;
-        }
-
         internal static SecureString SecureStr(string s)
         {
             var result = new SecureString();
@@ -116,22 +77,6 @@
             ConnectionsCache.Enqueue(sc);
         }
 
-        private static void AddConnectionToCacheNoAsync()
-        {
-            SqlConnection sc;
-            sc = InitializeConnectionNoAsync();
-            ConnectionsCache.Enqueue(sc);
-        }
-
-        internal static SecureString GetSecureStringLocked()
-        {
-            lock (SecureStringLock)
-                return cString;
-        }
-        internal static void SetSecureStringLocked(SecureString value)
-        {
-            lock (SecureStringLock)
-                cString = value;
-        }
+        
     }
 }

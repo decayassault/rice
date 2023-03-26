@@ -500,66 +500,6 @@ function startTopic()
         var url = '/starttopic/' + id + '?t=' + title+'&m='+msg;
         xmlhttp.onreadystatechange = function () {
             if (isOkXhr()) {
-                n('/maincontent/');
-                //correctCacheAnswer(title);
-            }
-        }
-        xhrStart(url);
-    }
-    //TODO
-}
-function openDialogsList()
-{
-    n('/dialog/1');
-}
-function replyPM()
-{
-    m('/replypersonal/', 'a');
-}
-function sendPrivateReply()
-{
-    var id = doc.getElementsByClassName('s')[z].innerHTML;
-    var result;
-    var obj = doc.getElementById('text').value;
-    var len = obj.length;
-    obj = filterNonRussian(obj);
-    if ((len > 1000) || (len < 10))
-        result = false;
-    else result = true;
-    if (result) {
-        var url = '/sendpersonal/' + id + '?t=' + obj;
-        xmlhttp.onreadystatechange = function () {
-            if (isOkXhr()) {
-                n('/maincontent/');
-                //correctCacheAnswer(id);
-            }
-        }
-        xhrStart(url);
-    }
-}
-function newDialog()
-{
-    m('/newdialog/', 'dialog');
-}
-function startDialog()
-{
-    var nick = doc.getElementsByTagName('input')[z].value;
-    //var id = doc.getElementsByClassName('s')[z].innerHTML;
-    var result;
-    var msg = doc.getElementById('text').value;
-    var msglen = msg.length;
-    var nicklen = nick.length;
-    nick = filterNonRussian(nick);
-    msg = filterNonRussian(msg);
-    if (((msglen > 1000) || (msglen < 10))
-        || (!checknick(nick)))
-        result = false;
-    else result = true;
-    if (result) {
-        var url = '/startdialog/?nick=' + nick + '&msg=' + msg;
-        xmlhttp.onreadystatechange = function () {
-            if (isOkXhr()) {
-                n('/maincontent/');
                 //correctCacheAnswer(title);
             }
         }

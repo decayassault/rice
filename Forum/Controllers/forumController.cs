@@ -1,33 +1,26 @@
 ﻿using Forum.Attributes;
 using Forum.Data;
-using Forum.Data.Thread;
 using Forum.Data.Account;
 using Forum.Data.EndPoint;
 using Forum.Data.Forum;
 using Forum.Data.Section;
-using Forum.Data.PrivateDialog;
-using Forum.Data.PrivateMessage;
-using Forum.Data.NewPrivateMessage;
-using Forum.Data.NewPrivateDialog;
 using System.Web.Mvc;
 using System.Web.Security;
-using System.Threading.Tasks;
 
 namespace Forum.Controllers
 {
     [NoCache]
     [SessionState(System.Web.SessionState.SessionStateBehavior.Disabled)]
-    [RequireHttps]
     public sealed class forumController : AsyncController
     {
         [HttpGet]
         public string threads()
         {            
-            return ForumLogic.GetMainPageLocked();
+            return ForumLogic.MainPage;
         }
         
         [HttpGet]
-        public string thread(int? Id,int? page)
+        public string thread(int Id,int page)
         {           
             return ThreadData.GetThreadPage(Id, page);            
         }             
@@ -35,17 +28,17 @@ namespace Forum.Controllers
         [HttpGet]
         public string maincontent()
         {
-            return ForumLogic.GetMainContentLocked();
+            return ForumLogic.MainContent;
         }
         
         [HttpGet]
-        public string section(int? Id, int? page)
+        public string section(int Id, int page)
         {           
             return SectionLogic.GetSectionPage(Id, page);            
         }
         
         [HttpGet]
-        public string endpoint(int? Id)
+        public string endpoint(int Id)
         {            
             return EndPointLogic.GetEndPointPage(Id);
         }
@@ -53,7 +46,8 @@ namespace Forum.Controllers
         [HttpPost]
         public void authenticate
             (string captcha,string login,string password)
-        {            
+        {
+            //LoginData.Start(captcha,login,password);
             bool flag=LoginData.CheckAndAuth
                 (captcha, login, password);
             if (flag)       
@@ -77,7 +71,7 @@ namespace Forum.Controllers
         
         [Authorize]
         [HttpGet]
-        public void reply(int? id, string t)
+        public void reply(int id, string t)
         {
             ReplyData.Start(id,User.Identity.Name,t); 
         }
@@ -110,60 +104,9 @@ namespace Forum.Controllers
 
         [Authorize]
         [HttpGet]
-        public void starttopic(int? id, string t, string m)
+        public void starttopic(int id, string t, string m)
         {            
             NewTopicData.Start(t,id,User.Identity.Name,m);
-        }
-        
-        [Authorize]
-        [HttpGet]
-        public Task<string> dialog(int? id)
-        {           
-                return PrivateDialogLogic
-                    .GetDialogPage(id, User.Identity.Name);           
-        }
-        [Authorize]
-        [HttpGet]
-        public Task<string> personal(int? id, int? page)
-        {
-            return PrivateMessageLogic.GetPersonalPage
-                    (id,page,User.Identity.Name);
-        }
-        [Authorize]
-        [HttpGet]
-        public string replypersonal()
-        {
-            return NewPrivateMessageData.PrivateReplyPage;
-        }
-        [Authorize]
-        [HttpGet]
-        public void sendpersonal(int? id, string t)
-        {
-            NewPrivateMessageLogic.Start(id, User.Identity.Name, t); 
-        }
-        [Authorize]
-        [HttpGet]
-        public string newdialog()
-        {
-            return NewPrivateDialogData.PageToReturn;
-        }
-        [Authorize]
-        [HttpGet]
-        public void startdialog(string nick,string msg)
-        {
-            NewPrivateDialogLogic.Start(nick, User.Identity.Name, msg);
-        }
-        [Authorize]
-        [HttpGet]
-        public void exit()
-        {
-            FormsAuthentication.SignOut();
-        }
-        [Authorize]
-        [HttpGet]
-        public string profile()
-        {
-            return "empty";//TODO
         }
     }
 }

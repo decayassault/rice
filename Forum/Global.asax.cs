@@ -24,9 +24,9 @@ namespace Forum
 
         private static void InitializeData()
         {
-            Connection.SetSecureStringLocked(Connection
-               .SecureStr(@"Data Source=dahlia.arvixe.com;Initial Catalog=AlterDatabase;Async=True;Integrated Security = false;Persist Security Info=false;User ID=ForumAdmin;Password=Pass1Word!;Pooling=true;Connect Timeout=300;Max Pool Size=120"));
-                //.SecureStr(@"Data Source=STATION;Initial Catalog=ForumBase;Async=True;Integrated Security = true;Persist Security Info=false;Pooling=true;Connect Timeout=300;Max Pool Size=120"));
+            Connection.cString = Connection
+                //.SecureStr(@"Data Source=dahlia.arvixe.com;Initial Catalog=ForumBase;Async=True;Integrated Security = false;Persist Security Info=false;User ID=ForumAdmin;Password=Pass1Word!;Pooling=true;Connect Timeout=300;Max Pool Size=120");
+                .SecureStr(@"Data Source=STATION;Initial Catalog=ForumBase;Async=True;Integrated Security = true;Persist Security Info=false;Pooling=true;Connect Timeout=300;Max Pool Size=120");
             Configuration.Initialize();
         }
 
@@ -37,11 +37,12 @@ namespace Forum
                 = ProcessPriorityClass.High;
         }
 
-        /*protected void Application_Error()
+        protected void Application_Error()
         {
-            
+            /*System.Web.HttpContext.Current
+                .ApplicationInstance.CompleteRequest();*/
             Response.Close();
-        }*/
+        }
 
         protected void Session_End()
         {            

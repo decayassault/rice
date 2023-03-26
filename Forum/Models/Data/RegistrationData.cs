@@ -34,16 +34,16 @@ namespace Forum.Data
 
         internal static void PreRegistration
             (string captcha, string login, string password, string email, string nick)
-        {            
-                var bag = new PreRegBag()
-                {
-                    captcha = captcha,
-                    login = login,
-                    password = password,
-                    email = email,
-                    nick = nick
-                };
-                bool flag = PreRegistrationLine.TryAdd(PreRegistrationLine.Count, bag);            
+        {
+            var bag = new PreRegBag()
+            {
+                captcha=captcha,
+                login = login,
+                password = password,
+                email=email,
+                nick=nick
+            };
+           bool flag= PreRegistrationLine.TryAdd(PreRegistrationLine.Count, bag);
         }
 
         internal struct PreRegBag
@@ -155,19 +155,13 @@ namespace Forum.Data
                 if (PreRegistrationLine.Count > MvcApplication.Zero)
                 {
                     PreRegistrationLine.TryRemove(MvcApplication.Zero, out temp);
-                    if (temp.captcha == null || temp.login == null
-                || temp.password == null || temp.email == null || temp.nick == null)
-                    { }
-                    else
-                    {
-                        CheckInputAndRegister(
-                            temp.captcha,
-                            temp.login,
-                            temp.password,
-                            temp.email,
-                            temp.nick
-                            );
-                    }
+                    CheckInputAndRegister(
+                        temp.captcha,
+                        temp.login,
+                        temp.password,
+                        temp.email,
+                        temp.nick
+                        );
                 }
             }
         }
@@ -329,7 +323,7 @@ namespace Forum.Data
             }
         }
 
-        internal static bool CheckNick(string nick)
+        private static bool CheckNick(string nick)
         {
             bool result = MvcApplication.False;
             int len = nick.Length;

@@ -1,5 +1,4 @@
 ﻿using System.Threading.Tasks;
-using System.Collections.Concurrent;
 using System;
 using Forum.Data.Thread;
 using Forum.Models;
@@ -18,14 +17,6 @@ namespace Forum.Data
             const string articleStart = "<article>";
             const string articleEnd = "</article>";
             const string spanEnd = "</span>";
-            const string brMarker = "<br />";
-        internal struct MessageData
-        {
-            internal int? id;
-            internal string username;
-            internal string text;
-        }
-            internal static ConcurrentQueue<MessageData> MessagesToPublish;
         internal async static Task 
             CheckReplyAndPublish(int id,string username,string text)
         {
@@ -33,35 +24,11 @@ namespace Forum.Data
                 await PublishReply(id, username, text);
         }
 
-        internal static void Start(int? id,string username,string t)
-        {            
-                MessageData messageData
-                      = new MessageData
-                      {
-                          id = id,
-                          username = username,
-                          text = t
-                      };
-                MessagesToPublish.Enqueue(messageData);
-        }
-        internal static void PublishNextMessage()
+        internal static void Start(int id,string username,string t)
         {
-            while (MvcApplication.True)
-            {
-                if (MessagesToPublish.Count != MvcApplication.Zero)
-                {
-                    MessageData temp;
-                    MessagesToPublish.TryDequeue(out temp);
-                    if (temp.id == null || temp.username == null 
-                        || temp.text == null)
-                    {  }
-                    else                    
-                    Task.Run(() =>
-                        CheckReplyAndPublish
-                            ((int)temp.id, temp.username, temp.text));
-                }
-                System.Threading.Thread.Sleep(10);
-            }
+            Task.Run(() =>
+                CheckReplyAndPublish
+                    (id, username, t));
         }
 
         internal static Task<int> GetAccountId(string username)
@@ -90,30 +57,27 @@ namespace Forum.Data
             string nick = await ThreadData.GetNick(accId);            
             string page;         
             string last =
-                ThreadLogic.GetThreadPagesPageLocked
-                    (id,ThreadLogic.GetThreadPagesPageDepthLocked(id)
-                    - MvcApplication.One);
+                ThreadLogic.ThreadPages[id][ThreadLogic.ThreadPagesPageDepth[id]
+                    - MvcApplication.One];
             if(last.Contains(a))
             {
                 string threadName = await ThreadData.GetThreadName(id);
                 int sectionNum = await ThreadData.GetSectionNum(id);
-                string[] temp = ThreadLogic.GetThreadPagesArrayLocked(id);
-                ThreadLogic.AddToThreadPagesPageDepthLocked(id,1);
-                ThreadLogic.SetThreadPagesArrayLocked
-                    (id, new string[ThreadLogic
-                            .GetThreadPagesPageDepthLocked(id)]);
-                temp.CopyTo(ThreadLogic.GetThreadPagesArrayLocked(id)
-                            ,MvcApplication.Zero);
+                string[] temp = ThreadLogic.ThreadPages[id];
+                ThreadLogic.ThreadPagesPageDepth[id]++;
+                ThreadLogic.ThreadPages[id]=
+                     new string[ThreadLogic.ThreadPagesPageDepth[id]];
+                temp.CopyTo(ThreadLogic.ThreadPages[id],MvcApplication.Zero);
                 page =  indic+ id.ToString() +
                 "</div><div class='l'><h2 onClick='g(&quot;/section/" +
                     sectionNum.ToString() + "?page=1&quot;);'>" + threadName + "</h2>";
-                page += articleStart+"<span onClick='g(&quot;/profile/" +
+                page += articleStart+"<span onClick='g(&quot;/Profile/" +
                         accId.ToString() + "&quot;);'>" + nick + "</span><br />";
                 page += "<p>" + text + "</p>" + articleEnd + "<br />" + spanIndicator + spanEnd 
                     + "<div id='a'><a onClick='u();return false'>Ответить</a></div>" + "</div><div class='s'>4</div>";
-                int len = ThreadLogic.GetThreadPagesPageDepthLocked(id);
-                ThreadLogic.SetThreadPagesPageLocked(id,len - 1,page);
-                string[] thread = ThreadLogic.GetThreadPagesArrayLocked(id);
+                int len = ThreadLogic.ThreadPagesPageDepth[id];
+                ThreadLogic.ThreadPages[id][len - 1] = page;
+                string[] thread = ThreadLogic.ThreadPages[id];
                 int i;
                 int start;
                 int end;
@@ -126,13 +90,13 @@ namespace Forum.Data
                             + spanEnd.Length;
                     thread[i] = thread[i].Remove(start, end - start);
                     thread[i] = thread[i].Insert(start, navigation);
-                    ThreadLogic.SetThreadPagesPageLocked(id,i,thread[i]);
+                    ThreadLogic.ThreadPages[id][i] = thread[i];
                 }                
             }
             else
             {                
-                int position = last.LastIndexOf(brMarker)+brMarker.Length;                
-                int pos = last.LastIndexOf(indic)+indic.Length;
+                int position = last.IndexOf(spanIndicator);
+               int pos = last.LastIndexOf(indic)+indic.Length;
                 int start=pos;
                 string countString = string.Empty;
                 while(last[pos]!='<')
@@ -140,16 +104,16 @@ namespace Forum.Data
                     countString += last[pos];
                     pos++;
                 }
+
                 last = last.Remove(start, pos - start);
                 int count = Convert.ToInt32(countString)-MvcApplication.One;
                 last = last.Insert(start, count.ToString());
-                page = articleStart+"<span onClick='g(&quot;/profile/" +
+                page = articleStart+"<span onClick='g(&quot;/Profile/" +
                         accId.ToString() + "&quot;);'>" + nick + "</span><br />";
                 page += "<p>" + text + "</p>" + articleEnd+"<br />";                
                 last = last.Insert(position, page);
-                ThreadLogic.SetThreadPagesPageLocked
-                    (id,ThreadLogic.GetThreadPagesPageDepthLocked(id)
-                    - MvcApplication.One,last);               
+                ThreadLogic.ThreadPages[id][ThreadLogic.ThreadPagesPageDepth[id]
+                    - MvcApplication.One] = last;               
             }
         }
 
@@ -169,9 +133,8 @@ namespace Forum.Data
         }
 
         private static bool Check(int id, string text)
-        {            
-            if (id >= MvcApplication.Zero 
-                && id < ThreadLogic.GetThreadPagesLengthLocked())
+        {
+            if (id >= MvcApplication.Zero && id < ThreadLogic.ThreadPagesLength)
             {
                 string temp=string.Empty;
                 char c;
@@ -198,11 +161,6 @@ namespace Forum.Data
                 else return MvcApplication.True;
             }
             else return MvcApplication.False;
-        }
-
-        internal static void AllowNewMessages()
-        {
-            MessagesToPublish = new ConcurrentQueue<MessageData>();
         }
     }
 }

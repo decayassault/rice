@@ -12,11 +12,6 @@ body
         word-wrap: break-word;
     }
 
-input, textarea
-{
-    border: 1px solid lightgray;
-}
-
 #content 
     {
         position:relative;
@@ -52,7 +47,7 @@ input, textarea
         color: red;
     }
 
-body h1 
+body h1
     {
         text-align: center;
         font-family: "Buxton Sketch";
@@ -68,30 +63,6 @@ body h1
         cursor:pointer;
         display:block;
     }
-
-#pm,#back,#forward,#profile
-{
-        font-variant:normal;        
-        font-stretch:normal;
-        color: red;
-        cursor:pointer;        
-        text-align: center;        
-        font-size: 26pt;
-        display:inline;
-}
-
-#pm,#back,#forward{
-    font-weight:normal;
-}
-
-#profile{
-    font-weight:bold;
-}
-
-header{
-    text-align:center;
-    cursor:default;
-}
 
 #m
     {       
@@ -200,7 +171,7 @@ center.l div, #msg, #registration div
         color:black;        
     }
 
-.l center a, #arrows a
+.l center a, #arrows a 
     {
         font-family: "Segoe UI Symbol";
         cursor:pointer;
@@ -260,7 +231,7 @@ body h2
     font-stretch:normal;
     cursor:pointer;
 }
-#topic input, #dialog input {
+#topic input {
     width:500px;
     height:30px;
     font-family: "Candara";
@@ -268,15 +239,14 @@ body h2
     text-align:justify;       
     color:black; 
 }
-
-#topic p, #dialog p {
+#topic p {
     font-family: "Candara";
     font-size: 14pt;	
     text-align:justify;
     text-indent: 1.5cm;        
     color:black;
 }
-#topic span, #dialog span, #needauth{
+#topic span{
     color: red;
     display: block;
     font-family: "Candara";
@@ -291,7 +261,7 @@ body h2
     font-size: 14pt;
     cursor:default;
 }
-#topic a,#dialog a, #needauth a{
+#topic a{
         cursor: pointer;
 }
 div#logon,div#registration, #arrows

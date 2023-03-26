@@ -48,7 +48,7 @@ namespace Forum.Data.EndPoint
                     else id = Convert.ToInt32(o);
 
                     o = reader["Name"];
-                    if (o == DBNull.Value || o == null)
+                    if(o==DBNull.Value)
                         name="endpoint";
                     else name=o.ToString();
 
@@ -57,7 +57,7 @@ namespace Forum.Data.EndPoint
                 }
                    
                 }     
-            EndPointLogic.SetEndPointPageLocked(number,text);
+            EndPointLogic.EndPointPages[number]=text;
             }
         }
     }

@@ -34,53 +34,8 @@ namespace Forum.Data.Account
 
         private const string NickField = @"Nick";
 
-        private const string PassphraseField = @"Passphrase";
-
-
-        internal async static Task<int> GetAccountsCount()
-        {
-            var sw = new System.Diagnostics.Stopwatch();
-            sw.Start();
-            int result = MvcApplication.One;
-            using (var SqlCon = await Connection.GetConnection())
-            {
-                using (var cmdSection =
-                        Command.InitializeCommandForGetAccountsCount
-                            (@"GetAccountsCount", SqlCon))
-                {
-                    object oo;
-                    oo = await cmdSection.ExecuteScalarAsync();
-                    if (oo == DBNull.Value || oo == null)
-                        result = MvcApplication.One;
-                    else result = Convert.ToInt32(oo);
-                }
-            }
-            sw.Stop();
-            TimeSpan t = sw.Elapsed;
-            return result;
-        }
-        internal static int GetAccountsCountNoAsync()
-        {
-            var sw = new System.Diagnostics.Stopwatch();
-            sw.Start();
-            int result = MvcApplication.One;
-            using (var SqlCon = Connection.GetConnectionNoAsync())
-            {
-                using (var cmdSection =
-                        Command.InitializeCommandForGetAccountsCount
-                            (@"GetAccountsCount", SqlCon))
-                {
-                    object oo;
-                    oo = cmdSection.ExecuteScalar();
-                    if (oo == DBNull.Value || oo == null)
-                        result = MvcApplication.One;
-                    else result = Convert.ToInt32(oo);
-                }
-            }
-            sw.Stop();
-            TimeSpan t = sw.Elapsed;
-            return result;
-        }
+        private const string PassphraseField = @"Passphrase";  
+  
 
         internal async static Task LoadAccounts()
         {            
@@ -206,16 +161,7 @@ namespace Forum.Data.Account
                 return MvcApplication.True;
             else return MvcApplication.False;
         }
-        internal static bool CheckNickHashIfExists(string nick)
-        {
-            bool result = false;
-            int hash=nick.GetHashCode();
-            if (NicksHashes.Keys.Contains(hash))
-                result = true;
-            else result = false;
 
-            return result;
-        }
         private async static Task ProcessNicksReader(SqlDataReader reader)
         {
             NicksHashes = new ConcurrentDictionary<int, byte>();
