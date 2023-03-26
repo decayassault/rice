@@ -1,0 +1,63 @@
+DB browser for sqllite
+
+в конец /etc/profile
+PATH="$PATH:/usr/share/dotnet";export PATH
+PATH="$PATH:/home/wisdom/.dotnet/tools";export PATH
+
+dotnet tool install --global dotnet-ef --version 3.0.0
+
+
+dotnet ef dbcontext scaffold "Filename=sqlitedb" Microsoft.EntityFrameworkCore.Sqlite -o Models -v
+
+<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="3.0.1" />
+потом добавить в код services
+  .AddDbContext<sqlitedbContext>(options =>
+    options.UseSqlite("sqlitedb"));
+
+grep -rnw 'path' -e 'pattern'
+
+allow execute DB file as a program
+
+https://medium.com/agile-content-teamwork/captcha-generator-with-sixlabors-libs-on-net-core-3-c0d2600b01d5
+dotnet publish -r linux-x64 -p:PublishSingleFile=true -p:PublishTrimmed=true --self-contained true -c Release
+
+sudo apt-get install libgdiplus
+
+dotnet dev-certs https -ep $env:USERPROFILE\.aspnet\https\webtest.pfx -p Dctv1ghbdtn!
+dotnet dev-certs https --trust
+dotnet user-secrets init
+dotnet user-secrets -p webtest.csproj set "Kestrel:Certificates:Development:Password" "Dctv1ghbdtn!"
+
+TODO
+расставить lock
+ограничить число создаваемых сообщений в час, тем в час и логинов в час
+ограничить массивы
+сделать клиентский кэш
+выводить сообщения в формах
+минимизировать css, js при публикации
+сделать логическую аутентификацию
+
+Функциональность 
+аутентификация по капче, логину и паролю
+раскрытие списка разделов
+создание новой темы
+создание нового сообщения темы
+создание нового личного сообщения
+просмотр списка тем
+листание списка тем в конец
+листание списка тем в начало
+листание списка тем к следующей порции
+листание списка тем к предыдущей порции
+просмотр списка сообщений темы
+листание списка сообщений темы в конец
+листание списка сообщений темы в начало
+листание списка сообщений темы к следующей порции
+листание списка сообщений темы к предыдущей порции
+возврат на главную страницу
+отправка обратной связи
+просмотр списка личных сообщений
+листание списка личных сообщений в конец
+листание списка личных сообщений в начало
+листание списка личных сообщений к следующей порции
+листание списка личных сообщений к предыдущей порции
+регистрация по капче, логину, паролю, повтору пароля, почте, повтору почты, имени на форуме
