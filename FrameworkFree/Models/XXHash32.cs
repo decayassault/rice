@@ -1,5 +1,5 @@
 ﻿using System.Runtime.CompilerServices;
-using Data;
+using Logic;
 namespace XXHash
 {// source - https://github.com/shibox/XXHash
     public static partial class XXHash32

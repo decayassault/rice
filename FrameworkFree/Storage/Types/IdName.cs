@@ -1,4 +1,5 @@
-namespace Data {
+namespace Logic
+{
     public struct IdName
     {
         public int Id;

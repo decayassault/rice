@@ -2,7 +2,7 @@ using System;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
-using Data;
+using Logic;
 // source - https://edi.wang/post/2018/10/13/generate-captcha-code-aspnet-core
 public sealed class CaptchaGenerator : ICaptchaGenerator
 {

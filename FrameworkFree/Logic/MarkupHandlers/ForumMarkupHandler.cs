@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
-using Data;
+using Logic;
 namespace MarkupHandlers
 {
     internal sealed class ForumMarkupHandler

@@ -1,8 +1,9 @@
-namespace Data{ 
+namespace Logic
+{
     public struct MessageData
-        {
-            public int? id;
-            public Pair? pair;
-            public string text;
-        }
+    {
+        public int? id;
+        public Pair? pair;
+        public string text;
+    }
 }

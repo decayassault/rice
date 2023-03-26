@@ -1,6 +1,6 @@
 using System.Net;
 using System;
-namespace Data
+namespace Logic
 {
     public interface IFriendlyFire
     {

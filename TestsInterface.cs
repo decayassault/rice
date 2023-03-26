@@ -1,4 +1,4 @@
-using Data;
+using Logic;
 using XXHash;
 using MarkupHandlers;
 namespace TestsInterface
@@ -29,12 +29,16 @@ namespace TestsInterface
                 var loginMarkupHandler = new LoginMarkupHandler();
                 var profileMarkupHandler = new ProfileMarkupHandler();
 
+                var sequential = new Sequential(new UnstableSequential(new AccountUnstable(storage, profileMarkupHandler),
+                new AuthenticationUnstable(storage)),
+                new StableSequential());
                 var accountLogic = new AccountLogic(storage, profileMarkupHandler);
                 var threadLogic = new ThreadLogic(storage,
                 threadMarkupHandler);
                 var replyLogic = new ReplyLogic(storage,
                 accountLogic,
                 threadLogic,
+                sequential,
                 replyMarkupHandler,
                 threadMarkupHandler
                 );
@@ -72,6 +76,7 @@ namespace TestsInterface
                 replyLogic,
                 registrationLogic,
                 newTopicLogic,
+                sequential,
                 newPrivateDialogMarkupHandler,
                 privateDialogMarkupHandler,
                 privateMessageMarkupHandler);
@@ -81,10 +86,12 @@ namespace TestsInterface
                 newPrivateMessageMarkupHandler,
                 privateMessageMarkupHandler);
                 var authenticationLogic = new AuthenticationLogic(storage);
+                var inRace = new InRace(new UnstableInRace(accountLogic, authenticationLogic), new StableInRace());
                 var loginLogic = new LoginLogic(storage,
                 registrationLogic,
                 accountLogic,
                 authenticationLogic,
+                inRace,
                 captcha,
                 loginMarkupHandler);
                 var profileLogic = new ProfileLogic(storage,
@@ -106,7 +113,9 @@ namespace TestsInterface
                 loginLogic,
                 captcha,
                 authenticationLogic,
-                profileLogic);
+                profileLogic,
+                sequential,
+                inRace);
             }
         }
         public static void Register(string captcha, string login,

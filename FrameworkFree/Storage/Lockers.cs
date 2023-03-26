@@ -1,4 +1,4 @@
-namespace Data.DataLockers
+namespace Logic.DataLockers
 {
     internal static class Lockers // использовать только в Storage - все lock переместить сюда
     {

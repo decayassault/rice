@@ -1,5 +1,5 @@
 using Models;
-using Data;
+using Logic;
 namespace MarkupHandlers
 {
     internal sealed class ProfileMarkupHandler

@@ -23,7 +23,7 @@ drop table if exists PrivateMessage;
 drop table if exists LoginLog;
 drop table if exists BlockedIpHash;
 drop table if exists Profile;
-create login forumadminuser with password = 'Dctv1ghbdtn';
+create login forumadminuser with password = 'password';
 go
 create user forumadminuser for login forumadminuser;
 grant all to forumadminuser;

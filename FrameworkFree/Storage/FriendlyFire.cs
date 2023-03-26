@@ -3,8 +3,9 @@ using SysTime = System.Timers;
 using System;
 using System.Diagnostics;
 using System.Net;
-using static Data.DataLockers.Lockers;
-namespace Data
+using Logic;
+using static Logic.DataLockers.Lockers;
+namespace Logic
 {//временная замена Storage - проброс вызовов - Slow делает Fast = Slow
     internal sealed class FriendlyFire : IFriendlyFire
     {
@@ -25,6 +26,8 @@ namespace Data
         private readonly Captcha Captcha;
         private readonly IAuthenticationLogic AuthenticationLogic;
         private readonly IProfileLogic ProfileLogic;
+        private readonly ISequential Sequential;
+        private readonly IInRace InRace;
         public FriendlyFire(IAccountLogic accountLogic,
         IStorage storage,
         IEndPointLogic endPointLogic,
@@ -41,7 +44,9 @@ namespace Data
         ILoginLogic loginLogic,
         Captcha captcha,
         IAuthenticationLogic authenticationLogic,
-        IProfileLogic profileLogic)
+        IProfileLogic profileLogic,
+        ISequential sequential,
+        IInRace inRace)
         {
             Storage = storage;
             AccountLogic = accountLogic;
@@ -60,13 +65,15 @@ namespace Data
             AuthenticationLogic = authenticationLogic;
             NewPrivateDialogLogic = newPrivateDialogLogic;
             ProfileLogic = profileLogic;
+            Sequential = sequential;
+            InRace = inRace;
             Initialize();
         }
         public void FillStorage()
         { // перед изменением порядка следования проверять корректность правки
             Storage.Fast.InitializeRandom();
-            AccountLogic.LoadAccounts();
-            AccountLogic.LoadNicks();
+            Sequential.Unstable.Account.LoadAccounts();
+            Sequential.Unstable.Account.LoadNicks();
             ForumLogic.LoadMainPage();
             SectionLogic.LoadSectionPages();
             ThreadLogic.LoadThreadPages();
@@ -81,10 +88,9 @@ namespace Data
         public void StartTimer()
         {
             Process.GetCurrentProcess().PriorityBoostEnabled = true;
-            //Process.GetCurrentProcess().PriorityClass = ProcessPriorityClass.High; Exception - permission denied
             SysThread.Thread.CurrentThread.Priority = SysThread.ThreadPriority.Highest;
             Storage.Fast.InitializeRegistrationLine();
-            SysTime.Timer commonTimer = new SysTime.Timer(1000);
+            SysTime.Timer commonTimer = new SysTime.Timer(Constants.TimerPeriodMilliseconds);
             commonTimer.Elapsed += TimerEventHandler;
             commonTimer.AutoReset = true;
             commonTimer.Start();
@@ -96,10 +102,10 @@ namespace Data
             else
             {
                 Storage.Fast.SetTimerIsWorkingFlag();
-                AuthenticationLogic.FlushAccountIdentifierRemoteIpLogByTimer();
+                Sequential.Unstable.Authentication.FlushAccountIdentifierRemoteIpLogByTimer();
                 LoginLogic.InitPageByTimer();
                 RegistrationLogic.RefreshLogRegPagesByTimer();
-                AccountLogic.CheckAccountIdByTimer();
+                Sequential.Unstable.Account.CheckAccountIdByTimer();
                 RegistrationLogic.RegisterInBaseByTimer();
                 NewTopicLogic.StartNextTopicByTimer();
                 ReplyLogic.PublishNextMessageByTimer();
@@ -141,7 +147,7 @@ namespace Data
         public string ForumLogic_GetMainPageLocked()
            => Storage.Fast.GetMainPageLocked();
         public Tuple<bool, int> AuthneticationLogic_AccessGrantedExtended(string token)
-            => AuthenticationLogic.AccessGrantedEntended(token);
+            => InRace.Unstable.Authentication.AccessGrantedEntended(token);
         public string GetPublicProfilePageIfExists(int accountId)
             => Storage.Fast.GetPublicProfilePage(accountId);
         public string GetOwnProfilePage(int accountId)
@@ -159,11 +165,11 @@ namespace Data
         public string GetRegistrationDataPageToReturn()
         => Storage.Fast.GetPageToReturnRegistrationData();
         public bool AuthenticationLogic_AccessGranted(string token)
-        => AuthenticationLogic.AccessGranted(token);
+        => InRace.Unstable.Authentication.AccessGranted(token);
         public void ReplyData_Start(int? id, Pair pair, string t)
         => ReplyLogic.Start(id, pair, t);
         public Pair AuthenticationLogic_GetPair(string token)
-        => AuthenticationLogic.GetPair(token);
+        => InRace.Unstable.Authentication.GetPair(token);
         public string LoginData_GetPageToReturn()
         => Storage.Fast.GetCaptchaPageToReturn();
         public void ProfileLogic_Start(int accountId, string aboutMe,

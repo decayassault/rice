@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using System;
-namespace Data
+namespace Logic
 {
     public sealed partial class Memory
     {

@@ -5,8 +5,8 @@ using System;
 using System.Net;
 using XXHash;
 using Models;
-using static Data.DataLockers.Lockers;
-namespace Data
+using static Logic.DataLockers.Lockers;
+namespace Logic
 {
     public sealed partial class Database
     {
@@ -54,7 +54,7 @@ namespace Data
         public void InitializeBlockedIpsHashes()
         {
             using (var bag = new TotalForumDbContext())
-                Data.Memory.BlockedRemoteIpsHashes = bag.BlockedIpHash.AsNoTracking().Select(i => unchecked((uint)i.IpHash)).ToList();
+                Logic.Memory.BlockedRemoteIpsHashes = bag.BlockedIpHash.AsNoTracking().Select(i => unchecked((uint)i.IpHash)).ToList();
         }
         public IEnumerable<string> GetNicks()
         {

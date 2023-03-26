@@ -1,7 +1,7 @@
-namespace Data
+namespace Logic
 {
-public sealed partial class Database:IDatabase
-{
+    public sealed partial class Database : IDatabase
+    {
 
-}
+    }
 }

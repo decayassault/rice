@@ -3,8 +3,8 @@ using System;
 using XXHash;
 using System.Net;
 using System.Linq;
-using static Data.DataLockers.Lockers;
-namespace Data
+using static Logic.DataLockers.Lockers;
+namespace Logic
 { // Перекрёстные ссылки между методами исключены.
     public sealed partial class Memory
     {

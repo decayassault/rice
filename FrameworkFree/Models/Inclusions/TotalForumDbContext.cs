@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Models;
-namespace Data
+namespace Logic
 {
     public partial class TotalForumDbContext : DbContext
     {
@@ -28,8 +28,8 @@ namespace Data
             if (!optionsBuilder.IsConfigured)
             {
                 //#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                //optionsBuilder.UseSqlServer("Server=localhost; Database=TotalForum;User ID=forumadminuser; Password=Dctv1ghbdtn");
-                optionsBuilder.UseSqlServer("Data Source=localhost; Database=u1446013_webtest; Integrated Security=False; User ID=u1446013_webtestuser; Password=Dctv1ghbdtn!Pass1Word!");
+                optionsBuilder.UseSqlServer("Server=localhost; Database=TotalForum;User ID=forumadminuser; Password=Dctv1ghbdtn");
+                //optionsBuilder.UseSqlServer("Data Source=localhost; Database=u1446013_webtest; Integrated Security=False; User ID=u1446013_webtestuser; Password=Dctv1ghbdtn!Pass1Word!");
             }
         }
 

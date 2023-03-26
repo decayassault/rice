@@ -1,7 +1,8 @@
-namespace Data{
+namespace Logic
+{
     public struct Pair
-        {
-            public uint LoginHash;
-            public uint PasswordHash; 
-        }
+    {
+        public uint LoginHash;
+        public uint PasswordHash;
+    }
 }

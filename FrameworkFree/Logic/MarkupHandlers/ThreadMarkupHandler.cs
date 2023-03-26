@@ -1,4 +1,4 @@
-using Data;
+using Logic;
 namespace MarkupHandlers
 {
     internal sealed class ThreadMarkupHandler
@@ -40,10 +40,9 @@ namespace MarkupHandlers
                         "<div id='a'><a onClick='u();return false'>Ответить</a></div>"); //br1
         }
         internal string GetArrows
-                  (in int pageNumber, in int pagesCount, in int number)
+                  (in int pageNumber, in int pagesCount, in int thread)
         {
             string result = Constants.SE;
-            string thread = (number + Constants.One).ToString();
             const string a = "<span id='w'><a onClick='n(&quot;/f/";
             const string b = "?p=1&quot;);return false' title='Первая страница'>«</a>&nbsp;&nbsp;&nbsp;&nbsp;<a onClick='n(&quot;/f/";
 

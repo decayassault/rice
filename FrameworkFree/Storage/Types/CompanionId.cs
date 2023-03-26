@@ -1,6 +1,7 @@
-namespace Data{
-public struct CompanionId
-        {
-            public int Id;
-        }
+namespace Logic
+{
+    public struct CompanionId
+    {
+        public int Id;
+    }
 }

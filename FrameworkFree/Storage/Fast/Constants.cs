@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-namespace Data
+namespace Logic
 {
     public static class Constants
     {
@@ -105,5 +105,6 @@ namespace Data
         public const string Yes = " Да.";
         public const string No = " Нет.";
         public const string CaptchaLetters = "12456789АБВГДЕЖИКЛМНПРСТУФХЦЧШЭЮЯ";
+        public const ushort TimerPeriodMilliseconds = 1000;
     }
 }

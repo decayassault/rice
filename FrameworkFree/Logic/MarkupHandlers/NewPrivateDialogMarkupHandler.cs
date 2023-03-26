@@ -1,4 +1,4 @@
-using Data;
+using Logic;
 namespace MarkupHandlers
 {
     internal sealed class NewPrivateDialogMarkupHandler

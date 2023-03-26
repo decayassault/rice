@@ -1,4 +1,4 @@
-namespace Data
+namespace Logic
 {
     public sealed class Storage : IStorage
     {

@@ -1,7 +1,8 @@
-namespace Data{
-public struct IdText
-        {
-           public int SenderAccountId;
-           public string PrivateText;
-        }
+namespace Logic
+{
+    public struct IdText
+    {
+        public int SenderAccountId;
+        public string PrivateText;
+    }
 }

@@ -1,8 +1,9 @@
 
 
-namespace Data {
-    public sealed partial class Memory:IMemory
-{        
-        
-}
+namespace Logic
+{
+    public sealed partial class Memory : IMemory
+    {
+
+    }
 }

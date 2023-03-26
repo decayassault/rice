@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System;
 using System.Net;
 using Models;
-namespace Data
+namespace Logic
 {
     public interface IDatabase //напрямую в базу данных обращаться нельзя
     {

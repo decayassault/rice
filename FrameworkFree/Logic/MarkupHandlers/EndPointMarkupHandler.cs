@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using Data;
+using Logic;
 namespace MarkupHandlers // move to string.Concat() if more than one constant is presented
 {
     internal sealed class EndPointMarkupHandler

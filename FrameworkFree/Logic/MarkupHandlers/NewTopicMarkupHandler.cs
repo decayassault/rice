@@ -1,4 +1,4 @@
-using Data;
+using Logic;
 namespace MarkupHandlers
 {
     internal sealed class NewTopicMarkupHandler
@@ -23,7 +23,7 @@ namespace MarkupHandlers
              int accountId, string nick, string message)
         {
             return string.Concat("<div class='s'>",
-                    threadId - Constants.One,
+                    threadId,
                     "</div><div class='l'><h2 onclick='n(&quot;/s/",
                     endpointId,
                     "?p=1&quot;);'>",

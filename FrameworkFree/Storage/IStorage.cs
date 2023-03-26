@@ -1,4 +1,4 @@
-namespace Data
+namespace Logic
 {
     public interface IStorage // все lock расположить внутри
     {

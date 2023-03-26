@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System;
 using System.Net;
-namespace Data
+namespace Logic
 {
     public interface IMemory//напрямую в память обращаться нельзя - только из медленной части БД; разбить на интерфейсы
     {

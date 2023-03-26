@@ -1,6 +1,7 @@
-namespace Data{
-public struct PrivateMessages
-        {
-            public string[] Messages;
-        }
-        }
+namespace Logic
+{
+    public struct PrivateMessages
+    {
+        public string[] Messages;
+    }
+}
