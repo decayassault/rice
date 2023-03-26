@@ -57,8 +57,7 @@ namespace Forum.Data.PrivateDialog
         {
             string result = SE;
             
-            const string a = "<span id='arrows'><a onClick='g(&quot;/dialog/";
-            const string b = "&quot;);return false' title='Первая страница'>«</a>&nbsp;&nbsp;&nbsp;&nbsp;<a onClick='n(&quot;/dialog/";
+            
 
             if ((pageNumber - MvcApplication.One >= MvcApplication.One)
                     && (pageNumber + 3 <= pagesCount))

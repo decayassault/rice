@@ -3,6 +3,7 @@ using Forum.Data.Account;
 using Forum.Data.EndPoint;
 using Forum.Data.Forum;
 using Forum.Data.Section;
+using Forum.Data.Thread;
 using Forum.Data.PrivateDialog;
 using Forum.Data.PrivateMessage;
 using Forum.Data.NewPrivateMessage;

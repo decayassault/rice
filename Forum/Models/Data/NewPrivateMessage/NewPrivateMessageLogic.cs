@@ -1,6 +1,7 @@
 ﻿using Forum.Data.PrivateDialog;
 using Forum.Models;
 using Forum.Data.PrivateMessage;
+using Forum.Data.Thread;
 namespace Forum.Data.NewPrivateMessage
 {
     using System;
@@ -17,6 +18,7 @@ namespace Forum.Data.NewPrivateMessage
         const string articleEnd = "</article>";
         const string spanEnd = "</span>";
         const string brMarker = "<br />";
+        const string answerMarker = "<div id='a'>";
 
         internal static ConcurrentQueue<ReplyData.MessageData> 
             PersonalMessagesToPublish;
@@ -68,52 +70,69 @@ namespace Forum.Data.NewPrivateMessage
             int accId = await ReplyData.GetAccountId(username);
             await NewPrivateMessageData
                 .PutPrivateMessageInBase(accId, id, text);
-            CorrectArray(id, accId, text);
-        }
-        private async static void CorrectArray(int id, int accId, string text)
-        {
-            string nick = await ThreadData.GetNick(accId);
+            string ownerNick = await ThreadData.GetNick(accId);
             string companionNick = await ThreadData.GetNick(id);
+            int order=1;
+            CorrectArray(id, accId, text,ownerNick,companionNick,order);
+            order = 2;
+            CorrectArray(accId, id, text, companionNick, ownerNick,order);
+        }
+        private static void CorrectArray(int companionId,
+            int ownerId, string text,
+            string ownerNick, string companionNick,int order)
+        {
+            //TODO неправ. Profile/x и ник x
             string page;
             int depth;
-            string last = PrivateMessageLogic.GetLastPersonalPage(id, accId);
+            string last = PrivateMessageLogic.GetLastPersonalPage(companionId, ownerId);
                 
             if (last.Contains(a))
             {                
                 string[] temp = PrivateMessageLogic
-                                .GetPersonalPagesArray(id,accId);
-                PrivateMessageLogic.AddToPersonalPagesDepth(id, accId);
+                                .GetPersonalPagesArray(companionId, ownerId);
+                PrivateMessageLogic.AddToPersonalPagesDepth(companionId, ownerId);
                 depth = PrivateMessageLogic
-                                .GetPersonalPagesDepth(id, accId);
+                                .GetPersonalPagesDepth(companionId, ownerId);
                 string[] personalPagesArray = new string[depth];
                 temp.CopyTo(personalPagesArray, MvcApplication.Zero);
                 PrivateMessageLogic.SetPersonalPagesMessagesArray
-                            (id,accId,personalPagesArray);
-                page = indic + id.ToString() +
+                            (companionId, ownerId, personalPagesArray);                
+                page = indic + companionId.ToString() +
                 "</div><div class='l'><h2 onClick='g(&quot;/dialog/1&quot;);'>Переписка с "
                 + companionNick + "</h2>";
-                page += articleStart + "<span onClick='g(&quot;/Profile/" +
-                        accId.ToString() + "&quot;);'>" + nick + "</span><br />";
+                if(order==1)
+                    page += articleStart + "<span onClick='g(&quot;/Profile/" +
+                        ownerId.ToString() + "&quot;);'>" + ownerNick + "</span><br />";
+                else
+                    page += articleStart + "<span onClick='g(&quot;/Profile/" +
+                        companionId.ToString() + "&quot;);'>" + companionNick + "</span><br />";
                 page += "<p>" + text + "</p>" + articleEnd + "<br />" + spanIndicator + spanEnd
                     + "<div id='a'><a onClick='replyPM();return false'>Ответить "
                 +companionNick+"</a></div>" + "</div><div class='s'>4</div>";
                 PrivateMessageLogic.SetPersonalPagesPage
-                        (id,accId,depth - MvcApplication.One, page);
+                        (companionId, ownerId, depth - MvcApplication.One, page);
                 string[] pages = PrivateMessageLogic
-                                .GetPersonalPagesArray(id,accId);
+                                .GetPersonalPagesArray(companionId, ownerId);
                 int i;
                 int start;
                 int end;
                 string navigation = string.Empty;
                 for (i = MvcApplication.Zero; i < depth; i++)
                 {
-                    navigation = PrivateMessageData.GetArrows(i, depth, id);
+                    navigation = PrivateMessageData.GetArrows(i, depth, companionId);
                     start = pages[i].LastIndexOf(spanIndicator);
-                    end = pages[i].LastIndexOf(spanEnd)
+                    if (start != -1)
+                    {
+                        end = pages[i].LastIndexOf(spanEnd)
                             + spanEnd.Length;
-                    pages[i] = pages[i].Remove(start, end - start);
+                        pages[i] = pages[i].Remove(start, end - start);
+                    }
+                    else
+                    {
+                        start = pages[i].IndexOf(answerMarker);
+                    }                    
                     pages[i] = pages[i].Insert(start, navigation);
-                    PrivateMessageLogic.SetPersonalPagesPage(id,accId, i, pages[i]);
+                    PrivateMessageLogic.SetPersonalPagesPage(companionId, ownerId, i, pages[i]);
                 }
             }
             else
@@ -130,23 +149,26 @@ namespace Forum.Data.NewPrivateMessage
                 last = last.Remove(start, pos - start);
                 int count = Convert.ToInt32(countString) - MvcApplication.One;
                 last = last.Insert(start, count.ToString());
-                page = articleStart + "<span onClick='g(&quot;/Profile/" +
-                        accId.ToString() + "&quot;);'>" + nick + "</span><br />";
+                if (order==1)
+                    page = articleStart + "<span onClick='g(&quot;/Profile/" +
+                        ownerId.ToString() + "&quot;);'>" + ownerNick + "</span><br />";
+                else
+                    page = articleStart + "<span onClick='g(&quot;/Profile/" +
+                        companionId.ToString() + "&quot;);'>" + companionNick + "</span><br />";
                 page += "<p>" + text + "</p>" + articleEnd + "<br />";
                 last = last.Insert(position, page);
-                depth = PrivateMessageLogic.GetPersonalPagesDepth(id, accId);
+                depth = PrivateMessageLogic.GetPersonalPagesDepth(companionId, ownerId);
                 PrivateMessageLogic.SetPersonalPagesPage
-                    (id,accId, depth
-                    - MvcApplication.One, last);
-              
+                    (companionId, ownerId, depth
+                    - MvcApplication.One, last);                
             }
         }
         
         private static bool Check(int id, string text)
         {
             int limit = PrivateDialogLogic.GetDialogPagesLengthLocked();
-            if (id >= MvcApplication.Zero
-                && id < limit)
+            if (id > MvcApplication.Zero
+                && id <= limit)
             {
                 string temp = string.Empty;
                 char c;

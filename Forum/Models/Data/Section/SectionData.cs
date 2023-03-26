@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using System.Data.SqlClient;
 using Forum.Models;
+using Forum.Data.Thread;
 
 namespace Forum.Data.Section
 {

@@ -6,7 +6,7 @@ using System.IO;
 using Forum.Data.Thread;
 using Forum.Models;
 
-namespace Forum.Data
+namespace Forum.Data.Thread
 {
     internal sealed class ThreadData
     {

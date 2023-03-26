@@ -1,5 +1,6 @@
 ﻿using Forum.Attributes;
 using Forum.Data;
+using Forum.Data.Thread;
 using Forum.Data.Account;
 using Forum.Data.EndPoint;
 using Forum.Data.Forum;

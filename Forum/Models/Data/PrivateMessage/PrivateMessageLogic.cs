@@ -19,7 +19,7 @@ namespace Forum.Data.PrivateMessage
         {
             internal string[] Messages;
         }
-        private static 
+        internal static 
             ConcurrentDictionary
                 <OwnerId, Dictionary<CompanionId, PrivateMessages>> PersonalPages;
         private static
@@ -56,12 +56,16 @@ namespace Forum.Data.PrivateMessage
                 .Messages;
         }
         internal static string GetLastPersonalPage
-                            (int id,  int accountId)
-        {         
+                            (int companionId,  int ownerId)
+        {
+            bool test = PersonalPages[new OwnerId { Id = ownerId }]
+                .ContainsKey(new CompanionId { Id = companionId });
+            bool test1 = PersonalPagesDepths[new OwnerId { Id = ownerId }]
+                .ContainsKey(new CompanionId { Id = companionId });
            return PersonalPages
-                        [new OwnerId { Id = accountId }]
-                        [new CompanionId { Id = id }]
-                        .Messages[GetPersonalPagesPageDepth(accountId, id)
+                        [new OwnerId { Id = ownerId }]
+                        [new CompanionId { Id = companionId }]
+                        .Messages[GetPersonalPagesPageDepth(ownerId, companionId)
                         - MvcApplication.One];     
         }
         internal static void AddToPersonalPagesDepth(int id,int accountId)
@@ -126,22 +130,62 @@ namespace Forum.Data.PrivateMessage
         internal static void LoadEachPersonalPageNoAsync()
         {
             int ownersCount = AccountData.GetAccountsCountNoAsync();
-            /*for (int i = 0; i < ownersCount; i++)
-            {
-                SetMessagesDictionary(i+1);                
-            }           */
-            //<test>
+           
             for (int i = 0; i < ownersCount; i++)
             {
                 SetMessagesDictionaryNoAsync(i + 1);
             }
-            //</test>
+           
+        }
+        internal static void AddNewCompanionsIfNotExists
+                    (int ownerId,int companionId,string ownerNick,
+            string companionNick)
+        {
+            OwnerId ownerIdObj=new OwnerId{Id=ownerId};
+            CompanionId companionIdObj=new CompanionId{Id=companionId};
+            
+            SetNewCompanionDepth(ownerIdObj, companionIdObj);
+            SetNewCompanionPage(ownerIdObj, companionIdObj,companionNick);
+           
+            ownerIdObj.Id = companionId;
+            companionIdObj.Id = ownerId;
+            
+            SetNewCompanionDepth(ownerIdObj, companionIdObj);
+            SetNewCompanionPage(ownerIdObj, companionIdObj,ownerNick);           
+        }
+        private static void SetNewCompanionPage
+            (OwnerId ownerId, CompanionId companionId,string companionNick)
+        {
+            if(!PersonalPages[ownerId].ContainsKey(companionId))
+            {
+                string[]newMsg=new string[MvcApplication.One]
+                {"<div class='s'>"+companionId.Id.ToString()+"</div>"+
+                    "<div class='l'><h2 onclick='g(&quot;/dialog/1&quot;);'>Переписка с "+
+                    companionNick+"</h2>"+
+                    "<div id='a'><a onclick='replyPM();return false'>Ответить "
+                    +companionNick+"</a></div></div><div class='s'>5</div>"
+                };
+                PersonalPages[ownerId].Add(companionId,
+                    new PrivateMessages { Messages = newMsg });
+            }
+        }
+        private static void SetNewCompanionDepth
+            (OwnerId ownerId,CompanionId companionId)
+        {
+            if (!PersonalPagesDepths[ownerId]
+                .ContainsKey(companionId))
+                PersonalPagesDepths[ownerId]
+                    .Add(companionId, MvcApplication.One);
         }
         private static int GetPersonalPagesPageDepth(int accountId,int companionId)
         {
+            Dictionary<CompanionId, int> test1 = PersonalPagesDepths
+                [new OwnerId { Id = accountId }];
+            bool test2 = test1.ContainsKey(new CompanionId { Id = companionId });
+            
             return PersonalPagesDepths
                 [new OwnerId { Id = accountId }]
-                [new CompanionId { Id = companionId }];
+                [new CompanionId { Id = companionId }];//проверить границы
         }
         private async static void SetMessagesDictionary(int accountId)
         {
