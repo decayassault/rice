@@ -40,22 +40,17 @@ namespace Forum.Data.PrivateDialog
         }
         internal async static Task LoadDialogPages() 
         {
-            var sw = new System.Diagnostics.Stopwatch();
-            sw.Start();
             SetDialogPagesLengthLocked(await AccountData.GetAccountsCount());
             InitializeDialogPagesPageDepthLocked(
                 new int[GetDialogPagesLengthLocked()]);
             InitializeDialogPagesLocked
                 (new string[GetDialogPagesLengthLocked()][]);
-
+            int len=GetDialogPagesLengthLocked();
             for (int i = MvcApplication.Zero;
-                i < GetDialogPagesLengthLocked(); i++)
+                i < len; i++)
             {
                await PrivateDialogData.AddDialog(i);
-            }
-
-            sw.Stop();
-            TimeSpan t = sw.Elapsed;
+            }           
         }
         internal static string[] GetDialogPagesArrayLocked(int index)
         {

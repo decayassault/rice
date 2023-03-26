@@ -201,7 +201,7 @@
             SqlParameter par = cmd.Parameters.Add(AccountIdParameter, SqlDbType.Int);
             par.Value = AccountId;
             SqlParameter par1 = cmd.Parameters.Add(CompanionIdParameter, SqlDbType.Int);
-            par.Value = CompanionId;
+            par1.Value = CompanionId;
             cmd.CommandTimeout = CmdTimeout;
             cmd.Prepare();
 

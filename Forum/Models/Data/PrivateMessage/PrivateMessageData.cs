@@ -55,12 +55,12 @@ namespace Forum.Data.PrivateMessage
                 int count;                
                 object o = null;
 
-                using (var cmdThreadsCount =
+                using (var cmdIdsCount =
                     Command.InitializeCommandForInputIds
                         (@"GetPrivateMessagesAuthorsCount",
                             SqlCon, companionId,accountId))
                 {
-                    o = await cmdThreadsCount.ExecuteScalarAsync();
+                    o = await cmdIdsCount.ExecuteScalarAsync();
                 }
 
                 if (o == DBNull.Value || o == null)
@@ -204,7 +204,7 @@ namespace Forum.Data.PrivateMessage
         {
             string result = GetArrows(pageNumber, pagesCount, authorId);
 
-            result += "<div id='a'><a onClick='replyPM();return false'>Ответить"
+            result += "<div id='a'><a onClick='replyPM();return false'>Ответить "
                 +companionNick+"</a></div>";
 
             return Task.FromResult(result);

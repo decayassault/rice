@@ -29,6 +29,7 @@ drop procedure GetPrivateMessagesAuthors;
 drop procedure GetPrivateMessagesCompanions;
 drop procedure GetPrivateMessagesTexts;
 drop procedure GetPrivateMessagesAuthorsCount;
+drop procedure GetPrivateDialogsCount;
 
 create table Account
 (
@@ -44,7 +45,7 @@ create nonclustered index Register on Account(Nick,Identifier,Passphrase);
 create nonclustered index GetNicks on Account(Nick);
 create nonclustered index GetNick on Account(Id,Nick);
 insert into Account values (N'Хороший',-1665853436,1396495841),
-(N'Владеле34ц',78698586,57336495),
+(N'Собеседник',78698586,57336495),
 (N'Владел1324ец',78695486,205733495),
 (N'Влад45елец',78698,2057339),
 (N'Вла2345делец',7869856,205336495),
@@ -468,11 +469,12 @@ go
 CREATE PROCEDURE GetPrivateMessagesAuthorsCount(@AccountId int=1, @CompanionId int=2)
 AS 
 BEGIN	
+set nocount off;
 	select count(Id)
 	from PrivateMessage 
 	where ((SenderAccountId=@AccountId and AcceptorAccountId=@CompanionId)
 	or (SenderAccountId=@CompanionId and AcceptorAccountId=@AccountId));
-	set nocount on;
+	
 end
 go
 CREATE PROCEDURE GetPrivateMessagesTexts(@AccountId int=1,@CompanionId int=2)
@@ -482,7 +484,23 @@ BEGIN
 	from PrivateMessage 
 	where ((SenderAccountId=@AccountId and AcceptorAccountId=@CompanionId)
 	or (SenderAccountId=@CompanionId and AcceptorAccountId=@AccountId))
-	order by Id desc;
+	order by Id;
+	set nocount on;
+end
+go
+CREATE PROCEDURE GetPrivateDialogsCount(@AccountId int=1)
+AS 
+BEGIN
+	select count(Id) 
+	from Account
+	where Id in (	
+	(select SenderAccountId
+	from PrivateMessage 
+	where AcceptorAccountId=@AccountId)
+	union
+	(select AcceptorAccountId
+	from PrivateMessage 
+	where SenderAccountId=@AccountId));
 	set nocount on;
 end
 go
@@ -530,4 +548,21 @@ insert into PrivateMessage values (1,2,N'Первое'),
 (42,1,'fgfdsg'),
 (43,1,'fgfdsg'),
 (44,1,'fgfdsg'),
-(1,2,N'Третье');
+(1,2,N'Третье'),
+(2,1,N'Текст'),
+(1,2,N'Текст'),
+(2,1,N'Текст'),
+(1,2,N'Текст'),
+(2,1,N'Текст'),
+(1,2,N'Текст'),
+(2,1,N'Текст'),
+(1,2,N'Текст'),
+(2,1,N'Текст'),
+(1,2,N'Текст'),
+(2,1,N'Текст'),
+(1,2,N'Текст'),
+(2,1,N'Текст'),
+(1,2,N'Текст'),
+(2,1,N'Текст'),
+(1,2,N'Текст'),
+(2,1,N'Текст');
