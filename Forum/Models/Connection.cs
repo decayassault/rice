@@ -12,7 +12,7 @@
             ConcurrentQueue<SqlConnection> ConnectionsCache;
         private static SecureString cString;
         private static object SecureStringLock = new object();
-        private const int ConnectionsCacheSize = 100;        
+        private const int ConnectionsCacheSize = 100;  
 
         internal async static Task InitializeConnectionsCache()
         {
@@ -35,6 +35,16 @@
             return result;
         }
 
+        internal static
+           SqlConnection GetConnectionNoAsyncTest()
+        {
+            AddConnectionToCacheNoAsyncTest();
+            SqlConnection result;
+            ConnectionsCache.TryDequeue(out result);
+
+            return result;
+        }
+
         internal async static Task<SqlConnection> InitializeConnection()
         {
             SqlConnection sc;
@@ -42,6 +52,17 @@
             sc.ConnectionString = await DecryptString(GetSecureStringLocked());
             sc.StatisticsEnabled = MvcApplication.False;
             await sc.OpenAsync();
+
+            return sc;
+        }
+
+        internal static SqlConnection InitializeConnectionNoAsyncTest()
+        {
+            SqlConnection sc;
+            sc = new SqlConnection();
+            sc.ConnectionString = DecryptStringNoAsyncTest(GetSecureStringLocked());
+            sc.StatisticsEnabled = MvcApplication.False;
+            sc.Open();
 
             return sc;
         }
@@ -62,6 +83,23 @@
             return Task.FromResult(result);
         }
 
+        internal static string DecryptStringNoAsyncTest(SecureString s)
+        {
+
+            IntPtr stringPointer = Marshal.SecureStringToBSTR(s);
+            string result = null;
+            try
+            {
+                result = Marshal.PtrToStringBSTR(stringPointer);
+            }
+            finally
+            {
+                Marshal.ZeroFreeBSTR(stringPointer);
+            }
+
+            return result;
+        }
+
         internal static SecureString SecureStr(string s)
         {
             var result = new SecureString();
@@ -75,6 +113,13 @@
         {
             SqlConnection sc;
             sc = await InitializeConnection();
+            ConnectionsCache.Enqueue(sc);
+        }
+
+        private static void AddConnectionToCacheNoAsyncTest()
+        {
+            SqlConnection sc;
+            sc = InitializeConnectionNoAsyncTest();
             ConnectionsCache.Enqueue(sc);
         }
 

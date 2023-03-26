@@ -221,7 +221,6 @@ namespace Forum.Data.PrivateDialog
                    PrivateDialogLogic
                     .GetDialogPagesArrayLocked(number).Length - 1);            
             int pos = temp.LastIndexOf("<br />");
-            if(pos>=0)//pos=-1 - ?
             temp = temp.Remove(pos, "<br />".Length);
             PrivateDialogLogic.SetDialogPagesPageLocked(number,
                 PrivateDialogLogic

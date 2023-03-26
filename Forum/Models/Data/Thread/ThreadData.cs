@@ -328,6 +328,25 @@ namespace Forum.Data
 
             return result;
         }
+        internal static string GetNickNoAsyncTest(int AccountId)
+        {
+            string result = ThreadLogic.SE;
+            object o = null;
+            using (var SqlCon = Connection.GetConnectionNoAsyncTest())
+            {
+                using (var cmdThreads =
+                      Command.InitializeCommandForInputAccountId(@"GetNick", SqlCon, AccountId))
+                {
+                    o = cmdThreads.ExecuteScalar();
+                }
+            }
+
+            if (o == DBNull.Value || o == null)
+                result = "undefined";
+            else result = o.ToString();
+
+            return result;
+        }
         
         internal async static Task<int> EncountThreads()
         {

@@ -59,6 +59,28 @@ namespace Forum.Data.Account
             TimeSpan t = sw.Elapsed;
             return result;
         }
+        internal static int GetAccountsCountNoAsyncTest()
+        {
+            var sw = new System.Diagnostics.Stopwatch();
+            sw.Start();
+            int result = MvcApplication.One;
+            using (var SqlCon = Connection.GetConnectionNoAsyncTest())
+            {
+                using (var cmdSection =
+                        Command.InitializeCommandForGetAccountsCount
+                            (@"GetAccountsCount", SqlCon))
+                {
+                    object oo;
+                    oo = cmdSection.ExecuteScalar();
+                    if (oo == DBNull.Value || oo == null)
+                        result = MvcApplication.One;
+                    else result = Convert.ToInt32(oo);
+                }
+            }
+            sw.Stop();
+            TimeSpan t = sw.Elapsed;
+            return result;
+        }
 
         internal async static Task LoadAccounts()
         {            

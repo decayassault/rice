@@ -60,6 +60,10 @@ namespace Forum.Data.PrivateMessage
         {      
             await LoadEachPersonalPage();      
         }
+        internal static void LoadPersonalPagesNoAsyncTest()
+        {
+            LoadEachPersonalPageNoAsyncTest();
+        }
         internal async static Task LoadEachPersonalPage()
         {
             int ownersCount = await AccountData.GetAccountsCount();
@@ -67,7 +71,26 @@ namespace Forum.Data.PrivateMessage
             {
                 SetMessagesDictionary(i+1);                
             }           */
-            SetMessagesDictionary(1);//test
+            //<test>
+            for (int i = 0; i < ownersCount; i++)
+            {
+                SetMessagesDictionary(i + 1);
+            }         
+            //</test>
+        }
+        internal static void LoadEachPersonalPageNoAsyncTest()
+        {
+            int ownersCount = AccountData.GetAccountsCountNoAsyncTest();
+            /*for (int i = 0; i < ownersCount; i++)
+            {
+                SetMessagesDictionary(i+1);                
+            }           */
+            //<test>
+            for (int i = 0; i < ownersCount; i++)
+            {
+                SetMessagesDictionaryNoAsyncTest(i + 1);
+            }
+            //</test>
         }
         private static int GetPersonalPagesPageDepth(int accountId,int companionId)
         {
@@ -79,6 +102,7 @@ namespace Forum.Data.PrivateMessage
         {
             CompanionId[] companions 
                 = await PrivateMessageData.GetCompanions(accountId);
+            
             Dictionary<CompanionId, PrivateMessages>
                     temp1 = new Dictionary<CompanionId, PrivateMessages>();
             Dictionary<CompanionId, int>
@@ -93,13 +117,38 @@ namespace Forum.Data.PrivateMessage
                 temp2.Add(companions[i],pm.Messages.Length);               
             }*/
             //<test>
-            PrivateMessages pm =
-                    await PrivateMessageData
-                            .GetMessages(companions[0].Id, accountId);
+            for (int i = 0; i < 1; i++)
+            {
+                PrivateMessages pm =
+                        await PrivateMessageData
+                                .GetMessages(companions[i].Id, accountId);
 
-            temp1.Add(companions[0], pm);
-            temp2.Add(companions[0], pm.Messages.Length);   
+                temp1.Add(companions[i], pm);
+                //temp2.Add(companions[i], pm.Messages.Length);
+            }
             //</test>
+            PersonalPages.TryAdd(new OwnerId { Id = accountId }, temp1);
+            PersonalPagesDepths.TryAdd(new OwnerId { Id = accountId }, temp2);
+        }
+        private static void SetMessagesDictionaryNoAsyncTest(int accountId)
+        {
+            CompanionId[] companions
+                = PrivateMessageData.GetCompanionsNoAsyncTest(accountId);
+
+            Dictionary<CompanionId, PrivateMessages>
+                    temp1 = new Dictionary<CompanionId, PrivateMessages>();
+            Dictionary<CompanionId, int>
+                    temp2 = new Dictionary<CompanionId, int>();
+            for (int i = 0; i < companions.Length; i++)
+            {
+                PrivateMessages pm =
+                        PrivateMessageData
+                                .GetMessagesNoAsyncTest
+                                    (companions[i].Id, accountId);
+
+                temp1.Add(companions[i], pm);
+                temp2.Add(companions[i], pm.Messages.Length);
+            }          
             PersonalPages.TryAdd(new OwnerId { Id = accountId }, temp1);
             PersonalPagesDepths.TryAdd(new OwnerId { Id = accountId }, temp2);
         }

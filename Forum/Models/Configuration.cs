@@ -33,7 +33,8 @@ namespace Forum.Models
                 Task d = Task.Run(() => ThreadData.LoadThreadPages());
                 Task e = Task.Run(() => EndPointLogic.LoadEndPointPages());
                 Task f = Task.Run(() => PrivateDialogLogic.LoadDialogPages());
-                Task g = Task.Run(() => PrivateMessageLogic.LoadPersonalPages());
+                //Task g = Task.Run(() => PrivateMessageLogic.LoadPersonalPages());
+                PrivateMessageLogic.LoadPersonalPagesNoAsyncTest();
                 RegistrationData.LoadRegistrationPages();
                 LoginData.LoadLoginPages();  
                 
@@ -48,7 +49,7 @@ namespace Forum.Models
                 Registrator.Start();
                 TopicStarter.Start();
                 Messenger.Start();
-                Task.WaitAll(new Task[] { a, b, c, d, e,f,g });
+                Task.WaitAll(new Task[] { a, b, c, d, e,f});
             /*}
             catch { Initialize(); }//проверить на дедлоки*/
         }

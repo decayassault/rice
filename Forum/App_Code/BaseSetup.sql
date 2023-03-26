@@ -45,8 +45,8 @@ create nonclustered index Register on Account(Nick,Identifier,Passphrase);
 create nonclustered index GetNicks on Account(Nick);
 create nonclustered index GetNick on Account(Id,Nick);
 insert into Account values (N'Хороший',-1665853436,1396495841),
-(N'Собеседник',78698586,57336495),
-(N'Владел1324ец',78695486,205733495),
+(N'Собеседник',1576036729,-690057382),
+(N'Персона',-2060384975,-396126386),
 (N'Влад45елец',78698,2057339),
 (N'Вла2345делец',7869856,205336495),
 (N'Влад56елец',786985,205736495),
@@ -98,10 +98,10 @@ end
 GO
 CREATE PROCEDURE GetNick (@AccountId int =1)
 AS 
-BEGIN
+BEGIN tran
 	select Nick from Account where Id=@AccountId;
    set nocount on;
-end
+commit
 GO
 CREATE PROCEDURE Register (@LoginHash int =1,@PasswordHash int=1,
 @Email nvarchar(50)=N'Электронная почта',@Nick nvarchar(25)=N'Ник')
@@ -445,11 +445,16 @@ go
 CREATE PROCEDURE GetPrivateMessagesAuthors(@AccountId int=1)
 AS 
 BEGIN	
-	(select distinct Account.Id,Nick from Account 
-	inner join PrivateMessage on Account.Id=SenderAccountId
-	where AcceptorAccountId=@AccountId)union
-	(select distinct Account.Id,Nick from Account 
-	inner join PrivateMessage on Account.Id=AcceptorAccountId
+	(select distinct Account.Id,Nick 
+	from Account 
+	inner join PrivateMessage 
+	on Account.Id=SenderAccountId
+	where AcceptorAccountId=@AccountId)
+	union 
+	(select distinct Account.Id,Nick 
+	from Account 
+	inner join PrivateMessage 
+	on Account.Id=AcceptorAccountId
 	where SenderAccountId=@AccountId);
 	set nocount on;
 end

@@ -45,16 +45,38 @@ namespace Forum.Data.PrivateMessage
             }
             return result;
         }
+        internal static
+           PrivateMessageLogic.CompanionId[] GetCompanionsNoAsyncTest
+                            (int accountId)
+        {
+            PrivateMessageLogic.CompanionId[] result = null;
+
+            using (var SqlCon = Connection.GetConnectionNoAsyncTest())
+            {
+                using (var cmdMessages =
+                    Command.InitializeCommandForInputAccountId
+                        (@"GetPrivateMessagesCompanions", SqlCon, accountId))
+                {
+                    using (var reader = Reader.InitializeReaderNoAsyncTest(cmdMessages))
+                    {
+                        result = ProcessPrivateMessagesReaderNoAsyncTest
+                            (reader);
+                    }
+                }
+
+            }
+            return result;
+        }
         internal async static
             Task<PrivateMessageLogic.PrivateMessages> 
                 GetMessages(int companionId, int accountId)
         {   PrivateMessageLogic.PrivateMessages result;
-
+        
             using (var SqlCon = await Connection.GetConnection())
             {
                 int count;                
                 object o = null;
-
+                
                 using (var cmdIdsCount =
                     Command.InitializeCommandForInputIds
                         (@"GetPrivateMessagesAuthorsCount",
@@ -62,6 +84,50 @@ namespace Forum.Data.PrivateMessage
                 {
                     o = await cmdIdsCount.ExecuteScalarAsync();
                 }
+                
+               
+                if (o == DBNull.Value || o == null)
+                    count = MvcApplication.One;
+                else
+                    count = Convert.ToInt32(o);
+                if (count == MvcApplication.Zero)
+                    count++;
+                int pagesCount = count / five;
+                if (count - pagesCount * five > MvcApplication.Zero)
+                    pagesCount++;               
+                
+                using (var cmdMessages =
+                    Command.InitializeCommandForInputIds
+                        (@"GetPrivateMessagesTexts", SqlCon, companionId, accountId))
+                {
+                    using (var reader = await Reader.InitializeReader(cmdMessages))
+                    {
+                        result = await ProcessCompanionPrivateMessagesReader
+                            (reader,companionId,accountId, pagesCount);                        
+                    }
+                }                
+            }
+            return result;
+        }
+        internal static
+            PrivateMessageLogic.PrivateMessages
+                GetMessagesNoAsyncTest(int companionId, int accountId)
+        {
+            PrivateMessageLogic.PrivateMessages result;
+
+            using (var SqlCon = Connection.GetConnectionNoAsyncTest())
+            {
+                int count;
+                object o = null;
+
+                using (var cmdIdsCount =
+                    Command.InitializeCommandForInputIds
+                        (@"GetPrivateMessagesAuthorsCount",
+                            SqlCon, companionId, accountId))
+                {
+                    o = cmdIdsCount.ExecuteScalar();
+                }
+
 
                 if (o == DBNull.Value || o == null)
                     count = MvcApplication.One;
@@ -72,19 +138,17 @@ namespace Forum.Data.PrivateMessage
                 int pagesCount = count / five;
                 if (count - pagesCount * five > MvcApplication.Zero)
                     pagesCount++;
-                
 
                 using (var cmdMessages =
                     Command.InitializeCommandForInputIds
                         (@"GetPrivateMessagesTexts", SqlCon, companionId, accountId))
                 {
-                    using (var reader = await Reader.InitializeReader(cmdMessages))
+                    using (var reader = Reader.InitializeReaderNoAsyncTest(cmdMessages))
                     {
-                        result = await ProcessCompanionPrivateMessagesReader
-                            (reader,companionId,accountId, pagesCount);
+                        result = ProcessCompanionPrivateMessagesReaderNoAsyncTest
+                            (reader, companionId, accountId, pagesCount);
                     }
                 }
-
             }
             return result;
         }
@@ -111,6 +175,32 @@ namespace Forum.Data.PrivateMessage
                     if (!result.Contains(temp))
                         result.Add(temp);
                 }                
+            }
+            return result.ToArray();
+        }
+        private static PrivateMessageLogic.CompanionId[]
+                    ProcessPrivateMessagesReaderNoAsyncTest
+                        (SqlDataReader reader)
+        {
+            List<PrivateMessageLogic.CompanionId> result =
+                new List<PrivateMessageLogic.CompanionId>();
+            if (reader.HasRows)
+            {
+                int AccountId;
+                object o = null;
+                while
+                    (reader.Read())
+                {
+                    o = reader["Id"];
+                    if (o == DBNull.Value || o == null)
+                        AccountId = 1;
+                    else
+                        AccountId = Convert.ToInt32(o);
+                    PrivateMessageLogic.CompanionId temp =
+                        new PrivateMessageLogic.CompanionId { Id = AccountId };
+                    if (!result.Contains(temp))
+                        result.Add(temp);
+                }
             }
             return result.ToArray();
         }
@@ -209,6 +299,16 @@ namespace Forum.Data.PrivateMessage
 
             return Task.FromResult(result);
         }
+        private static string SetNavigationNoAsyncTest
+            (int pageNumber, int pagesCount, int authorId, string companionNick)
+        {
+            string result = GetArrows(pageNumber, pagesCount, authorId);
+
+            result += "<div id='a'><a onClick='replyPM();return false'>Ответить "
+                + companionNick + "</a></div>";
+
+            return result;
+        }
 
 
         private async static Task<PrivateMessageLogic.PrivateMessages>
@@ -221,6 +321,7 @@ namespace Forum.Data.PrivateMessage
             
             int pageNumber = MvcApplication.Zero;
             string companionNick = await ThreadData.GetNick(companionId);
+            
             string accountNick = await ThreadData.GetNick(accountId);
             string dialogName = "Переписка с " + companionNick;
             
@@ -229,7 +330,7 @@ namespace Forum.Data.PrivateMessage
                     + dialogName + "</h2>";           
             
             bool first = MvcApplication.False;
-           
+           /*
             if (reader.HasRows)
             {
                 int authorId;
@@ -289,7 +390,7 @@ namespace Forum.Data.PrivateMessage
 
                     if (!first)
                         first = MvcApplication.True;
-
+                    
                     
                 }
                 if ((pageNumber >= MvcApplication.Zero)
@@ -306,7 +407,106 @@ namespace Forum.Data.PrivateMessage
             }
             if (!first)
                 result.Messages[pageNumber]+= "</div>";
+            */
+            return result;
+        }
+        private static PrivateMessageLogic.PrivateMessages
+                    ProcessCompanionPrivateMessagesReaderNoAsyncTest
+                        (SqlDataReader reader, int companionId,
+                        int accountId, int pagesCount)
+        {
+            var result = new PrivateMessageLogic.PrivateMessages 
+                { Messages = new string[pagesCount] };
 
+            int pageNumber = MvcApplication.Zero;
+            string companionNick = ThreadData.GetNickNoAsyncTest(companionId);
+            
+            string accountNick = ThreadData.GetNickNoAsyncTest(accountId);
+            string dialogName = "Переписка с " + companionNick;
+            
+            result.Messages[pageNumber]="<div class='s'>" + companionId.ToString() +
+                    "</div><div class='l'><h2 onClick='g(&quot;/dialog/1&quot;);'>"
+                    + dialogName + "</h2>";           
+            
+            bool first = MvcApplication.False;
+           
+            if (reader.HasRows)
+            {
+                int authorId;
+                string text;
+                int i = MvcApplication.Zero;
+                string privateText;                
+                object o = null;
+                while
+                    (reader.Read())
+                {
+                    if (i == MvcApplication.Zero && first)
+                    {                        
+                        result.Messages[pageNumber]+="<div class='s'>" 
+                            + companionId.ToString() +
+                         "</div><div class='l'><h2 onClick='g(&quot;/dialog/1" +
+                         "&quot;);'>" + dialogName + "</h2>";
+                    }
+
+                    o = reader["SenderAccountId"];
+                    if (o == DBNull.Value || o == null)
+                        authorId = 1;
+                    else 
+                        authorId = Convert.ToInt32(o);
+
+                    o = reader["PrivateText"];
+                    if (o == DBNull.Value || o == null)
+                        privateText = ThreadLogic.SE;
+                    else
+                        privateText = o.ToString();
+
+                    string nick;
+                    if (authorId == companionId)
+                        nick = companionNick;
+                    else
+                        nick = accountNick;
+
+                    text = "<article><span onClick='g(&quot;/Profile/" +
+                        authorId.ToString() + "&quot;);'>" + nick + "</span><br />";
+                    text += "<p>" + privateText + "</p></article><br />";
+                    result.Messages[pageNumber]+=text;
+
+                    i++;
+
+                    if (i == five)
+                    {
+                        string test = 
+                            SetNavigationNoAsyncTest
+                                (pageNumber, pagesCount, companionId,companionNick);
+                        result.Messages[pageNumber]+= test;
+                        if (first)
+                            result.Messages[pageNumber]
+                                += "</div><div class='s'>0</div>";
+
+                        i = MvcApplication.Zero;
+                        pageNumber++;
+                    }
+
+                    if (!first)
+                        first = MvcApplication.True;
+                    
+                    
+                }
+                if ((pageNumber >= MvcApplication.Zero)
+                        && (i < five) && (i > MvcApplication.Zero))
+                {
+                    result.Messages[pageNumber] +=
+                                SetNavigationNoAsyncTest
+                                (pageNumber, pagesCount, companionId, companionNick);
+                    if (first)
+                        result.Messages[pageNumber] += "</div><div class='s'>" +
+                            (5 - i).ToString() + "</div>";
+                }
+                
+            }
+            if (!first)
+                result.Messages[pageNumber]+= "</div>";
+            
             return result;
         }
     }
