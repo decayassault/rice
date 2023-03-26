@@ -512,3 +512,7 @@ function openDialogsList()
 {
     n('/dialog/1');
 }
+function replyPM()
+{
+    //TODO
+}

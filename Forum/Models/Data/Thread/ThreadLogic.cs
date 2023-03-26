@@ -22,7 +22,7 @@ namespace Forum.Data.Thread
             {
                 int index = Id - MvcApplication.One;
                 if (page > MvcApplication.Zero
-                        && page <= ThreadPagesPageDepth[index])
+                        && page <= GetThreadPagesPageDepthLocked(index))
                     return GetThreadPagesPageLocked
                             (index,page - MvcApplication.One);
                 else return SE;

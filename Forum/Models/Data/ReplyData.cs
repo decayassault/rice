@@ -21,7 +21,7 @@ namespace Forum.Data
             const string brMarker = "<br />";
         internal struct MessageData
         {
-            internal int id;
+            internal int? id;
             internal string username;
             internal string text;
         }
@@ -33,16 +33,16 @@ namespace Forum.Data
                 await PublishReply(id, username, text);
         }
 
-        internal static void Start(int id,string username,string t)
-        {
-            MessageData messageData
-                  = new MessageData
-                  {
-                      id = id,
-                      username = username,
-                      text = t
-                  };
-            MessagesToPublish.Enqueue(messageData);
+        internal static void Start(int? id,string username,string t)
+        {            
+                MessageData messageData
+                      = new MessageData
+                      {
+                          id = id,
+                          username = username,
+                          text = t
+                      };
+                MessagesToPublish.Enqueue(messageData);
         }
         internal static void PublishNextMessage()
         {
@@ -52,9 +52,13 @@ namespace Forum.Data
                 {
                     MessageData temp;
                     MessagesToPublish.TryDequeue(out temp);
+                    if (temp.id == null || temp.username == null 
+                        || temp.text == null)
+                    {  }
+                    else                    
                     Task.Run(() =>
                         CheckReplyAndPublish
-                            (temp.id, temp.username, temp.text));
+                            ((int)temp.id, temp.username, temp.text));
                 }
                 System.Threading.Thread.Sleep(10);
             }

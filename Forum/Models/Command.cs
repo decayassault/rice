@@ -22,6 +22,7 @@
         private const string SenderAccIdParameter = @"@SenderAccountId";
         private const string AcceptorAccIdParameter = @"@AcceptorAccountId";
         private const string PrivateTextParameter = @"@PrivateText";
+        private const string CompanionIdParameter = @"@CompanionId";
         private const int CmdTimeout = 300;
         internal static SqlCommand InitializeCommand
             (string Text, SqlConnection SqlCon)
@@ -187,6 +188,20 @@
             cmd.CommandType = CommandType.StoredProcedure;
             SqlParameter par = cmd.Parameters.Add(AccountIdParameter, SqlDbType.Int);
             par.Value = AccountId;
+            cmd.CommandTimeout = CmdTimeout;
+            cmd.Prepare();
+
+            return cmd;
+        }
+        internal static SqlCommand InitializeCommandForInputIds
+           (string Function, SqlConnection SqlCon, int CompanionId, int AccountId)
+        {
+            SqlCommand cmd = new SqlCommand(Function, SqlCon);
+            cmd.CommandType = CommandType.StoredProcedure;
+            SqlParameter par = cmd.Parameters.Add(AccountIdParameter, SqlDbType.Int);
+            par.Value = AccountId;
+            SqlParameter par1 = cmd.Parameters.Add(CompanionIdParameter, SqlDbType.Int);
+            par.Value = CompanionId;
             cmd.CommandTimeout = CmdTimeout;
             cmd.Prepare();
 

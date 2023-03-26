@@ -9,12 +9,17 @@ namespace Forum.Data.EndPoint
         private const string SE = "";
         private static object locker = new object();
 
-        internal static string GetEndPointPage(int Id)
-        {            
+        internal static string GetEndPointPage(int? Id)
+        {
+            if (Id == null)
+                return SE;
+            else
+            {
                 if (Id > MvcApplication.Zero && Id <= EndPointPagesCount)
-                    return GetEndPointPageLocked(Id - MvcApplication.One);
+                    return GetEndPointPageLocked((int)Id - MvcApplication.One);
                 else
-                    return SE;            
+                    return SE;
+            }
         }
 
         internal async static Task LoadEndPointPages()

@@ -12,20 +12,27 @@ namespace Forum.Data
     {
         private const int five = 5;  
 
-        internal static string GetThreadPage(int Id,int page)
+        internal static string GetThreadPage(int? Id,int? page)
         {
-            if (Id > MvcApplication.Zero 
-                && Id <= ThreadLogic.GetThreadPagesLengthLocked())
-            {
-                int index = Id - MvcApplication.One;
-                if (page > MvcApplication.Zero
-                    && page <= ThreadLogic.GetThreadPagesPageDepthLocked(index))
-                    return ThreadLogic
-                        .GetThreadPagesPageLocked(index,page - MvcApplication.One);
-                else return ThreadLogic.SE;
-            }
-            else
+            if (Id == null || page == null)
                 return ThreadLogic.SE;
+            else
+            {
+                if (Id > MvcApplication.Zero
+                    && Id <= ThreadLogic.GetThreadPagesLengthLocked())
+                {
+                    int index = (int)Id - MvcApplication.One;
+                    if (page > MvcApplication.Zero
+                        && page <= ThreadLogic
+                                    .GetThreadPagesPageDepthLocked(index))
+                        return ThreadLogic
+                            .GetThreadPagesPageLocked(index, 
+                                (int)page - MvcApplication.One);
+                    else return ThreadLogic.SE;
+                }
+                else
+                    return ThreadLogic.SE;
+            }
         }
 
         internal async static Task LoadThreadPages() //1 min 37 sec

@@ -26,6 +26,9 @@ drop procedure AddPrivateMessage;
 drop procedure GetAccountsCount;
 drop procedure GetPrivateMessagesCount;
 drop procedure GetPrivateMessagesAuthors;
+drop procedure GetPrivateMessagesCompanions;
+drop procedure GetPrivateMessagesTexts;
+drop procedure GetPrivateMessagesAuthorsCount;
 
 create table Account
 (
@@ -450,8 +453,41 @@ BEGIN
 	set nocount on;
 end
 go
-insert into PrivateMessage values (1,2,'adfsadf'),
-(2,1,'rtrewet'),
+CREATE PROCEDURE GetPrivateMessagesCompanions(@AccountId int=1)
+AS 
+BEGIN	
+	(select distinct Account.Id from Account 
+	inner join PrivateMessage on Account.Id=SenderAccountId
+	where AcceptorAccountId=@AccountId)union
+	(select distinct Account.Id from Account 
+	inner join PrivateMessage on Account.Id=AcceptorAccountId
+	where SenderAccountId=@AccountId);
+	set nocount on;
+end
+go
+CREATE PROCEDURE GetPrivateMessagesAuthorsCount(@AccountId int=1, @CompanionId int=2)
+AS 
+BEGIN	
+	select count(Id)
+	from PrivateMessage 
+	where ((SenderAccountId=@AccountId and AcceptorAccountId=@CompanionId)
+	or (SenderAccountId=@CompanionId and AcceptorAccountId=@AccountId));
+	set nocount on;
+end
+go
+CREATE PROCEDURE GetPrivateMessagesTexts(@AccountId int=1,@CompanionId int=2)
+AS 
+BEGIN	
+	select SenderAccountId,PrivateText
+	from PrivateMessage 
+	where ((SenderAccountId=@AccountId and AcceptorAccountId=@CompanionId)
+	or (SenderAccountId=@CompanionId and AcceptorAccountId=@AccountId))
+	order by Id desc;
+	set nocount on;
+end
+go
+insert into PrivateMessage values (1,2,N'Первое'),
+(2,1,N'Второе'),
 (3,1,'fgfdsg'),
 (4,1,'fgfdsg'),
 (5,1,'fgfdsg'),
@@ -494,4 +530,4 @@ insert into PrivateMessage values (1,2,'adfsadf'),
 (42,1,'fgfdsg'),
 (43,1,'fgfdsg'),
 (44,1,'fgfdsg'),
-(1,2,'trwertewr');
+(1,2,N'Третье');

@@ -12,28 +12,26 @@ namespace Forum.Data.PrivateDialog
         private static int[] DialogPagesPageDepth;
         private static object DialogPagesPageDepthLock = new object();
         private const string SE = "";    
-        internal static string GetDialogPage(int accountId, int page)
+        
+        internal async static Task<string> GetDialogPage
+                            (int? page, string username)
         {
-            if (accountId > MvcApplication.Zero
-                && accountId <= GetDialogPagesLengthLocked())
-            {
-                int index = accountId - MvcApplication.One;
-                if (page > MvcApplication.Zero
-                    && page <= GetDialogPagesPageDepthLocked(index))
-                    return GetDialogPagesPageLocked
-                        (index, page - MvcApplication.One);
-                else return SE;
-            }
-            else
+            if (page == null) 
                 return SE;
-        }
-        internal async static Task<string> GetDialog
-                            (int page, string username)
-        {
-            int accountId = await GetAccountId(username);
-            string result = PrivateDialogLogic
-                .GetDialogPagesPageLocked(accountId-MvcApplication.One, page);
-            return result;
+            else
+            {
+                int index = await GetAccountId(username) - MvcApplication.One;
+                if (page > MvcApplication.Zero
+                        && page
+                        <= GetDialogPagesPageDepthLocked(index))
+                {
+                    return PrivateDialogLogic
+                        .GetDialogPagesPageLocked(index
+                        , (int)page - MvcApplication.One);
+                }
+                else
+                    return SE;
+            }
         }
         private async static Task<int> GetAccountId(string username)
         {

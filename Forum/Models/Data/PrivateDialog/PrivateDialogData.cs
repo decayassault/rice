@@ -176,7 +176,7 @@ namespace Forum.Data.PrivateDialog
                         Nick = "Пользователь";
                     else
                         Nick = o.ToString();
-                    text = "<p onClick='g(&quot;/personal/" 
+                    text = "<p onClick='n(&quot;/personal/" 
                         + AccountId.ToString() + "?page=1&quot;);'>"
                         + Nick + "</p><br /><br />";
                     PrivateDialogLogic.AddToDialogPagesPageLocked

@@ -5,6 +5,7 @@ using Forum.Data.EndPoint;
 using Forum.Data.Forum;
 using Forum.Data.Section;
 using Forum.Data.PrivateDialog;
+using Forum.Data.PrivateMessage;
 using System.Web.Mvc;
 using System.Web.Security;
 using System.Threading.Tasks;
@@ -22,7 +23,7 @@ namespace Forum.Controllers
         }
         
         [HttpGet]
-        public string thread(int Id,int page)
+        public string thread(int? Id,int? page)
         {           
             return ThreadData.GetThreadPage(Id, page);            
         }             
@@ -34,13 +35,13 @@ namespace Forum.Controllers
         }
         
         [HttpGet]
-        public string section(int Id, int page)
+        public string section(int? Id, int? page)
         {           
             return SectionLogic.GetSectionPage(Id, page);            
         }
         
         [HttpGet]
-        public string endpoint(int Id)
+        public string endpoint(int? Id)
         {            
             return EndPointLogic.GetEndPointPage(Id);
         }
@@ -48,8 +49,7 @@ namespace Forum.Controllers
         [HttpPost]
         public void authenticate
             (string captcha,string login,string password)
-        {
-            //LoginData.Start(captcha,login,password);
+        {            
             bool flag=LoginData.CheckAndAuth
                 (captcha, login, password);
             if (flag)       
@@ -73,7 +73,7 @@ namespace Forum.Controllers
         
         [Authorize]
         [HttpGet]
-        public void reply(int id, string t)
+        public void reply(int? id, string t)
         {
             ReplyData.Start(id,User.Identity.Name,t); 
         }
@@ -106,23 +106,24 @@ namespace Forum.Controllers
 
         [Authorize]
         [HttpGet]
-        public void starttopic(int id, string t, string m)
+        public void starttopic(int? id, string t, string m)
         {            
             NewTopicData.Start(t,id,User.Identity.Name,m);
         }
         
         [Authorize]
         [HttpGet]
-        public Task<string> dialog(int id)
-        {
-            return PrivateDialogLogic
-                    .GetDialog(id-MvcApplication.One, User.Identity.Name);          
+        public Task<string> dialog(int? id)
+        {           
+                return PrivateDialogLogic
+                    .GetDialogPage(id, User.Identity.Name);           
         }
         [Authorize]
         [HttpGet]
-        public string personal()
+        public Task<string> personal(int? id, int? page)
         {
-            return "Всем привет!";
+            return PrivateMessageLogic.GetPersonalPage
+                    (id,page,User.Identity.Name);
         }
     }
 }

@@ -4,6 +4,7 @@ using Forum.Data.EndPoint;
 using Forum.Data.Forum;
 using Forum.Data.Section;
 using Forum.Data.PrivateDialog;
+using Forum.Data.PrivateMessage;
 using Forum.Models.Threads;
 using System.Threading;
 using System.Threading.Tasks;
@@ -21,6 +22,7 @@ namespace Forum.Models
             RegistrationData.AllowRegistration();
             NewTopicData.AllowNewTopics();
             ReplyData.AllowNewMessages();
+            PrivateMessageLogic.AllowPrivateMessages();
                 Task ConstructConnectionsCache = Task.Run(
                     () => Connection.InitializeConnectionsCache());
                 Task.WaitAll(ConstructConnectionsCache);
@@ -31,6 +33,7 @@ namespace Forum.Models
                 Task d = Task.Run(() => ThreadData.LoadThreadPages());
                 Task e = Task.Run(() => EndPointLogic.LoadEndPointPages());
                 Task f = Task.Run(() => PrivateDialogLogic.LoadDialogPages());
+                Task g = Task.Run(() => PrivateMessageLogic.LoadPersonalPages());
                 RegistrationData.LoadRegistrationPages();
                 LoginData.LoadLoginPages();  
                 
@@ -45,7 +48,7 @@ namespace Forum.Models
                 Registrator.Start();
                 TopicStarter.Start();
                 Messenger.Start();
-                Task.WaitAll(new Task[] { a, b, c, d, e,f });
+                Task.WaitAll(new Task[] { a, b, c, d, e,f,g });
             /*}
             catch { Initialize(); }//проверить на дедлоки*/
         }

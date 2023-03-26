@@ -32,21 +32,25 @@ namespace Forum.Data
                (string captcha, string login,
                 string password)
         {
-            
+            if (captcha == null || login == null || password == null)
+                return MvcApplication.False;
+            else
+            {
                 if (RegistrationData.CheckPassword(password))
                 {
                     if (RegistrationData.CheckLogin(login))
                     {
                         if (CheckCaptcha(captcha))
                         {
-                            if(AccountData.CheckPair(login,password))
-                            {                                
-                                return MvcApplication.True;                               
-                            }                            
-                        }                        
-                }                
-            }
+                            if (AccountData.CheckPair(login, password))
+                            {
+                                return MvcApplication.True;
+                            }
+                        }
+                    }
+                }
                 return MvcApplication.False;
+            }
         }
               
 

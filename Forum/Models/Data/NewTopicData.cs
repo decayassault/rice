@@ -18,7 +18,7 @@ namespace Forum.Data
         internal struct TopicData
         {
             internal string threadName;
-            internal int endpointId;
+            internal int? endpointId;
             internal string username;
             internal string message;
         }
@@ -358,17 +358,17 @@ namespace Forum.Data
                         (threadName,endpointId, username, message);
         }
         internal static void Start
-                (string threadName, int endpointId, string username, string message)
-        {
-            TopicData topicData
-                = new TopicData
-                {
-                    threadName=threadName,
-                    endpointId=endpointId,
-                    username=username,
-                    message=message
-                };
-            TopicsToStart.Enqueue(topicData);            
+                (string threadName, int? endpointId, string username, string message)
+        {            
+                TopicData topicData
+                    = new TopicData
+                    {
+                        threadName = threadName,
+                        endpointId = endpointId,
+                        username = username,
+                        message = message
+                    };
+                TopicsToStart.Enqueue(topicData);
         }
         internal static void StartNextTopic()
         {
@@ -378,9 +378,13 @@ namespace Forum.Data
                 {
                     TopicData temp;
                     TopicsToStart.TryDequeue(out temp);
-                    Task.Run(() =>
-                        CheckTopicAndPublish
-                            (temp.threadName, temp.endpointId, 
+                    if(temp.endpointId==null||temp.message==null
+                        ||temp.threadName==null||temp.username==null)
+                    { }
+                    else
+                        Task.Run(() =>
+                            CheckTopicAndPublish
+                             (temp.threadName, (int)temp.endpointId, 
                                 temp.username, temp.message));
                 }
                 System.Threading.Thread.Sleep(10);

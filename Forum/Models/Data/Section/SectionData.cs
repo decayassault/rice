@@ -34,7 +34,8 @@ namespace Forum.Data.Section
                     pagesCount++;
                 SectionLogic.SetSectionPagesArrayLocked
                                 (number,new string[pagesCount]);
-                SectionLogic.SetSectionPagesPageDepthLocked(number,pagesCount);//==0?1:pagesCount;
+                SectionLogic.
+                    SetSectionPagesPageDepthLocked(number,pagesCount);
                 string buttonTxt 
                     = "<div id='topic'><span><a onClick='newTopic();return false;'>Новая тема</a></span></div>";
                 

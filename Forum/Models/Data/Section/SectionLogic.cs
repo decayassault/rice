@@ -15,19 +15,24 @@ namespace Forum.Data.Section
         private const string SE = "";    
         private const int len = 25;
 
-        internal static string GetSectionPage(int Id, int page)
+        internal static string GetSectionPage(int? Id, int? page)
         {
-            if (Id > MvcApplication.Zero && Id <= GetSectionPagesLengthLocked())
-            {
-                int index = Id - MvcApplication.One;
-                if (page > MvcApplication.Zero 
-                    && page <= GetSectionPagesPageDepthLocked(index))
-                    return GetSectionPagesPageLocked
-                        (index,page - MvcApplication.One);
-                else return SE;
-           }
-            else
+            if (Id == null || page == null)
                 return SE;
+            else
+            {
+                if (Id > MvcApplication.Zero && Id <= GetSectionPagesLengthLocked())
+                {
+                    int index = (int)Id - MvcApplication.One;
+                    if (page > MvcApplication.Zero
+                        && page <= GetSectionPagesPageDepthLocked(index))
+                        return GetSectionPagesPageLocked
+                            (index, (int)page - MvcApplication.One);
+                    else return SE;
+                }
+                else
+                    return SE;
+            }
         }
 
         internal async static Task LoadSectionPages() //3 sec
@@ -35,8 +40,8 @@ namespace Forum.Data.Section
             var sw = new System.Diagnostics.Stopwatch();
             sw.Start();
             SectionLogic.SetSectionPagesLengthLocked(len);
-            SectionLogic.SectionPagesPageDepth = 
-                new int[SectionLogic.GetSectionPagesLengthLocked()];
+            SectionLogic.InitializeSectionPagesPageDepthLocked(
+                new int[SectionLogic.GetSectionPagesLengthLocked()]);
             SectionLogic.InitializeSectionPagesLocked
                 (new string[SectionLogic.GetSectionPagesLengthLocked()][]);
 
