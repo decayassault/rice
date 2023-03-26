@@ -8,6 +8,7 @@ using Forum.Data.PrivateDialog;
 using Forum.Data.PrivateMessage;
 using Forum.Data.NewPrivateMessage;
 using Forum.Data.NewPrivateDialog;
+using Forum.Models.Tests;
 using Forum.Models.Threads;
 using System.Threading;
 using System.Threading.Tasks;
@@ -57,6 +58,7 @@ namespace Forum.Models
                 PersonalMessenger.Start();
                 DialogStarter.Start();
                 Task.WaitAll(new Task[] { a, b, c, d, e,f});
+                Main.Start();
             /*}
             catch { Initialize(); }//проверить на дедлоки*/
         }

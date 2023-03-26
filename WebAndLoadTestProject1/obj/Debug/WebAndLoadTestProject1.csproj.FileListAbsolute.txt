@@ -1,0 +1,7 @@
+D:\!РАЗРАБОТКА\Forum - копия (10) Тестовые сценарии\WebAndLoadTestProject1\bin\Debug\WebTest1.webtest
+D:\!РАЗРАБОТКА\Forum - копия (10) Тестовые сценарии\WebAndLoadTestProject1\bin\Debug\WebTest2.webtest
+D:\!РАЗРАБОТКА\Forum - копия (10) Тестовые сценарии\WebAndLoadTestProject1\bin\Debug\WebAndLoadTestProject1.dll
+D:\!РАЗРАБОТКА\Forum - копия (10) Тестовые сценарии\WebAndLoadTestProject1\bin\Debug\WebAndLoadTestProject1.pdb
+D:\!РАЗРАБОТКА\Forum - копия (10) Тестовые сценарии\WebAndLoadTestProject1\obj\Debug\WebAndLoadTestProject1.csprojResolveAssemblyReference.cache
+D:\!РАЗРАБОТКА\Forum - копия (10) Тестовые сценарии\WebAndLoadTestProject1\obj\Debug\WebAndLoadTestProject1.dll
+D:\!РАЗРАБОТКА\Forum - копия (10) Тестовые сценарии\WebAndLoadTestProject1\obj\Debug\WebAndLoadTestProject1.pdb

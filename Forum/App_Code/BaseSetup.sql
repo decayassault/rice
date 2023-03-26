@@ -1,4 +1,4 @@
-﻿use TotalForum;
+﻿use ForumBase;
 drop table Account;
 drop table Forum;
 drop table Thread;
@@ -518,11 +518,11 @@ end
 go
 insert into PrivateMessage values (1,2,N'Первое'),
 (2,1,N'Второе'),
-(1,3,'asdfaf'),
-(1,2,'fgfdsg'),
-(1,2,'fgfdsg'),
-(1,2,'fgfdsg'),
-(1,2,'fgfdsg'),
+(2,3,'asdfaf'),
+(3,2,'fgfdsg'),
+(3,2,'fgfdsg'),
+(3,2,'fgfdsg'),
+(3,2,'fgfdsg'),
 (3,1,'fgfdsg'),
 (3,1,'fgfdsg'),
 (3,1,'fgfdsg'),
@@ -611,7 +611,6 @@ insert into PrivateMessage values (1,2,N'Первое'),
 (7,3,'fgfdsg'),
 (8,3,'fgfdsg'),
 (11,3,'fgfdsg'),
-(12,3,'fgfdsg'),
 (4,2,N'Текст'),
 (5,2,N'Текст'),
 (6,2,N'Текст'),
@@ -619,6 +618,4 @@ insert into PrivateMessage values (1,2,N'Первое'),
 (8,2,N'Текст'),
 (9,2,N'Текст'),
 (10,2,N'Текст'),
-(11,2,N'Текст'),
-(2,44,'dafasf'),
-(3,44,'gfsgsdfg');
+(11,2,N'Текст');

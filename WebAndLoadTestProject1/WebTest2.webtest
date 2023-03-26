@@ -1,0 +1,178 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<WebTest Name="WebTest2" Id="7047defb-bca6-4366-9485-6ae50c975a16" Owner="" Priority="2147483647" Enabled="True" CssProjectStructure="" CssIteration="" Timeout="0" WorkItemIds="" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010" Description="" CredentialUserName="" CredentialPassword="" PreAuthenticate="True" Proxy="default" StopOnError="False" RecordedResultFile="WebTest2.e65d749b-9a3b-4bda-aeb0-c6444c1f6fcd.rec.webtestresult" ResultsLocale="">
+  <Items>
+    <Request Method="GET" Guid="c2a42106-e370-43d2-be81-abf4980fadeb" Version="1.1" Url="http://api.bing.com/qsml.aspx" ThinkTime="0" Timeout="300" ParseDependentRequests="True" FollowRedirects="True" RecordResult="True" Cache="False" ResponseTimeGoal="0" Encoding="utf-8" ExpectedHttpStatusCode="0" ExpectedResponseUrl="" ReportingName="" IgnoreHttpStatusCode="False">
+      <QueryStringParameters>
+        <QueryStringParameter Name="query" Value="ya.ru" RecordedValue="ya.ru" CorrelationBinding="" UrlEncode="False" UseToGroupResults="False" />
+        <QueryStringParameter Name="maxwidth" Value="32765" RecordedValue="32765" CorrelationBinding="" UrlEncode="False" UseToGroupResults="False" />
+        <QueryStringParameter Name="rowheight" Value="30" RecordedValue="30" CorrelationBinding="" UrlEncode="False" UseToGroupResults="False" />
+        <QueryStringParameter Name="sectionHeight" Value="240" RecordedValue="240" CorrelationBinding="" UrlEncode="False" UseToGroupResults="False" />
+        <QueryStringParameter Name="FORM" Value="IESS02" RecordedValue="IESS02" CorrelationBinding="" UrlEncode="False" UseToGroupResults="False" />
+        <QueryStringParameter Name="market" Value="ru-RU" RecordedValue="ru-RU" CorrelationBinding="" UrlEncode="False" UseToGroupResults="False" />
+      </QueryStringParameters>
+    </Request>
+    <Request Method="GET" Guid="d94fddb3-1873-4314-9af2-533b4f402e53" Version="1.1" Url="http://ya.ru/" ThinkTime="0" Timeout="300" ParseDependentRequests="True" FollowRedirects="True" RecordResult="True" Cache="False" ResponseTimeGoal="0" Encoding="utf-8" ExpectedHttpStatusCode="0" ExpectedResponseUrl="" ReportingName="" IgnoreHttpStatusCode="False">
+      <ExtractionRules>
+        <ExtractionRule Classname="Microsoft.VisualStudio.TestTools.WebTesting.Rules.ExtractHiddenFields, Microsoft.VisualStudio.QualityTools.WebTestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" VariableName="1" DisplayName="Извлечь скрытые поля" Description="Извлеките все скрытые поля из отклика и поместите их в контекст теста.">
+          <RuleParameters>
+            <RuleParameter Name="Required" Value="True" />
+            <RuleParameter Name="HtmlDecode" Value="True" />
+          </RuleParameters>
+        </ExtractionRule>
+      </ExtractionRules>
+    </Request>
+    <Request Method="GET" Guid="6f4237f1-875c-4025-baf2-6bfb1a165179" Version="1.1" Url="http://kiks.yandex.ru/fu" ThinkTime="3" Timeout="300" ParseDependentRequests="True" FollowRedirects="True" RecordResult="True" Cache="False" ResponseTimeGoal="0" Encoding="utf-8" ExpectedHttpStatusCode="0" ExpectedResponseUrl="http://kiks.yandex.ru/system/fc07.swf" ReportingName="" IgnoreHttpStatusCode="False">
+      <Headers>
+        <Header Name="Referer" Value="http://ya.ru/" />
+      </Headers>
+    </Request>
+    <Request Method="GET" Guid="2c5b7840-3516-41ee-a743-36d541c4fe5f" Version="1.1" Url="http://suggest.yandex.ru/suggest-ya.cgi" ThinkTime="0" Timeout="300" ParseDependentRequests="True" FollowRedirects="True" RecordResult="True" Cache="False" ResponseTimeGoal="0" Encoding="utf-8" ExpectedHttpStatusCode="0" ExpectedResponseUrl="" ReportingName="" IgnoreHttpStatusCode="False">
+      <Headers>
+        <Header Name="Referer" Value="http://ya.ru/" />
+      </Headers>
+      <QueryStringParameters>
+        <QueryStringParameter Name="callback" Value="jQuery18302023398647611548_1431697681825" RecordedValue="jQuery18302023398647611548_1431697681825" CorrelationBinding="" UrlEncode="False" UseToGroupResults="False" />
+        <QueryStringParameter Name="srv" Value="morda_yaru" RecordedValue="morda_yaru" CorrelationBinding="" UrlEncode="False" UseToGroupResults="False" />
+        <QueryStringParameter Name="wiz" Value="TrWth" RecordedValue="TrWth" CorrelationBinding="" UrlEncode="False" UseToGroupResults="False" />
+        <QueryStringParameter Name="lr" Value="{{$HIDDEN1.lr}}" RecordedValue="213" CorrelationBinding="" UrlEncode="False" UseToGroupResults="False" />
+        <QueryStringParameter Name="uil" Value="ru" RecordedValue="ru" CorrelationBinding="" UrlEncode="False" UseToGroupResults="False" />
+        <QueryStringParameter Name="fact" Value="1" RecordedValue="1" CorrelationBinding="" UrlEncode="False" UseToGroupResults="False" />
+        <QueryStringParameter Name="v" Value="4" RecordedValue="4" CorrelationBinding="" UrlEncode="False" UseToGroupResults="False" />
+        <QueryStringParameter Name="icon" Value="1" RecordedValue="1" CorrelationBinding="" UrlEncode="False" UseToGroupResults="False" />
+        <QueryStringParameter Name="hl" Value="1" RecordedValue="1" CorrelationBinding="" UrlEncode="False" UseToGroupResults="False" />
+        <QueryStringParameter Name="html" Value="1" RecordedValue="1" CorrelationBinding="" UrlEncode="False" UseToGroupResults="False" />
+        <QueryStringParameter Name="n" Value="5" RecordedValue="5" CorrelationBinding="" UrlEncode="False" UseToGroupResults="False" />
+        <QueryStringParameter Name="bemjson" Value="1" RecordedValue="1" CorrelationBinding="" UrlEncode="False" UseToGroupResults="False" />
+        <QueryStringParameter Name="yu" Value="3663121611410822565" RecordedValue="3663121611410822565" CorrelationBinding="" UrlEncode="False" UseToGroupResults="False" />
+        <QueryStringParameter Name="part" Value="%D0%BA" RecordedValue="%D0%BA" CorrelationBinding="" UrlEncode="False" UseToGroupResults="False" />
+        <QueryStringParameter Name="pos" Value="1" RecordedValue="1" CorrelationBinding="" UrlEncode="False" UseToGroupResults="False" />
+        <QueryStringParameter Name="svg" Value="1" RecordedValue="1" CorrelationBinding="" UrlEncode="False" UseToGroupResults="False" />
+        <QueryStringParameter Name="_" Value="1431697685130" RecordedValue="1431697685130" CorrelationBinding="" UrlEncode="False" UseToGroupResults="False" />
+      </QueryStringParameters>
+    </Request>
+    <Request Method="GET" Guid="d94b6bbf-1f02-43fc-b435-1e83f4a9f756" Version="1.1" Url="http://suggest.yandex.ru/suggest-ya.cgi" ThinkTime="0" Timeout="300" ParseDependentRequests="True" FollowRedirects="True" RecordResult="True" Cache="False" ResponseTimeGoal="0" Encoding="utf-8" ExpectedHttpStatusCode="0" ExpectedResponseUrl="" ReportingName="" IgnoreHttpStatusCode="False">
+      <Headers>
+        <Header Name="Referer" Value="http://ya.ru/" />
+      </Headers>
+      <QueryStringParameters>
+        <QueryStringParameter Name="callback" Value="jQuery18302023398647611548_1431697681825" RecordedValue="jQuery18302023398647611548_1431697681825" CorrelationBinding="" UrlEncode="False" UseToGroupResults="False" />
+        <QueryStringParameter Name="srv" Value="morda_yaru" RecordedValue="morda_yaru" CorrelationBinding="" UrlEncode="False" UseToGroupResults="False" />
+        <QueryStringParameter Name="wiz" Value="TrWth" RecordedValue="TrWth" CorrelationBinding="" UrlEncode="False" UseToGroupResults="False" />
+        <QueryStringParameter Name="lr" Value="{{$HIDDEN1.lr}}" RecordedValue="213" CorrelationBinding="" UrlEncode="False" UseToGroupResults="False" />
+        <QueryStringParameter Name="uil" Value="ru" RecordedValue="ru" CorrelationBinding="" UrlEncode="False" UseToGroupResults="False" />
+        <QueryStringParameter Name="fact" Value="1" RecordedValue="1" CorrelationBinding="" UrlEncode="False" UseToGroupResults="False" />
+        <QueryStringParameter Name="v" Value="4" RecordedValue="4" CorrelationBinding="" UrlEncode="False" UseToGroupResults="False" />
+        <QueryStringParameter Name="icon" Value="1" RecordedValue="1" CorrelationBinding="" UrlEncode="False" UseToGroupResults="False" />
+        <QueryStringParameter Name="hl" Value="1" RecordedValue="1" CorrelationBinding="" UrlEncode="False" UseToGroupResults="False" />
+        <QueryStringParameter Name="html" Value="1" RecordedValue="1" CorrelationBinding="" UrlEncode="False" UseToGroupResults="False" />
+        <QueryStringParameter Name="n" Value="5" RecordedValue="5" CorrelationBinding="" UrlEncode="False" UseToGroupResults="False" />
+        <QueryStringParameter Name="bemjson" Value="1" RecordedValue="1" CorrelationBinding="" UrlEncode="False" UseToGroupResults="False" />
+        <QueryStringParameter Name="yu" Value="3663121611410822565" RecordedValue="3663121611410822565" CorrelationBinding="" UrlEncode="False" UseToGroupResults="False" />
+        <QueryStringParameter Name="part" Value="%D0%BA%D0%BE" RecordedValue="%D0%BA%D0%BE" CorrelationBinding="" UrlEncode="False" UseToGroupResults="False" />
+        <QueryStringParameter Name="pos" Value="2" RecordedValue="2" CorrelationBinding="" UrlEncode="False" UseToGroupResults="False" />
+        <QueryStringParameter Name="svg" Value="1" RecordedValue="1" CorrelationBinding="" UrlEncode="False" UseToGroupResults="False" />
+        <QueryStringParameter Name="_" Value="1431697685376" RecordedValue="1431697685376" CorrelationBinding="" UrlEncode="False" UseToGroupResults="False" />
+      </QueryStringParameters>
+    </Request>
+    <Request Method="GET" Guid="da199d42-5f44-4cd5-a086-07c826623782" Version="1.1" Url="http://suggest.yandex.ru/suggest-ya.cgi" ThinkTime="1" Timeout="300" ParseDependentRequests="True" FollowRedirects="True" RecordResult="True" Cache="False" ResponseTimeGoal="0" Encoding="utf-8" ExpectedHttpStatusCode="0" ExpectedResponseUrl="" ReportingName="" IgnoreHttpStatusCode="False">
+      <Headers>
+        <Header Name="Referer" Value="http://ya.ru/" />
+      </Headers>
+      <QueryStringParameters>
+        <QueryStringParameter Name="callback" Value="jQuery18302023398647611548_1431697681825" RecordedValue="jQuery18302023398647611548_1431697681825" CorrelationBinding="" UrlEncode="False" UseToGroupResults="False" />
+        <QueryStringParameter Name="srv" Value="morda_yaru" RecordedValue="morda_yaru" CorrelationBinding="" UrlEncode="False" UseToGroupResults="False" />
+        <QueryStringParameter Name="wiz" Value="TrWth" RecordedValue="TrWth" CorrelationBinding="" UrlEncode="False" UseToGroupResults="False" />
+        <QueryStringParameter Name="lr" Value="{{$HIDDEN1.lr}}" RecordedValue="213" CorrelationBinding="" UrlEncode="False" UseToGroupResults="False" />
+        <QueryStringParameter Name="uil" Value="ru" RecordedValue="ru" CorrelationBinding="" UrlEncode="False" UseToGroupResults="False" />
+        <QueryStringParameter Name="fact" Value="1" RecordedValue="1" CorrelationBinding="" UrlEncode="False" UseToGroupResults="False" />
+        <QueryStringParameter Name="v" Value="4" RecordedValue="4" CorrelationBinding="" UrlEncode="False" UseToGroupResults="False" />
+        <QueryStringParameter Name="icon" Value="1" RecordedValue="1" CorrelationBinding="" UrlEncode="False" UseToGroupResults="False" />
+        <QueryStringParameter Name="hl" Value="1" RecordedValue="1" CorrelationBinding="" UrlEncode="False" UseToGroupResults="False" />
+        <QueryStringParameter Name="html" Value="1" RecordedValue="1" CorrelationBinding="" UrlEncode="False" UseToGroupResults="False" />
+        <QueryStringParameter Name="n" Value="5" RecordedValue="5" CorrelationBinding="" UrlEncode="False" UseToGroupResults="False" />
+        <QueryStringParameter Name="bemjson" Value="1" RecordedValue="1" CorrelationBinding="" UrlEncode="False" UseToGroupResults="False" />
+        <QueryStringParameter Name="yu" Value="3663121611410822565" RecordedValue="3663121611410822565" CorrelationBinding="" UrlEncode="False" UseToGroupResults="False" />
+        <QueryStringParameter Name="part" Value="%D0%BA%D0%BE%D1%82" RecordedValue="%D0%BA%D0%BE%D1%82" CorrelationBinding="" UrlEncode="False" UseToGroupResults="False" />
+        <QueryStringParameter Name="pos" Value="3" RecordedValue="3" CorrelationBinding="" UrlEncode="False" UseToGroupResults="False" />
+        <QueryStringParameter Name="svg" Value="1" RecordedValue="1" CorrelationBinding="" UrlEncode="False" UseToGroupResults="False" />
+        <QueryStringParameter Name="_" Value="1431697685542" RecordedValue="1431697685542" CorrelationBinding="" UrlEncode="False" UseToGroupResults="False" />
+      </QueryStringParameters>
+    </Request>
+    <Request Method="GET" Guid="b800a689-e60b-4608-bd1b-faf04307032f" Version="1.1" Url="http://yandex.ru/clck/jclck/dtype=stred/pid=0/cid=2873/path=morda_yaru.not_used.p0.nah_not_shown.button_by_mouse/user_input=%D0%BA%D0%BE%D1%82/text=%D0%BA%D0%BE%D1%82/times=45.18.29/exprt=13324,345,9/region=1/log=sgtype%3ABBBBB/pos=3/ratio=3.3.3/since_first_change=1493/since_last_change=1080/session=1431697691579/suggest_reqid=366312161141082256576866184159276/*data=url%3Dhttp%3A//ya.ru/" ThinkTime="0" Timeout="300" ParseDependentRequests="True" FollowRedirects="True" RecordResult="True" Cache="False" ResponseTimeGoal="0" Encoding="utf-8" ExpectedHttpStatusCode="0" ExpectedResponseUrl="" ReportingName="" IgnoreHttpStatusCode="False">
+      <Headers>
+        <Header Name="Referer" Value="http://ya.ru/" />
+      </Headers>
+    </Request>
+    <Request Method="GET" Guid="cd79c09a-84ad-4e74-95b0-ac5466e9182b" Version="1.1" Url="http://yandex.ru/search/" ThinkTime="0" Timeout="300" ParseDependentRequests="True" FollowRedirects="True" RecordResult="True" Cache="False" ResponseTimeGoal="0" Encoding="utf-8" ExpectedHttpStatusCode="0" ExpectedResponseUrl="" ReportingName="" IgnoreHttpStatusCode="False">
+      <Headers>
+        <Header Name="Referer" Value="http://ya.ru/" />
+      </Headers>
+      <CorrelationExtractionRules>
+        <ExtractionRule Classname="Microsoft.VisualStudio.TestTools.WebTesting.Rules.ExtractText, Microsoft.VisualStudio.QualityTools.WebTestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" VariableName="QueryStringParam224.lang" DisplayName="" Description="">
+          <RuleParameters>
+            <RuleParameter Name="StartsWith" Value="?lang=" />
+            <RuleParameter Name="EndsWith" Value="&amp;" />
+            <RuleParameter Name="Index" Value="0" />
+            <RuleParameter Name="IgnoreCase" Value="False" />
+            <RuleParameter Name="UseRegularExpression" Value="False" />
+            <RuleParameter Name="HtmlDecode" Value="True" />
+            <RuleParameter Name="Required" Value="False" />
+          </RuleParameters>
+        </ExtractionRule>
+      </CorrelationExtractionRules>
+      <QueryStringParameters>
+        <QueryStringParameter Name="lr" Value="{{$HIDDEN1.lr}}" RecordedValue="213" CorrelationBinding="" UrlEncode="False" UseToGroupResults="False" />
+        <QueryStringParameter Name="text" Value="%D0%BA%D0%BE%D1%82" RecordedValue="%D0%BA%D0%BE%D1%82" CorrelationBinding="" UrlEncode="False" UseToGroupResults="False" />
+        <QueryStringParameter Name="suggest_reqid" Value="366312161141082256576866184159276" RecordedValue="366312161141082256576866184159276" CorrelationBinding="" UrlEncode="False" UseToGroupResults="False" />
+      </QueryStringParameters>
+    </Request>
+    <Request Method="GET" Guid="00f5e9f2-9326-40d4-8933-6fabc51f1c31" Version="1.1" Url="http://yabs.yandex.ru/count/Avc9CevSCqS40000Zh6HNrK5Keq1aRXfEbe6auKDfC00000F2AxzBnqdknSV5WMo1BlWcHwTQ-zwdC7__________m_2zg7RAUqutt47UWW0=1egjh9K2cmTeJxS2CugWy1K8fPpYf8YtHV0A1wQ52R41iWH_0m00=iVzcOPK2cm5kGxS2YPl8GfXXYh1N4v01lRT4XjW1fQKZ_GE8kpVmq0IcJ9seug0IcGMWarCGivWc1A-LNG-qaEW3fuwOgAv6E0L1iG6oX16vgEAW4daA=96bA79K2cm5kGxS2CecwYUfZ0PXXYgyysz6zlhix3W6bhL770eYsaeHk1gPidQhIBn6P1Q2Of0Ypc382hvYa2BIOCWAdco41gA4HkGv1iG6oX36vgj8l4SG1nOyFUGi0" ThinkTime="0" Timeout="300" ParseDependentRequests="True" FollowRedirects="True" RecordResult="True" Cache="False" ResponseTimeGoal="0" Encoding="utf-8" ExpectedHttpStatusCode="0" ExpectedResponseUrl="" ReportingName="" IgnoreHttpStatusCode="False">
+      <Headers>
+        <Header Name="Referer" Value="http://yandex.ru/search/?lr=213&amp;text=%D0%BA%D0%BE%D1%82&amp;suggest_reqid=366312161141082256576866184159276" />
+      </Headers>
+    </Request>
+    <Request Method="GET" Guid="8c4d41d0-6d16-4e7f-9e7d-69530f07cb66" Version="1.1" Url="https://mc.yandex.ru/watch/731962" ThinkTime="0" Timeout="300" ParseDependentRequests="True" FollowRedirects="True" RecordResult="True" Cache="False" ResponseTimeGoal="0" Encoding="utf-8" ExpectedHttpStatusCode="0" ExpectedResponseUrl="" ReportingName="" IgnoreHttpStatusCode="False">
+      <Headers>
+        <Header Name="Referer" Value="http://yandex.ru/search/?lr=213&amp;text=%D0%BA%D0%BE%D1%82&amp;suggest_reqid=366312161141082256576866184159276" />
+      </Headers>
+      <QueryStringParameters>
+        <QueryStringParameter Name="wmode" Value="5" RecordedValue="5" CorrelationBinding="" UrlEncode="False" UseToGroupResults="False" />
+        <QueryStringParameter Name="callback" Value="_ymjsp20759058" RecordedValue="_ymjsp20759058" CorrelationBinding="" UrlEncode="False" UseToGroupResults="False" />
+        <QueryStringParameter Name="page-ref" Value="http%3A%2F%2Fya.ru%2F" RecordedValue="http%3A%2F%2Fya.ru%2F" CorrelationBinding="" UrlEncode="False" UseToGroupResults="False" />
+        <QueryStringParameter Name="page-url" Value="http%3A%2F%2Fyandex.ru%2Fsearch%2F%3Flr%3D213%26text%3D%25D0%25BA%25D0%25BE%25D1%2582%26suggest_reqid%3D366312161141082256576866184159276" RecordedValue="http%3A%2F%2Fyandex.ru%2Fsearch%2F%3Flr%3D213%26text%3D%25D0%25BA%25D0%25BE%25D1%2582%26suggest_reqid%3D366312161141082256576866184159276" CorrelationBinding="" UrlEncode="False" UseToGroupResults="False" />
+        <QueryStringParameter Name="ut" Value="noindex" RecordedValue="noindex" CorrelationBinding="" UrlEncode="False" UseToGroupResults="False" />
+        <QueryStringParameter Name="browser-info" Value="j%3A1%3As%3A1280x1024x24%3Ask%3A1.0000050067901611%3Al%3A5.1.40416.0%3Afpr%3A268961934301%3Acn%3A1%3Aw%3A895x891%3Az%3A180%3Ai%3A20150515164808%3Aet%3A1431697688%3Aen%3Autf-8%3Av%3A631%3Ac%3A1%3Ala%3Aru-ru%3Als%3A299558023686%3Arqn%3A15%3Arn%3A1021526237%3Ahid%3A102682131%3Ads%3A0%2C0%2C33%2C573%2C10%2C0%2C%2C1060%2C24%2C%2C%2C%2C1201%3Afp%3A269%3Awn%3A54287%3Ahl%3A2%3Arqnl%3A1%3Ast%3A1431697688%3At%3A%D0%BA%D0%BE%D1%82%20%E2%80%94%20%D0%AF%D0%BD%D0%B4%D0%B5%D0%BA%D1%81%3A%20%D0%BD%D0%B0%D1%88%D0%BB%D0%BE%D1%81%D1%8C%201042%C2%A0%D0%BC%D0%BB%D0%BD%C2%A0%D0%BE%D1%82%D0%B2%D0%B5%D1%82%D0%BE%D0%B2" RecordedValue="j%3A1%3As%3A1280x1024x24%3Ask%3A1.0000050067901611%3Al%3A5.1.40416.0%3Afpr%3A268961934301%3Acn%3A1%3Aw%3A895x891%3Az%3A180%3Ai%3A20150515164808%3Aet%3A1431697688%3Aen%3Autf-8%3Av%3A631%3Ac%3A1%3Ala%3Aru-ru%3Als%3A299558023686%3Arqn%3A15%3Arn%3A1021526237%3Ahid%3A102682131%3Ads%3A0%2C0%2C33%2C573%2C10%2C0%2C%2C1060%2C24%2C%2C%2C%2C1201%3Afp%3A269%3Awn%3A54287%3Ahl%3A2%3Arqnl%3A1%3Ast%3A1431697688%3At%3A%D0%BA%D0%BE%D1%82%20%E2%80%94%20%D0%AF%D0%BD%D0%B4%D0%B5%D0%BA%D1%81%3A%20%D0%BD%D0%B0%D1%88%D0%BB%D0%BE%D1%81%D1%8C%201042%C2%A0%D0%BC%D0%BB%D0%BD%C2%A0%D0%BE%D1%82%D0%B2%D0%B5%D1%82%D0%BE%D0%B2" CorrelationBinding="" UrlEncode="False" UseToGroupResults="False" />
+      </QueryStringParameters>
+    </Request>
+    <Request Method="GET" Guid="507bf7d1-7b22-4f3b-9b54-fe7ea2b53e87" Version="1.1" Url="http://yastatic.net/tableau/tableau.html" ThinkTime="0" Timeout="300" ParseDependentRequests="True" FollowRedirects="True" RecordResult="True" Cache="False" ResponseTimeGoal="0" Encoding="utf-8" ExpectedHttpStatusCode="0" ExpectedResponseUrl="" ReportingName="" IgnoreHttpStatusCode="False">
+      <Headers>
+        <Header Name="Referer" Value="http://yandex.ru/search/?lr=213&amp;text=%D0%BA%D0%BE%D1%82&amp;suggest_reqid=366312161141082256576866184159276" />
+      </Headers>
+      <QueryStringParameters>
+        <QueryStringParameter Name="device" Value="desktop" RecordedValue="desktop" CorrelationBinding="" UrlEncode="False" UseToGroupResults="False" />
+        <QueryStringParameter Name="lang" Value="ru" RecordedValue="ru" CorrelationBinding="{{QueryStringParam224.lang}}" UrlEncode="False" UseToGroupResults="False" />
+        <QueryStringParameter Name="target" Value="blank" RecordedValue="blank" CorrelationBinding="" UrlEncode="False" UseToGroupResults="False" />
+        <QueryStringParameter Name="preset" Value="ru" RecordedValue="ru" CorrelationBinding="" UrlEncode="False" UseToGroupResults="False" />
+        <QueryStringParameter Name="service-id" Value="www" RecordedValue="www" CorrelationBinding="" UrlEncode="False" UseToGroupResults="False" />
+      </QueryStringParameters>
+    </Request>
+    <Request Method="GET" Guid="ad64b329-a6fa-4fbe-8554-ed91ab92a89f" Version="1.1" Url="http://kiks.yandex.ru/fu" ThinkTime="1" Timeout="300" ParseDependentRequests="True" FollowRedirects="True" RecordResult="True" Cache="False" ResponseTimeGoal="0" Encoding="utf-8" ExpectedHttpStatusCode="0" ExpectedResponseUrl="http://kiks.yandex.ru/system/fc07.swf" ReportingName="" IgnoreHttpStatusCode="False">
+      <Headers>
+        <Header Name="Referer" Value="http://yandex.ru/search/?lr=213&amp;text=%D0%BA%D0%BE%D1%82&amp;suggest_reqid=366312161141082256576866184159276" />
+      </Headers>
+    </Request>
+    <Request Method="GET" Guid="57ab37e4-a53a-4c94-9862-9d832118595c" Version="1.1" Url="http://yandex.ru/clck/jclck/dtype=stred/pid=0/cid=72043/path=M1/reqid=1431697681349697-607250585949694608502249-3-021/rnd=1431697689326/*data=url%3Dhttp%253A%252F%252Fyandex.ru%252Fsearch%252F%253Flr%253D213%2526text%253D%2525D0%2525BA%2525D0%2525BE%2525D1%252582" ThinkTime="0" Timeout="300" ParseDependentRequests="True" FollowRedirects="True" RecordResult="True" Cache="False" ResponseTimeGoal="0" Encoding="utf-8" ExpectedHttpStatusCode="0" ExpectedResponseUrl="" ReportingName="" IgnoreHttpStatusCode="False">
+      <Headers>
+        <Header Name="Referer" Value="http://yandex.ru/search/?lr=213&amp;text=%D0%BA%D0%BE%D1%82&amp;suggest_reqid=366312161141082256576866184159276" />
+      </Headers>
+    </Request>
+  </Items>
+  <ValidationRules>
+    <ValidationRule Classname="Microsoft.VisualStudio.TestTools.WebTesting.Rules.ValidateResponseUrl, Microsoft.VisualStudio.QualityTools.WebTestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" DisplayName="URL-адрес отклика" Description="Проверка того, что URL-адрес отклика после выполнения перенаправлений такой же, как записанный URL-адрес отклика.  Параметры QueryString игнорируются." Level="Low" ExectuionOrder="BeforeDependents" />
+    <ValidationRule Classname="Microsoft.VisualStudio.TestTools.WebTesting.Rules.ValidationRuleResponseTimeGoal, Microsoft.VisualStudio.QualityTools.WebTestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" DisplayName="Целевое время отклика" Description="Проверка на превышение временем отклика на запрос эталона времени отклика, указанного в запросе.  Цели времени отклика, равные нулю, будут пропущены." Level="Low" ExectuionOrder="AfterDependents">
+      <RuleParameters>
+        <RuleParameter Name="Tolerance" Value="0" />
+      </RuleParameters>
+    </ValidationRule>
+  </ValidationRules>
+</WebTest>
