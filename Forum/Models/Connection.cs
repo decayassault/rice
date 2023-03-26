@@ -10,7 +10,8 @@
     {
         internal static
             ConcurrentQueue<SqlConnection> ConnectionsCache;
-        internal static SecureString cString;
+        private static SecureString cString;
+        private static object SecureStringLock = new object();
         private const int ConnectionsCacheSize = 100;        
 
         internal async static Task InitializeConnectionsCache()
@@ -38,7 +39,7 @@
         {
             SqlConnection sc;
             sc = new SqlConnection();
-            sc.ConnectionString = await DecryptString(cString);
+            sc.ConnectionString = await DecryptString(GetSecureStringLocked());
             sc.StatisticsEnabled = MvcApplication.False;
             await sc.OpenAsync();
 
@@ -77,6 +78,15 @@
             ConnectionsCache.Enqueue(sc);
         }
 
-        
+        internal static SecureString GetSecureStringLocked()
+        {
+            lock (SecureStringLock)
+                return cString;
+        }
+        internal static void SetSecureStringLocked(SecureString value)
+        {
+            lock (SecureStringLock)
+                cString = value;
+        }
     }
 }

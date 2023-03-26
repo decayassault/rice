@@ -18,7 +18,8 @@ namespace Forum.Models
             {*/
             
             RegistrationData.AllowRegistration();
-
+            NewTopicData.AllowNewTopics();
+            ReplyData.AllowNewMessages();
                 Task ConstructConnectionsCache = Task.Run(
                     () => Connection.InitializeConnectionsCache());
                 Task.WaitAll(ConstructConnectionsCache);
@@ -40,6 +41,8 @@ namespace Forum.Models
                 copy.Start();
                 RegistrationData.AllowRegisterInBase();
                 Registrator.Start();
+                TopicStarter.Start();
+                Messenger.Start();
                 Task.WaitAll(new Task[] { a, b, c, d, e });
             /*}
             catch { Initialize(); }//проверить на дедлоки*/

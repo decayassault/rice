@@ -3,13 +3,14 @@
     using System.Threading.Tasks;
     using System.Data;
     using System.Data.SqlClient;
+
     internal sealed class Command
     {
         internal const string LinkMiddle = @"'>";
         internal const string Id = @"Id";
 
         private const string ForumIdParameter = @"@ForumId";
-        private const string ThreadIdParameter = @"@ThreadId";
+        internal const string ThreadIdParameter = @"@ThreadId";
         private const string AccountIdParameter = @"@AccountId";
         private const string LoginHashParameter = @"@LoginHash";
         private const string PasswordHashParameter = @"@PasswordHash";
@@ -75,6 +76,9 @@
             par2.Value = accountId;
             SqlParameter par3 = cmd.Parameters.Add(MessageParameter, SqlDbType.NVarChar);
             par3.Value = message;
+            SqlParameter par4 = cmd.Parameters.Add(ThreadIdParameter, SqlDbType.Int);
+            par4.Direction = ParameterDirection.Output;           
+
             cmd.CommandTimeout = CmdTimeout;
             cmd.Prepare();
 

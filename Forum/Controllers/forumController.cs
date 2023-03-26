@@ -16,7 +16,7 @@ namespace Forum.Controllers
         [HttpGet]
         public string threads()
         {            
-            return ForumLogic.MainPage;
+            return ForumLogic.GetMainPageLocked();
         }
         
         [HttpGet]
@@ -28,7 +28,7 @@ namespace Forum.Controllers
         [HttpGet]
         public string maincontent()
         {
-            return ForumLogic.MainContent;
+            return ForumLogic.GetMainContentLocked();
         }
         
         [HttpGet]

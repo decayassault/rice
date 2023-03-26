@@ -9,7 +9,7 @@ namespace Forum.Data.Section
     {
         private const string SE = "";
 
-        private const int nine = 9;
+        internal const int threadsOnPage = 9;
 
         internal async static Task AddSection(int Num)
         {
@@ -29,17 +29,38 @@ namespace Forum.Data.Section
                 }
                 if (count == MvcApplication.Zero)
                     count++;
-                int pagesCount = count / nine;
-                if (count - pagesCount * nine > MvcApplication.Zero)
+                int pagesCount = count / threadsOnPage;
+                if (count - pagesCount * threadsOnPage > MvcApplication.Zero)
                     pagesCount++;
-                SectionLogic.SectionPages[number] = new string[pagesCount];
-                SectionLogic.SectionPagesPageDepth[number] = pagesCount;//==0?1:pagesCount;
-                string buttonTxt = "<div id='topic'><span><a onClick='newTopic();return false;'>Новая тема</a></span></div>";
+                SectionLogic.SetSectionPagesArrayLocked
+                                (number,new string[pagesCount]);
+                SectionLogic.SetSectionPagesPageDepthLocked(number,pagesCount);//==0?1:pagesCount;
+                string buttonTxt 
+                    = "<div id='topic'><span><a onClick='newTopic();return false;'>Новая тема</a></span></div>";
                 
                     for (int i = MvcApplication.Zero; i < pagesCount; i++)
-                        SectionLogic.SectionPages[number][i]
-                            = buttonTxt;                
-               
+                        SectionLogic.SetSectionPagesPageLocked(number,i,buttonTxt);                
+               /*
+                int msgCount;
+                int number = Num;
+                
+                
+                using (var cmdThreadsCount =
+                    Command.InitializeCommandForInputThreadId
+                        (@"GetMessagesCount", SqlCon, Num + MvcApplication.One))
+                {
+                    o = await cmdThreadsCount.ExecuteScalarAsync();                    
+                }
+                
+                if (o == DBNull.Value||o==null)
+                    msgCount = MvcApplication.One;
+                else
+                    msgCount = Convert.ToInt32(o);
+                if (msgCount == MvcApplication.Zero)
+                    msgCount++;
+                int pagesCount =msgCount / threadsOnPage;
+                if (msgCount - pagesCount * five > MvcApplication.Zero)
+                    pagesCount++;*/
                 using (var cmdThreads = 
                     Command.InitializeCommandForInputEndpointId(@"GetThreadsAll",
                         SqlCon,Num+MvcApplication.One))
@@ -140,7 +161,7 @@ namespace Forum.Data.Section
             return result;
         }
 
-        private static Task<string> SetNavigation
+        internal static Task<string> SetNavigation
             (int pageNumber, int pagesCount, int number)
         {
             string result = GetArrows(pageNumber,pagesCount,number);
@@ -148,6 +169,15 @@ namespace Forum.Data.Section
             result+="<br />";
 
             return Task.FromResult(result);
+        }
+        private static void RemoveBrOfIncompletePages(int number)
+        {
+            string temp = SectionLogic.GetSectionPagesPageLocked(number,
+                   SectionLogic.GetSectionPagesArrayLocked(number).Length - 1);
+            int pos = temp.LastIndexOf("<br />");
+            temp = temp.Remove(pos, "<br />".Length);
+            SectionLogic.SetSectionPagesPageLocked(number,
+                SectionLogic.GetSectionPagesArrayLocked(number).Length - 1,temp);
         }
         
         private async static Task ProcessSectionReader
@@ -162,12 +192,13 @@ namespace Forum.Data.Section
 
                 while
                     (await reader.ReadAsync())
-                {
+                {                    
                     if (i == MvcApplication.Zero)
-                        SectionLogic.SectionPages[number][pageNumber] += "<nav class='n'><br />";
+                        SectionLogic.AddToSectionPagesPageLocked
+                            (number,pageNumber,"<nav class='n'><br />");
                     object Id = reader["Id"];
                     int id_;
-                    if (Id == DBNull.Value)
+                    if (Id == DBNull.Value||Id==null)
                         id_ = MvcApplication.One;
                     else
                         id_ = Convert.ToInt32(Id);
@@ -175,30 +206,39 @@ namespace Forum.Data.Section
                         + (await ThreadData.GetSectionNum(id_-1)).ToString()+"</div>";
                     var Name = reader["Name"];
                     text = "<p onClick='g(&quot;/thread/" + Id.ToString() + "?page=1&quot;);'>" + Name + "</p><br /><br />";
-                    SectionLogic.SectionPages[number][pageNumber] += text;
+                    SectionLogic.AddToSectionPagesPageLocked
+                        (number,pageNumber,text);
                     i++;
 
-                    if (i == nine)
-                    {                        
+                    if (i == threadsOnPage)
+                    {
                         string test = await SetNavigation
                                 (pageNumber, pagesCount, number);
-                        SectionLogic.SectionPages[number][pageNumber] += test;
-                        SectionLogic.SectionPages[number][pageNumber] += "</nav>"
-                            + endpointHidden;
+                        SectionLogic.AddToSectionPagesPageLocked
+                            (number,pageNumber,test+ "</nav>"
+                            + endpointHidden);
 
                         i = MvcApplication.Zero;
                         pageNumber++;
                     }
                     else
-                        SectionLogic.SectionPages[number][pageNumber] += "<br />";
+                        SectionLogic.AddToSectionPagesPageLocked
+                            (number,pageNumber, "<br />");                                         
                 }
-                if ((pageNumber > MvcApplication.Zero) 
-                        && (i < nine) && (i > MvcApplication.Zero))
+
+                RemoveBrOfIncompletePages(number);
+
+                if ((i < threadsOnPage) && (i > MvcApplication.Zero))
                 {
-                    SectionLogic.SectionPages[number][pageNumber] +=
-                            await SetNavigation(pageNumber, pagesCount, number);
-                    SectionLogic.SectionPages[number][pageNumber] += "</nav>"
-                            +endpointHidden;
+                    if (pageNumber > MvcApplication.Zero)
+                    {
+                        SectionLogic.AddToSectionPagesPageLocked
+                            (number,pageNumber,
+                            await SetNavigation(pageNumber, pagesCount, number));                        
+                    }
+                    SectionLogic.AddToSectionPagesPageLocked
+                        (number,pageNumber,"</nav>"
+                                + endpointHidden);                    
                 }
             }                     
         }

@@ -14,12 +14,14 @@ namespace Forum.Data
 
         internal static string GetThreadPage(int Id,int page)
         {
-            if (Id > MvcApplication.Zero && Id <= ThreadLogic.ThreadPagesLength)
+            if (Id > MvcApplication.Zero 
+                && Id <= ThreadLogic.GetThreadPagesLengthLocked())
             {
                 int index = Id - MvcApplication.One;
                 if (page > MvcApplication.Zero
-                    && page <= ThreadLogic.ThreadPagesPageDepth[index])
-                    return ThreadLogic.ThreadPages[index][page - MvcApplication.One];
+                    && page <= ThreadLogic.GetThreadPagesPageDepthLocked(index))
+                    return ThreadLogic
+                        .GetThreadPagesPageLocked(index,page - MvcApplication.One);
                 else return ThreadLogic.SE;
             }
             else
@@ -54,7 +56,7 @@ namespace Forum.Data
                     o = await cmdThreadsCount.ExecuteScalarAsync();                    
                 }
                 
-                if (o == DBNull.Value)
+                if (o == DBNull.Value||o==null)
                     count = MvcApplication.One;
                 else
                     count = Convert.ToInt32(o);
@@ -63,8 +65,9 @@ namespace Forum.Data
                 int pagesCount = count / five;
                 if (count - pagesCount * five > MvcApplication.Zero)
                     pagesCount++;
-                ThreadLogic.ThreadPages[number] = new string[pagesCount];
-                ThreadLogic.ThreadPagesPageDepth[number] = pagesCount;
+                ThreadLogic.SetThreadPagesArrayLocked
+                        (number,new string[pagesCount]);
+                ThreadLogic.SetThreadPagesPageDepthLocked(number,pagesCount);
 
                 int sectionNum = await GetSectionNum(Num);
                 var sw = new System.Diagnostics.Stopwatch();
@@ -99,7 +102,7 @@ namespace Forum.Data
                 {
                     object oo;
                       oo= await cmdSection.ExecuteScalarAsync();
-                      if (oo == DBNull.Value)
+                      if (oo == DBNull.Value||oo==null)
                           result = MvcApplication.One;
                       else result = Convert.ToInt32(oo);
                 }
@@ -217,7 +220,7 @@ namespace Forum.Data
                 {
                     o = await cmdThreadName.ExecuteScalarAsync();
                 }
-                if (o == DBNull.Value)
+                if (o == DBNull.Value||o==null)
                     result = "undefined";
                 else
                     result = o.ToString();
@@ -227,14 +230,17 @@ namespace Forum.Data
         }
 
         private async static Task ProcessThreadReader
-            (SqlDataReader reader, int number,int pagesCount, int sectionNum)
+            (SqlDataReader reader, int number,
+                int pagesCount, int sectionNum)
         {
 
             int pageNumber = MvcApplication.Zero;  
             string threadName = await GetThreadName(number);
-            ThreadLogic.ThreadPages[number][pageNumber] += "<div class='s'>" + number.ToString() +
-            "</div><div class='l'><h2 onClick='g(&quot;/section/" +
-                sectionNum.ToString() + "?page=1&quot;);'>" + threadName + "</h2>";
+            ThreadLogic.AddToThreadPagesPageLocked(number,pageNumber,
+                "<div class='s'>" + number.ToString() +
+                    "</div><div class='l'><h2 onClick='g(&quot;/section/" +
+                      sectionNum.ToString() + "?page=1&quot;);'>" 
+                    + threadName + "</h2>");
             bool first = MvcApplication.False;
             
             if (reader.HasRows)
@@ -248,9 +254,10 @@ namespace Forum.Data
                 {
                     if (i == MvcApplication.Zero && first)
                     {
-                        ThreadLogic.ThreadPages[number][pageNumber] += "<div class='s'>" + number.ToString() +
+                        ThreadLogic.AddToThreadPagesPageLocked(number,pageNumber,
+                            "<div class='s'>" + number.ToString() +
                          "</div><div class='l'><h2 onClick='g(&quot;/section/" +
-                         sectionNum.ToString() + "?page=1&quot;);'>" + threadName + "</h2>";
+                         sectionNum.ToString() + "?page=1&quot;);'>" + threadName + "</h2>");
                     }
                     var MsgText = reader["MsgText"];
                     int AccountId=(int)reader["AccountId"];
@@ -258,16 +265,17 @@ namespace Forum.Data
                     text = "<article><span onClick='g(&quot;/Profile/"+
                         AccountId.ToString()+"&quot;);'>"+Nick+"</span><br />";
                     text += "<p>" + MsgText + "</p></article><br />";//br2
-                    ThreadLogic.ThreadPages[number][pageNumber] += text;
+                    ThreadLogic.AddToThreadPagesPageLocked(number,pageNumber,text);
                     i++;
                     
                     if (i == five)
                     {
                         
                         string test=await SetNavigation(pageNumber,pagesCount,number);
-                        ThreadLogic.ThreadPages[number][pageNumber] += test;
+                        ThreadLogic.AddToThreadPagesPageLocked(number,pageNumber,test);
                         if (first)
-                            ThreadLogic.ThreadPages[number][pageNumber] += "</div><div class='s'>0</div>";
+                            ThreadLogic.AddToThreadPagesPageLocked
+                                (number,pageNumber,"</div><div class='s'>0</div>");
 
                         i = MvcApplication.Zero;
                         pageNumber++;                        
@@ -279,16 +287,19 @@ namespace Forum.Data
                 if ((pageNumber >= MvcApplication.Zero) 
                         && (i < five) && (i > MvcApplication.Zero))
                 {
-                    ThreadLogic.ThreadPages[number][pageNumber] +=
-                            await SetNavigation(pageNumber, pagesCount, number);
+                    ThreadLogic.AddToThreadPagesPageLocked
+                        (number,pageNumber,
+                            await SetNavigation(pageNumber, pagesCount, number));
                     if (first)
-                        ThreadLogic.ThreadPages[number][pageNumber] += "</div><div class='s'>" +
-                            (5-i).ToString()+"</div>";
+                        ThreadLogic.AddToThreadPagesPageLocked
+                            (number,pageNumber,"</div><div class='s'>" +
+                            (5-i).ToString()+"</div>");
                 }
                 
             }
             if(!first)
-                ThreadLogic.ThreadPages[number][pageNumber] += "</div>";
+                ThreadLogic.AddToThreadPagesPageLocked
+                    (number,pageNumber,"</div>");
         }
 
         internal async static Task<string> GetNick(int AccountId)
@@ -304,7 +315,7 @@ namespace Forum.Data
                 }
             }
         
-            if (o == DBNull.Value)
+            if (o == DBNull.Value||o==null)
                 result = "undefined";
             else result = o.ToString();
 
@@ -323,7 +334,7 @@ namespace Forum.Data
                     o = await cmdThreads.ExecuteScalarAsync();
                 }
             }
-            if (o == DBNull.Value)
+            if (o == DBNull.Value||o==null)
                 result = MvcApplication.Zero;
             else result = Convert.ToInt32(o);
 

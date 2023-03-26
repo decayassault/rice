@@ -132,7 +132,9 @@
     <Compile Include="Models\Data\Thread\ThreadData.cs" />
     <Compile Include="Models\Data\Thread\ThreadLogic.cs" />
     <Compile Include="Models\Reader.cs" />
+    <Compile Include="Models\Threads\Messenger.cs" />
     <Compile Include="Models\Threads\Registrator.cs" />
+    <Compile Include="Models\Threads\TopicStarter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
