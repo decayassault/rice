@@ -43,11 +43,11 @@ namespace MarkupHandlers
                   (int pageNumber, int pagesCount, int number)
         {
             string result = Constants.SE;
-            string thread = (number + 1).ToString();
+            string thread = (number + Constants.One).ToString();
             const string a = "<span id='w'><a onClick='n(&quot;/f/";
             const string b = "?p=1&quot;);return false' title='Первая страница'>«</a>&nbsp;&nbsp;&nbsp;&nbsp;<a onClick='n(&quot;/f/";
 
-            if ((pageNumber - 1 >= 1)
+            if ((pageNumber >= 2)
                     && (pageNumber + 3 <= pagesCount))
             {
                 result = string.Concat(a,
@@ -67,7 +67,7 @@ namespace MarkupHandlers
                             pagesCount,
                             "&quot;);return false' title='Последняя страница'>»</a></span>");
             }
-            else if ((pageNumber - 1 >= 1)
+            else if ((pageNumber >= 2)
                     && (pageNumber + 2 == pagesCount))
             {
                 result = string.Concat(a,
@@ -83,8 +83,8 @@ namespace MarkupHandlers
                             pageNumber + 2,
                             "&quot;);return false' title='Следующая страница'>►</a>&nbsp;&nbsp;&nbsp;&nbsp;</span>");
             }
-            else if ((pageNumber - 1 >= 1)
-                && (pageNumber + 1 == pagesCount))
+            else if ((pageNumber >= 2)
+                && (pageNumber + Constants.One == pagesCount))
             {
                 result = string.Concat(a,
                             thread,
@@ -95,7 +95,7 @@ namespace MarkupHandlers
                             "&quot;);return false' title='Предыдущая страница'>◄</a>",
                             "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>");
             }
-            else if ((pageNumber == 1) && (pageNumber + 3 <= pagesCount))
+            else if ((pageNumber == Constants.One) && (pageNumber + 3 <= pagesCount))
             {
                 result = string.Concat("<span id='w'>&nbsp;&nbsp;&nbsp;&nbsp;",
                             "<a onClick='n(&quot;/f/",
@@ -113,7 +113,7 @@ namespace MarkupHandlers
                             pagesCount,
                             "&quot;);return false' title='Последняя страница'>»</a></span>");
             }
-            else if ((pageNumber == 0) && (pageNumber + 3 <= pagesCount))
+            else if ((pageNumber == Constants.Zero) && (pageNumber + 3 <= pagesCount))
             {
                 result = string.Concat("<span id='w'>&nbsp;&nbsp;&nbsp;&nbsp;",
                             "&nbsp;&nbsp;&nbsp;&nbsp;<a onClick='n(&quot;/f/",
@@ -126,7 +126,7 @@ namespace MarkupHandlers
                             pagesCount,
                             "&quot;);return false' title='Последняя страница'>»</a></span>");
             }
-            else if ((pageNumber == 1) && (pagesCount == 3))
+            else if ((pageNumber == Constants.One) && (pagesCount == 3))
             {
                 result = string.Concat("<span id='w'>&nbsp;&nbsp;&nbsp;&nbsp;",
                             "<a onClick='n(&quot;/f/",
@@ -140,7 +140,7 @@ namespace MarkupHandlers
                             pageNumber + 2,
                             "&quot;);return false' title='Следующая страница'>►</a>&nbsp;&nbsp;&nbsp;&nbsp;</span>");
             }
-            else if ((pageNumber == 1) && (pagesCount == 2))
+            else if ((pageNumber == Constants.One) && (pagesCount == 2))
             {
                 result = string.Concat("<span id='w'>&nbsp;&nbsp;&nbsp;&nbsp;",
                             "<a onClick='n(&quot;/f/",
@@ -150,7 +150,7 @@ namespace MarkupHandlers
                             "&quot;);return false' title='Предыдущая страница'>◄</a>",
                             "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>");
             }
-            else if ((pageNumber == 0) && (pagesCount == 2))
+            else if ((pageNumber == Constants.Zero) && (pagesCount == 2))
             {
                 result = string.Concat("<span id='w'>&nbsp;&nbsp;&nbsp;&nbsp;",
                             "&nbsp;&nbsp;&nbsp;&nbsp;<a onClick='n(&quot;/f/",

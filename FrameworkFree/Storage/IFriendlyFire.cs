@@ -1,3 +1,4 @@
+using System.Net;
 namespace Data
 {
     public interface IFriendlyFire
@@ -22,6 +23,6 @@ namespace Data
         int GetDialogPagesLengthFast();
         void NewPrivateMessageLogic_Start(int? id, Pair pair, string t);
         void NewPrivateDialogLogic_Start(string nick, Pair pair, string msg);
-        void AuthenticationLogic_Logout(string token);
+        bool CheckAndIncrementIpHashesCounter(IPAddress ipAddress, byte incValue);
     }
 }

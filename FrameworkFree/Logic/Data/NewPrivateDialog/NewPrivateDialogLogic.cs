@@ -10,6 +10,7 @@ namespace Data
         public readonly IThreadLogic ThreadLogic;
         public readonly IReplyLogic ReplyLogic;
         public readonly IRegistrationLogic RegistrationLogic;
+        public readonly INewTopicLogic NewTopicLogic;
         public readonly NewPrivateDialogMarkupHandler NewPrivateDialogMarkupHandler;
         public readonly PrivateDialogMarkupHandler PrivateDialogMarkupHandler;
         public readonly PrivateMessageMarkupHandler PrivateMessageMarkupHandler;
@@ -19,6 +20,7 @@ namespace Data
         IThreadLogic threadLogic,
         IReplyLogic replyLogic,
         IRegistrationLogic registrationLogic,
+        INewTopicLogic newTopicLogic,
         NewPrivateDialogMarkupHandler newPrivateDialogMarkupHandler,
         PrivateDialogMarkupHandler privateDialogMarkupHandler,
         PrivateMessageMarkupHandler privateMessageMarkupHandler)
@@ -32,6 +34,7 @@ namespace Data
             NewPrivateDialogMarkupHandler = newPrivateDialogMarkupHandler;
             PrivateDialogMarkupHandler = privateDialogMarkupHandler;
             PrivateMessageMarkupHandler = privateMessageMarkupHandler;
+            NewTopicLogic = newTopicLogic;
         }
         public bool CheckNickIfExists(string nick)
         => AccountLogic.CheckNickHashIfExists(nick)
@@ -39,18 +42,21 @@ namespace Data
         public void Start
             (string acceptorNick, Pair pair, string message)
         {
-            DialogData dialogData
-                    = new DialogData
-                    {
-                        acceptorNick = acceptorNick,
-                        pair = pair,
-                        message = message
-                    };
-            Storage.Fast.DialogsToStartEnqueue(dialogData);
+            if (Storage.Fast.GetDialogsToStartCount() < Constants.MaxFirstLineLength)
+            {
+                DialogData dialogData
+                        = new DialogData
+                        {
+                            acceptorNick = acceptorNick,
+                            pair = pair,
+                            message = message
+                        };
+                Storage.Fast.DialogsToStartEnqueue(dialogData);
+            }
         }
         public void StartNextDialogByTimer()
         {
-            if (Storage.Fast.DialogsToStartCount != 0)
+            if (Storage.Fast.GetDialogsToStartCount() != Constants.Zero)
             {
                 DialogData temp;
                 Storage.Fast.DialogsToStartTryDequeue(out temp);
@@ -87,22 +93,26 @@ namespace Data
                     ThreadLogic.GetNick(accountId.Value);
                 Storage.Slow.PutPrivateMessageInBase
                     (accountId.Value, acceptorId, message);
+                bool notEqualFlag = accountId != acceptorId;
                 CorrectDialogPages(acceptorId, accountId.Value, nick,
-                    acceptorNick);
+                    acceptorNick, notEqualFlag);
                 CorrectMessagesPages(accountId.Value, acceptorId, nick,
-                    acceptorNick, message);
+                    acceptorNick, message, notEqualFlag);
             }
         }
         public void CorrectMessagesPages(int accountId,
-            int acceptorId, string accountNick, string acceptorNick, string message)
+            int acceptorId, string accountNick, string acceptorNick,
+            string message, bool notEqualFlag)
         {
             PrivateMessageLogic
                 .AddNewCompanionsIfNotExists(accountId, acceptorId,
-                accountNick, acceptorNick);
+                accountNick, acceptorNick, notEqualFlag);
             CorrectMessagesArray(acceptorId, accountId,
                         accountNick, acceptorNick, message, accountNick, accountId);
-            CorrectMessagesArray(accountId, acceptorId,
-                acceptorNick, accountNick, message, accountNick, accountId);
+
+            if (notEqualFlag)
+                CorrectMessagesArray(accountId, acceptorId,
+                    acceptorNick, accountNick, message, accountNick, accountId);
         }
         public void CorrectMessagesArray(int companionId,
             int ownerId, string ownerNick, string companionNick,
@@ -110,7 +120,7 @@ namespace Data
         {      //TODO   
             int depth;
             string last = Storage.Fast.GetMessage(ownerId, companionId,
-               Storage.Fast.GetPersonalPagesPageDepth(ownerId, companionId) - 1);
+               Storage.Fast.GetPersonalPagesPageDepth(ownerId, companionId) - Constants.One);
 
             if (last.Contains(Constants.a))
             {
@@ -119,12 +129,12 @@ namespace Data
                 depth = Storage.Fast
                                 .GetPersonalPagesDepth(companionId, ownerId);
                 string[] personalPagesArray = new string[depth];
-                temp.CopyTo(personalPagesArray, 0);
+                temp.CopyTo(personalPagesArray, Constants.Zero);
                 Storage.Fast.SetPersonalPagesMessagesArray
                             (companionId, ownerId, personalPagesArray);
 
                 Storage.Fast.SetPersonalPagesPage
-                        (companionId, ownerId, depth - 1,
+                        (companionId, ownerId, depth - Constants.One,
                             NewPrivateDialogMarkupHandler.GenerateNewPrivateDialogPage(companionId,
                                 companionNick, ownerId, ownerNick, message));
                 string[] pages = Storage.Fast.GetMessages(ownerId, companionId);
@@ -133,7 +143,7 @@ namespace Data
                 int end;
                 string navigation = Constants.SE;
 
-                for (i = 0; i < depth; i++)
+                for (i = Constants.Zero; i < depth; i++)
                 {
                     navigation = PrivateMessageMarkupHandler.GetArrows(i, depth, companionId);
                     start = pages[i].LastIndexOf(Constants.fullSpanMarker);
@@ -162,7 +172,7 @@ namespace Data
                     pos++;
                 }
                 last = last.Remove(start, pos - start);
-                int count = Convert.ToInt32(countString) - 1;
+                int count = Convert.ToInt32(countString) - Constants.One;
                 last = last.Insert(start, count.ToString());
                 int temp = last.LastIndexOf(Constants.brMarker);
                 int position;
@@ -177,32 +187,34 @@ namespace Data
                 depth = Storage.Fast.GetPersonalPagesDepth(companionId, ownerId);
                 Storage.Fast.SetPersonalPagesPage
                     (companionId, ownerId, depth
-                    - 1, last);
+                    - Constants.One, last);
             }
         }
 
         public void CorrectDialogPages
             (int acceptorId, int accountId, string accountNick,
-            string acceptorNick)
+            string acceptorNick, bool notEqualFlag)
         {
             CorrectPages(accountId, accountNick,
                     acceptorId, acceptorNick);
-            CorrectPages(acceptorId, acceptorNick,
-                    accountId, accountNick);
+
+            if (notEqualFlag)
+                CorrectPages(acceptorId, acceptorNick,
+                        accountId, accountNick);
         }
 
         public void CorrectPages
             (int firstId, string firstNick,
             int secondId, string secondNick)
         {
-            int index = firstId - 1;
+            int index = firstId - Constants.One;
             string[] pages = Storage.Fast
                 .GetDialogPagesArrayLocked(index);
             int depth = Storage.Fast
                 .GetDialogPagesPageDepthLocked(index);
             bool containsNick = false;
 
-            for (int i = 0; i < depth; i++)
+            for (int i = Constants.Zero; i < depth; i++)
                 if (containsNick)
                     break;
                 else
@@ -213,9 +225,9 @@ namespace Data
             {
                 int nicksCount = NewTopicLogic
                     .CountStringOccurrences
-                    (pages[depth - 1], Constants.pMarker);
+                    (pages[depth - Constants.One], Constants.pMarker);
 
-                if (depth > 1)
+                if (depth > Constants.One)
                 {
                     if (nicksCount == Constants.DialogsOnPage)
                     {
@@ -252,7 +264,7 @@ namespace Data
             string secondNick, int firstId)
         {
             string[] pagesArray = pages;
-            int index = depth - 1;
+            int index = depth - Constants.One;
             int startPos = pages[index]
                 .IndexOf(Constants.fullSpanMarker);
 
@@ -264,17 +276,17 @@ namespace Data
                                             (secondId, secondNick));//doublepost ERROR
             Storage.Fast
                         .SetDialogPagesArrayLocked
-                        (firstId - 1, pagesArray);
+                        (firstId - Constants.One, pagesArray);
         }
         public void AddDialogToFull
            (string[] pages, int depth, int firstId,
             int secondId, string secondNick)
         {
-            int len = depth + 1;
+            int len = depth + Constants.One;
             string[] newPagesArray = new string[len];
-            pages.CopyTo(newPagesArray, 0);
+            pages.CopyTo(newPagesArray, Constants.Zero);
             newPagesArray[depth] = Constants.NewDialog;
-            int index = firstId - 1;
+            int index = firstId - Constants.One;
             newPagesArray = InsertArrows(newPagesArray, len);
             newPagesArray = InsertDialogToFull
                 (newPagesArray, depth, secondId, secondNick);
@@ -301,7 +313,7 @@ namespace Data
         public string[] InsertArrows
                 (string[] newPagesArray, int len)
         {
-            for (int i = 0; i < len; i++)
+            for (int i = Constants.Zero; i < len; i++)
             {
                 string arrows =
                     PrivateDialogMarkupHandler.GetArrows(i, len);

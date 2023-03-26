@@ -1,32 +1,34 @@
 using System.Collections.Generic;
 using System;
+using System.Net;
 namespace Data
 {
-    public interface IMemory//напрямую в память обращаться нельзя; разбить на интерфейсы
+    public interface IMemory//напрямую в память обращаться нельзя - только из медленной части БД; разбить на интерфейсы
     {
-        IEnumerable<Pair> LoginPasswordHashesDeltaKeys { get; }
-        string PageToReturnRegistrationData { get; set; }
-        int DialogsToStartCount { get; }
-        int PersonalMessagesToPublishCount { get; }
-        string LastPage { get; }
-        int PagesLength { get; }
-        int ThreadsCount { get; }
-        string[] Pages { get; }
-        string Temp { get; set; }
-        int Pos { get; set; }
-        int TopicsToStartCount { get; }
-        int MessagesToPublishCount { get; }
-        int PreRegistrationLineCount { get; }
-        int CaptchaMessagesRegistrationDataCount { get; }
-        int RegistrationLineCount { get; }
-        int CaptchaMessagesCount { get; }
-        ICollection<Pair> LoginPasswordHashesKeys { get; }
-        string CaptchaPageToReturnLogin { get; set; }
+        int GetPagesLength();
+        int GetPos();
+        void SetPos(int value);
+        int GetRegistrationLineCount();
+        void DecrementAllRemoteIpHashesAttemptsCountersAndRemoveUnnecessaryByTimer();
+        bool IncrementWithValueRemoteIpHashesAttemptsCountersAndGrantAccessAndAddIfNotPresented(IPAddress ipAddress, byte value);
+        int GetPersonalMessagesToPublishCount();
+        void InitializeRemoteIpHashesAttemptsCounter();
+        string GetLastPage();
+        IEnumerable<Pair> GetLoginPasswordHashesDeltaKeys();
+        int GetTopicsToStartCount();
+        int GetMessagesToPublishCount();
+        string GetTemp();
+        void SetTemp(string value);
+        int GetPreRegistrationLineCount();
+        int GetCaptchaMessagesCount();
+        int GetDialogsToStartCount();
+        string GetCaptchaPageToReturn();
+        int GetCaptchaMessagesRegistrationDataCount();
+        bool SpecialSearch(char c);
+        int GetThreadsCount();
+        void SetPageToReturnRegistrationData(string value);
+        string GetPageToReturnRegistrationData();
         bool LoginPasswordAccIdHashesContainsKey(Pair pair);
-        void SetTimerDivider(byte value);
-        byte GetTimerDivider();
-        void IncrementTimerDivider();
-        bool TimerDividerIsDivider(byte value);
         void LoginPasswordAccIdHashesTryAdd(Pair pair, int accountId);
         void LoginPasswordHashesDeltaTryRemove(Pair pair, out byte result);
         void InitializeLoginPasswordAccIdHashes();
@@ -54,6 +56,7 @@ namespace Data
         void PersonalMessagesToPublishTryDequeue(out MessageData value);
         string[] GetDialogPagesArrayLocked(int index);
         void SetDialogPagesArrayLocked(int index, string[] value);
+        void SetCaptchaPageToReturn(string value);
         string GetDialogPagesPageLocked(int arrayIndex, int pageIndex);
         void SetDialogPagesPageLocked(int arrayIndex, int pageIndex, string value);
         void AddToDialogPagesPageLocked(int arrayIndex, int pageIndex, string value);
@@ -102,6 +105,7 @@ namespace Data
         string GetPage(int num);
         void SetPage(int index, string value);
         void TopicsToStartEnqueue(TopicData value);
+        string[] GetPages();
         void TopicsToStartTryDequeue(out TopicData topicData);
         void SetThreadPagesPageLocked(int arrayIndex, int pageIndex, string value);
         string GetThreadPagesPageLocked(int arrayIndex, int pageIndex);
@@ -138,6 +142,6 @@ namespace Data
         void CaptchaMessagesDequeue();
         bool LoginPasswordHashesValuesContains(Guid guid);
         void SetLoginPasswordHashesPairToken(Pair pair, Guid? token);
-        Guid? LoginPasswordHashesToken(Pair key);
+        void LoginPasswordHashesThroughIterationCheck(ref Pair pair, Guid guid);
     }
 }

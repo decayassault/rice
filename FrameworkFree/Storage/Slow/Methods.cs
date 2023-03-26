@@ -1,21 +1,43 @@
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
+using System;
 using Models;
+using static Data.DataLockers.Lockers;
 namespace Data
 {
     public sealed partial class Database
     {
+        private readonly IMemory Memory;
+        public Database(IMemory memory)
+        {
+            Memory = memory;
+        }
         public int GetAccountsCount()
         {
             using (var bag = new TotalForumDbContext())
                 return bag.Account.AsNoTracking().Count();
         }
+        public void CheckAccountId(Func<Pair, int?> getAccIdAndStoreSlow)
+        {
+            lock (LoginPasswordHashesDeltaLocker)
+            {
+                IEnumerable<Pair> keys = Memory.GetLoginPasswordHashesDeltaKeys();
+
+                foreach (Pair pair in keys)//экономим на запросе к БД   
+                {
+                    if (!Memory.LoginPasswordAccIdHashesContainsKey(pair))
+                    {
+                        getAccIdAndStoreSlow(pair);
+                    }
+                }
+            }
+        }
         public void RemoveAccountByNickIfExists(string nick)
         {
             using (var bag = new TotalForumDbContext())
             {
-                if (bag.Account.AsNoTracking().Count(account => account.Nick == nick) == 1)
+                if (bag.Account.AsNoTracking().Count(account => account.Nick == nick) == Constants.One)
                 {
                     bag.Account.Remove(new Account { Nick = nick });
                     bag.SaveChanges();
@@ -54,13 +76,13 @@ namespace Data
         {
             using (var bag = new TotalForumDbContext())
                 return bag.Endpoint.AsNoTracking().Where(e => e.ForumId == id).OrderBy(b => b.Id).Select(a =>
-                   new IdName { Id = a.Id, Name = a.Name }).Take(5).ToList();
+                   new IdName { Id = a.Id, Name = a.Name }).Take(Constants.five).ToList();
         }
         public IEnumerable<IdName> GetForumIdNames()
         {
             using (var bag = new TotalForumDbContext())
                 return bag.Forum.AsNoTracking()
-                    .OrderBy(f => f.Id).Take(5)
+                    .OrderBy(f => f.Id).Take(Constants.five)
                     .Select(a => new IdName { Id = a.Id, Name = a.Name }).ToList();
         }
         public bool CheckNickInBase(string nick)

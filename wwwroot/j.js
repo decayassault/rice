@@ -1,13 +1,20 @@
 ﻿"use strict"
 
 var o = "o";
-var t = true;
-var H = 300000;//production 30000
-var z = 0;
+var T = true;
+var H = 300000;
+var Z = 0;
 var g = "GET";
 var P = "POST";
 var D = window.document;
 var a = undefined;
+
+function w(x, u) {
+    x.open(g, u, T);
+    x.setRequestHeader("a", a);
+    x.timeout = H;
+    x.send();
+}
 
 function u() {
     m('/l/', 'a');
@@ -15,140 +22,120 @@ function u() {
 
 function s() {
     var x = new XMLHttpRequest();
-    x.open(g, '/y/' + D.getElementsByClassName('s')[z].innerHTML + '?t=' + encodeURIComponent(D.getElementById('x').value), t);
-    x.setRequestHeader("a", a);
-    x.timeout = H;
-    x.send();
-}
-
-function shake(x, handler) {
-    x.addEventListener("loadend", handler);//does not work in IE
-}
-
-function m(url, target) {
-    var x = new XMLHttpRequest();
-    shake(x, function () {
-        D.getElementById(target).innerHTML = x.responseText;
+    t(x, function () {
+        z();
     });
-    x.open(g, url, t);
-    x.setRequestHeader("a", a);
-    x.timeout = H;
-    x.send();
+    w(x, '/y/' + D.getElementsByClassName('s')[Z].innerHTML
+        + '?t=' + encodeURIComponent(D.getElementById('x').value), T);
 }
 
-function register(captcha, login, password, email, nick) {
-    var url = "/g/";
+function t(x, handler) {
+    x.addEventListener("loadend", handler);
+}
+
+function m(u, p) {
     var x = new XMLHttpRequest();
-    shake(x, function () {
+    t(x, function () {
+        D.getElementById(p).innerHTML = x.responseText;
+    });
+    w(x, u);
+}
+
+function r(c, l, p, e, q) {
+    var x = new XMLHttpRequest();
+    t(x, function () {
         n('/o/');
     });
-    x.open(P, url, t);
+    x.open(P, "/g/", T);
     x.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     x.timeout = H;
-    x.send("c=" + encodeURIComponent(captcha) + "&l=" + encodeURIComponent(login) + "&p=" + encodeURIComponent(password)
-        + "&e=" + encodeURIComponent(email) + "&n=" + encodeURIComponent(nick));
+    x.send("c=" + encodeURIComponent(c) + "&l=" + encodeURIComponent(l)
+        + "&p=" + encodeURIComponent(p)
+        + "&e=" + encodeURIComponent(e) + "&n=" + encodeURIComponent(q));
 }
-
-function p() {
-    n('/c/');
-}
-
 function c() {
-    var captcha = D.getElementById('captcha').value;
-    var nick = D.getElementById('nick').value;
-    var email = D.getElementById('email').value;
-    var emailconfirm = D.getElementById('emailconfirm').value;
-    var login = D.getElementById('l').value;
-    var pwd = D.getElementById('password').value;
-    var pwdconfirm = D.getElementById('pwdconfirm').value;
-    register(captcha, login, pwd, email, nick);
+    var e = D.getElementById('u').value;
+    var a = D.getElementById('z').value;
+    var p = D.getElementById('q').value;
+    var b = D.getElementById('b').value;
+    if (e === a && p === b)
+        r(D.getElementById('y').value,
+            D.getElementById('l').value, p, e,
+            D.getElementById('e').value);
+    else
+        alert('Не совпадает повторный ввод пароля или почты.');
 }
 
-function n(url) {
+function n(u) {
     var x = new XMLHttpRequest();
-    shake(x, function () {
+    t(x, function () {
         if (x.status == 200 && x.DONE)
             D.getElementById(o).innerHTML = x.responseText;
     });
-    x.open(g, url, t);
-    x.setRequestHeader("a", a);
-    x.timeout = H;
-    x.send();
+    w(x, u);
 }
 
-function auth(captcha, login, password) {
-    var url = "/a/?c=" + encodeURIComponent(captcha)
-        + "&l=" + encodeURIComponent(login) + "&p=" + encodeURIComponent(password);
+function v(c, l, p) {
     var x = new XMLHttpRequest();
-    shake(x, function () {
+    t(x, function () {
         a = x.responseText;
-        n('/c/');
+        z();
         if (a.length === 0)
             alert('Не удалось войти.');
     });
-    x.open(g, url, t);
-    x.setRequestHeader("a", a);
-    x.timeout = H;
-    x.send();
+    w(x, "/a/?c=" + encodeURIComponent(c)
+        + "&l=" + encodeURIComponent(l) + "&p=" + encodeURIComponent(p));
 }
 
 function d() {
-    var captcha = D.getElementById('captcha').value;
-    var login = D.getElementById('l').value;
-    var password = D.getElementById('password').value;
-    auth(captcha, login, password);
+    v(D.getElementById('y').value,
+        D.getElementById('l').value, D.getElementById('q').value);
 }
 
-function newTopic() {
+function q() {
     m('/n/', 't');
 }
 
-function startTopic() {
+function l() {
     var x = new XMLHttpRequest();
-    shake(x, function () {
-        n('/c/');
+    t(x, function () {
+        z();
     });
-    x.open(g, '/h/' + D.getElementsByClassName('s')[z].innerHTML + '?t=' + encodeURIComponent(D.getElementsByTagName('input')[z].value) + '&m=' + encodeURIComponent(D.getElementById('x').value), t);
-    x.setRequestHeader("a", a);
-    x.timeout = H;
-    x.send();
-
-    //TODO
+    w(x, '/h/' + D.getElementsByClassName('s')[Z].innerHTML
+        + '?t=' + encodeURIComponent(D.getElementsByTagName('input')[Z].value)
+        + '&m=' + encodeURIComponent(D.getElementById('x').value));
 }
-function openDialogsList() {
+function b() {
     n('/d/1');
 }
-function replyPM() {
+function f() {
     m('/m/', 'a');
 }
-function sendPrivateReply() {
+function e() {
     var x = new XMLHttpRequest();
-    shake(x, function () {
-        n('/c/');
+    t(x, function () {
+        z();
     });
-    x.open(g, '/b/' + D.getElementsByClassName('s')[z].innerHTML + '?t=' + encodeURIComponent(D.getElementById('x').value), t);
-    x.setRequestHeader("a", a);
-    x.timeout = H;
-    x.send();
+    w(x, '/b/' + D.getElementsByClassName('s')[Z].innerHTML
+        + '?t=' + encodeURIComponent(D.getElementById('x').value));
 }
-function newDialog() {
+function k() {
     m('/i/', 'd');
 }
-function startDialog() {
+function i() {
     var x = new XMLHttpRequest();
-    shake(x, function () {
-        n('/c/');
+    t(x, function () {
+        z();
     });
-    x.open(g, '/j/?n=' + encodeURIComponent(D.getElementsByTagName('input')[z].value) + '&m='
-        + encodeURIComponent(D.getElementById('x').value), t);
-    x.setRequestHeader("a", a);
-    x.timeout = H;
-    x.send();
-    //TODO
+    w(x, '/j/?n=' + encodeURIComponent(D.getElementsByTagName('input')[Z].value)
+        + '&m=' + encodeURIComponent(D.getElementById('x').value));
 }
 function j() {
     n('/o/');
 }
 function h() {
     n('/r/');
+}
+function z() {
+    n('/c/');
 }

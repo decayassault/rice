@@ -13,7 +13,8 @@ namespace TestsInterface
                 && XXHash32.Hash(accessKey) == Constants.TestsInterfaceAccessKeyHash)
             {
                 accessGranted = true;
-                var storage = new Storage(new Memory(), new Database());
+                var memory = new Memory();
+                var storage = new Storage(memory, new Database(memory));
                 var accountLogic = new AccountLogic(storage);
                 var threadMarkupHandler = new ThreadMarkupHandler();
                 var replyMarkupHandler = new ReplyMarkupHandler();
@@ -48,12 +49,22 @@ namespace TestsInterface
                 forumMarkupHandler);
                 var registrationLogic = new RegistrationLogic(storage,
                 registrationMarkupHandler);
+                var sectionLogic = new SectionLogic(storage,
+                sectionMarkupHandler,
+                newTopicMarkupHandler);
+                var newTopicLogic = new NewTopicLogic(storage,
+                sectionLogic,
+                threadLogic,
+                replyLogic,
+                newTopicMarkupHandler,
+                sectionMarkupHandler);
                 var newPrivateDialogLogic = new NewPrivateDialogLogic(storage,
                 accountLogic,
                 privateMessageLogic,
                 threadLogic,
                 replyLogic,
                 registrationLogic,
+                newTopicLogic,
                 newPrivateDialogMarkupHandler,
                 privateDialogMarkupHandler,
                 privateMessageMarkupHandler);
@@ -62,14 +73,6 @@ namespace TestsInterface
                 replyLogic,
                 newPrivateMessageMarkupHandler,
                 privateMessageMarkupHandler);
-                var sectionLogic = new SectionLogic(storage,
-                sectionMarkupHandler);
-                var newTopicLogic = new NewTopicLogic(storage,
-                sectionLogic,
-                threadLogic,
-                replyLogic,
-                newTopicMarkupHandler,
-                sectionMarkupHandler);
                 var authenticationLogic = new AuthenticationLogic(storage);
                 var loginLogic = new LoginLogic(storage,
                 registrationLogic,
@@ -111,12 +114,12 @@ namespace TestsInterface
             else
                 return Constants.SE;
         }
-        public static uint GetXXHashCode(string text)
+        public static int GetXXHashCode(string text)
         {
             if (accessGranted)
-                return XXHash32.Hash(text);
+                return unchecked((int)XXHash32.Hash(text));
             else
-                return uint.MinValue;
+                return int.MinValue;
         }
         public static void RemoveAccountByNickIfExists(string uniqueNick)
         {

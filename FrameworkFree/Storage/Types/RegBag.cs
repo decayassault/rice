@@ -1,9 +1,10 @@
-namespace Data {
+namespace Data
+{
     public struct RegBag
-        {
-            public uint loginHash;
-            public uint passwordHash;
-            public string email;
-            public string nick;           
-        }
+    {
+        public uint loginHash;
+        public uint passwordHash;
+        public uint emailHash;
+        public string nick;
+    }
 }

@@ -5,7 +5,7 @@
     
 body
     {
-        background-color:white;
+        background-color:#FFFFFF;
         line-height:1.5;
         width:100%;
         height: 100%;
@@ -14,7 +14,7 @@ body
 
 input, textarea
 {
-    border: 1px solid lightgray;
+    border: 1px solid #D3D3D3;
 }
 
 #o
@@ -30,7 +30,7 @@ input, textarea
 .o span 
     {
         font-family: "Cambria";	
-        color: red;
+        color: #FF0000;
         display:inline;
         cursor:pointer;
         text-align: left;
@@ -49,7 +49,7 @@ input, textarea
         text-align: left;        
 		font-family: "Cambria";
         font-size: 14pt;	
-        color: red;
+        color: #FF0000;
     }
 
 body h1 
@@ -64,7 +64,7 @@ body h1
         width:7cm;
         margin-left:auto;
         margin-right:auto;
-		color: red;
+		color: #FF0000;
         cursor:pointer;
         display:block;
     }
@@ -74,7 +74,7 @@ body h1
         font-variant:normal;
         font-weight:normal;
         font-stretch:normal;
-        color: red;
+        color: #FF0000;
         cursor:pointer;        
         text-align: center;        
         font-size: 26pt;
@@ -93,7 +93,7 @@ header{
         font-family: "Candara";
         font-size: xx-small;
         display:block;
-        color:lightgray;        
+        color:#D3D3D3;        
         text-decoration: none;
         margin-left:auto;
         margin-right:auto;     
@@ -108,7 +108,7 @@ header{
         width:0.5cm;
         margin-left:auto;
         margin-right:auto;
-        color:red;      
+        color:#FF0000;      
         font-weight:bolder;  
         font-stretch:ultra-expanded;
         text-decoration: none;
@@ -121,12 +121,12 @@ header{
         text-align: left;        
 		font-family: "Candara";
         font-size: 14pt;	
-        color: red;
+        color: #FF0000;
     }
 
 .l a
     {
-        color: red;
+        color: #FF0000;
         display:inline;
         cursor:pointer;
         text-align: left;
@@ -135,7 +135,7 @@ header{
     }
 #g a, #r a
 {
-    color: red;
+    color: #FF0000;
         display:inline;
         cursor:pointer;
         text-align: center;
@@ -149,7 +149,7 @@ header{
 
 .l span
     {
-        color: red;
+        color: #FF0000;
         display:inline;
         cursor:pointer;
         text-align: left;
@@ -181,7 +181,7 @@ header{
         font-size: 14pt;	
         text-align:justify;
         text-indent: 1.5cm;        
-        color:black;        
+        color:#000000;        
     }
 
 center.l div, #c, #r div
@@ -190,7 +190,7 @@ center.l div, #c, #r div
         font-size: 14pt;	
         text-align:justify;
         text-indent: 1.5cm;        
-        color:black;        
+        color:#000000;        
     }
 
 .l center a, #w a
@@ -201,7 +201,7 @@ center.l div, #c, #r div
         width:0.5cm;
         margin-left:auto;
         margin-right:auto;
-        color:red;      
+        color:#FF0000;      
         font-weight:bolder;  
         font-stretch:ultra-expanded;
         text-decoration: none;
@@ -218,13 +218,13 @@ body h2
         font-stretch:normal;
         margin-left:0;
         margin-right:auto;
-		color: red;
+		color: #FF0000;
         cursor:pointer;
     }
 .s 
     {
         display:none;
-        color:white;
+        color:#FFFFFF;
     }
 #x{
     width:500px;
@@ -234,11 +234,11 @@ body h2
     font-size: 14pt;	
     text-align:justify;
     text-indent: 1.5cm;        
-    color:black; 
+    color:#000000; 
 }
 
 #s{
-    color: red;
+    color: #FF0000;
     display:inline;  
     font-family: "Candara";
     font-size: 14pt;	
@@ -252,7 +252,7 @@ body h2
     font-family: "Candara";
     font-size: 14pt;	
     text-align:justify;       
-    color:black; 
+    color:#000000; 
 }
 
 #t p, #d p {
@@ -260,10 +260,10 @@ body h2
     font-size: 14pt;	
     text-align:justify;
     text-indent: 1.5cm;        
-    color:black;
+    color:#000000;
 }
 #t span, #d span, #n{
-    color: red;
+    color: #FF0000;
     display: block;
     font-family: "Candara";
     font-size: 14pt;
@@ -271,7 +271,7 @@ body h2
     cursor:default;
 }
 #a span{
-    color: red;
+    color: #FF0000;
     display: block;
     font-family: "Candara";
     font-size: 14pt;

@@ -2,7 +2,7 @@
 {
     using System;
     using MarkupHandlers;
-
+    using System.Linq;
     internal sealed class NewPrivateMessageLogic : INewPrivateMessageLogic
     {
         public readonly IStorage Storage;
@@ -24,18 +24,21 @@
         }
         public void Start(int? id, Pair pair, string t)
         {
-            MessageData personalMessageData
-                  = new MessageData
-                  {
-                      id = id,
-                      pair = pair,
-                      text = t
-                  };
-            Storage.Fast.PersonalMessagesToPublishEnqueue(personalMessageData);
+            if (Storage.Fast.GetPersonalMessagesToPublishCount() < Constants.MaxFirstLineLength)
+            {
+                MessageData personalMessageData
+                      = new MessageData
+                      {
+                          id = id,
+                          pair = pair,
+                          text = t
+                      };
+                Storage.Fast.PersonalMessagesToPublishEnqueue(personalMessageData);
+            }
         }
         public void PublishNextPrivateMessageByTimer()
         {
-            if (Storage.Fast.PersonalMessagesToPublishCount != 0)
+            if (Storage.Fast.GetPersonalMessagesToPublishCount() != Constants.Zero)
             {
                 MessageData temp;
                 Storage.Fast.PersonalMessagesToPublishTryDequeue(out temp);
@@ -64,20 +67,24 @@
                 Storage.Slow.PutPrivateMessageInBase(accId.Value, id, text);
                 string ownerNick = ThreadLogic.GetNick(accId.Value);
                 string companionNick = ThreadLogic.GetNick(id);
-                int order = 1;
+                byte order = Constants.One;
                 CorrectArray(id, accId.Value, text, ownerNick, companionNick, order);
-                order = 2;
-                CorrectArray(accId.Value, id, text, companionNick, ownerNick, order);
+
+                if (id != accId.Value)
+                {
+                    order = 2;
+                    CorrectArray(accId.Value, id, text, companionNick, ownerNick, order);
+                }
             }
         }
         public void CorrectArray(int companionId,
             int ownerId, string text,
-            string ownerNick, string companionNick, int order)
+            string ownerNick, string companionNick, byte order)
         {
             //TODO неправ. Profile/x и ник x            
             int depth;
             string last = Storage.Fast.GetMessage(ownerId, companionId,
-               Storage.Fast.GetPersonalPagesPageDepth(ownerId, companionId) - 1); ;
+               Storage.Fast.GetPersonalPagesPageDepth(ownerId, companionId) - Constants.One); ;
 
             if (last.Contains(Constants.a))
             {
@@ -86,11 +93,11 @@
                 depth = Storage.Fast
                                 .GetPersonalPagesDepth(companionId, ownerId);
                 string[] personalPagesArray = new string[depth];
-                temp.CopyTo(personalPagesArray, 0);
+                temp.CopyTo(personalPagesArray, Constants.Zero);
                 Storage.Fast.SetPersonalPagesMessagesArray
                             (companionId, ownerId, personalPagesArray);
                 Storage.Fast.SetPersonalPagesPage
-                        (companionId, ownerId, depth - 1,
+                        (companionId, ownerId, depth - Constants.One,
                         NewPrivateMessageMarkupHandler.GenerateNewPrivateMessagePageIfEmpty
                         (companionId, companionNick, order, ownerId, ownerNick, text));
                 string[] pages = Storage.Fast.GetMessages(ownerId, companionId);
@@ -99,7 +106,7 @@
                 int end;
                 string navigation = Constants.SE;
 
-                for (i = 0; i < depth; i++)
+                for (i = Constants.Zero; i < depth; i++)
                 {
                     navigation = PrivateMessageMarkupHandler.GetArrows(i, depth, companionId);
                     start = pages[i].LastIndexOf(Constants.spanIndicator);
@@ -131,43 +138,48 @@
                     pos++;
                 }
                 last = last.Remove(start, pos - start);
-                last = last.Insert(start, (Convert.ToInt32(countString) - 1).ToString());
+                last = last.Insert(start, (Convert.ToInt32(countString) - Constants.One).ToString());
                 last = last.Insert(position,
                     NewPrivateMessageMarkupHandler.GenerateNewPrivateMessagePage(order, ownerId,
                         ownerNick, companionId, companionNick, text));
                 depth = Storage.Fast.GetPersonalPagesDepth(companionId, ownerId);
                 Storage.Fast.SetPersonalPagesPage
                     (companionId, ownerId, depth
-                    - 1, last);
+                    - Constants.One, last);
             }
         }
 
         public bool Check(int id, string text)
         {
             int limit = Storage.Fast.GetDialogPagesLengthLocked();
-            if (id > 0
+            if (id > Constants.Zero
                 && id <= limit)
             {
-                string temp = Constants.SE;
+                int textLength = text.Length;
+
+                if (textLength < Constants.One
+                || textLength > Constants.MaxReplyMessageTextLength)
+                    return false;
+
                 char c;
-                int rusCount = 0;
-                int othCount = 1;
-                int len = text.Length + 1;
-                for (int i = 0; i < len - 1; i++)
+                int rusCount = Constants.Zero;
+                int othCount = Constants.One;
+
+                for (int i = Constants.Zero; i < textLength; i++)
                 {
                     c = text[i];
+
                     if (Constants.AlphabetRusLower.Contains(c))
                     {
-                        temp += c;
                         rusCount++;
                     }
-                    else if (Constants.Special.Contains(c) || char.IsDigit(c))
+                    else if (Storage.Fast.SpecialSearch(c) || char.IsDigit(c))
                     {
-                        temp += c;
                         othCount++;
                     }
                 }
-                if ((((double)rusCount) / ((double)len) < 0.5)
+
+                if ((((double)rusCount) / ((double)(textLength + Constants.One)) < 0.5)
                     || (rusCount / othCount) < 0.8)
                     return false;
                 else return true;

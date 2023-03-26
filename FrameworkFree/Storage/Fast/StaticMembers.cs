@@ -24,6 +24,7 @@ namespace Data
         public static ConcurrentQueue<MessageData> PersonalMessagesToPublish;
         public static ConcurrentQueue<MessageData> MessagesToPublish;
         public static ConcurrentQueue<TopicData> TopicsToStart;
+        public static Dictionary<uint, byte> RemoteIpHashesAttemptsCounter;
         public volatile static Queue<uint> CaptchaMessages;
         public volatile static Queue<uint> CaptchaMessages_RegistrationData;
         public static string[][] DialogPages;
@@ -34,10 +35,8 @@ namespace Data
         public static int[] DialogPagesPageDepth;
         public static int[] SectionPagesPageDepth;
         public static int[] ThreadPagesPageDepth;
-        public volatile static string CaptchaPageToReturn;
-        public volatile static string PageToReturn_RegistrationData;
-        public volatile static byte TimerDivider;
-        private static readonly object locker = new object();
+        public static string CaptchaPageToReturn;
+        public static string PageToReturn_RegistrationData;
         public static string MainPage;
         public static string MainContent;
         public static string temp;

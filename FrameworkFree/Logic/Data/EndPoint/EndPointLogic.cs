@@ -20,8 +20,8 @@ namespace Data
                 return Constants.SE;
             else
             {
-                if (Id > 0 && Id <= Constants.EndPointPagesCount)
-                    return Storage.Fast.GetEndPointPageLocked((int)Id - 1);
+                if (Id > Constants.Zero && Id <= Constants.EndPointPagesCount)
+                    return Storage.Fast.GetEndPointPageLocked((int)Id - Constants.One);
                 else
                     return Constants.SE;
             }
@@ -31,10 +31,10 @@ namespace Data
         {
             Storage.Fast.InitializeEndPointPagesLocked(Constants.EndPointPagesCount);
 
-            for (int i = 0;
+            for (int i = Constants.Zero;
                     i < Constants.EndPointPagesCount; i++)
             {
-                ProcessEndPointReader(Storage.Slow.GetEndpointIdNames(i + 1), i);
+                ProcessEndPointReader(Storage.Slow.GetEndpointIdNames(i + Constants.One), i);
             }
         }
 

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System;
 using Models;
 namespace Data
 {
@@ -13,6 +14,7 @@ namespace Data
         IEnumerable<IdName> GetForumIdNames();
         bool CheckNickInBase(string nick);
         int GetIdByNick(string nick);
+        void CheckAccountId(Func<Pair, int?> getAccIdAndStoreSlow);
         void PutPrivateMessageInBase
             (int senderAccId, int acceptorAccId, string privateText);
         int PutThreadAndMessageInBase(Thread thread, int accountId, string message);

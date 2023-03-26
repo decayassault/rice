@@ -1,3 +1,4 @@
+using Data;
 namespace MarkupHandlers
 {
     internal sealed class NewTopicMarkupHandler
@@ -12,7 +13,7 @@ namespace MarkupHandlers
         }
         internal string GetLastPage(int endpointId)
         {
-            return string.Concat("<div id='t'><span><a onclick='newTopic();return false;'>Новая тема</a>",
+            return string.Concat("<div id='t'><span><a onclick='q();return false;'>Новая тема</a>",
                                         "</span></div><nav class='n'></nav><div class='s'>",
                                         endpointId,
                                         "</div></div>");
@@ -22,7 +23,7 @@ namespace MarkupHandlers
              int accountId, string nick, string message)
         {
             return string.Concat("<div class='s'>",
-                    threadId - 1,
+                    threadId - Constants.One,
                     "</div><div class='l'><h2 onclick='n(&quot;/s/",
                     endpointId,
                     "?p=1&quot;);'>",

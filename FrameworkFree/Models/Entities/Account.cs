@@ -10,5 +10,6 @@ namespace Models
         public string Nick { get; set; }
         public int Identifier { get; set; }
         public int Passphrase { get; set; }
+        public int EmailHash { get; set; }
     }
 }

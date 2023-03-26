@@ -26,10 +26,9 @@ namespace Data
             var captchaData = Captcha.GenerateCaptchaStringAndImage();
             Storage.Fast.CaptchaMessagesEnqueue(captchaData.stringHash);
 
-            if (Storage.Fast.CaptchaMessagesCount == Constants.LoginPagesCount)
+            if (Storage.Fast.GetCaptchaMessagesCount() == Constants.LoginPagesCount)
                 Storage.Fast.CaptchaMessagesDequeue();
-            Storage.Fast.CaptchaPageToReturnLogin =
-                LoginMarkupHandler.GenerateLoginPage(captchaData.image);
+            Storage.Fast.SetCaptchaPageToReturn(LoginMarkupHandler.GenerateLoginPage(captchaData.image));
         }
 
         public string CheckAndAuth

@@ -20,15 +20,18 @@ namespace Data
         public void PreRegistration
             (string captcha, string login, string password, string email, string nick)
         {
-            var bag = new PreRegBag()
+            if (Storage.Fast.GetPreRegistrationLineCount() < Constants.MaxFirstLineLength)
             {
-                captcha = captcha,
-                login = login,
-                password = password,
-                email = email,
-                nick = nick
-            };
-            Storage.Fast.PreRegistrationLineTryAdd(Storage.Fast.PreRegistrationLineCount, bag);
+                var bag = new PreRegBag()
+                {
+                    captcha = captcha,
+                    login = login,
+                    password = password,
+                    email = email,
+                    nick = nick
+                };
+                Storage.Fast.PreRegistrationLineTryAdd(Storage.Fast.GetPreRegistrationLineCount(), bag);
+            }
         }
 
         private static readonly object locker = new object();
@@ -38,18 +41,20 @@ namespace Data
             var captchaData = Captcha.GenerateCaptchaStringAndImage();
             Storage.Fast.CaptchaMessagesRegistrationDataEnqueue(captchaData.stringHash);
 
-            if (Storage.Fast.CaptchaMessagesRegistrationDataCount
+            if (Storage.Fast.GetCaptchaMessagesRegistrationDataCount()
                 == Constants.RegistrationPagesCount)
                 Storage.Fast.CaptchaMessagesRegistrationDataDequeue();
-            Storage.Fast.PageToReturnRegistrationData = RegistrationMarkupHandler
-                .GetPageToReturnRegistrationData(captchaData.image);
+            Storage.Fast.SetPageToReturnRegistrationData(RegistrationMarkupHandler
+                .GetPageToReturnRegistrationData(captchaData.image));
         }
         public void RegisterInBaseByTimer()
         {
-            if (Storage.Fast.RegistrationLineCount != 0)
+            int len = Storage.Fast.GetRegistrationLineCount();
+
+            if (len != Constants.Zero)
             {
-                for (int i = 0;
-                        i < Storage.Fast.RegistrationLineCount; i++)
+                for (int i = Constants.Zero;
+                        i < len; i++)
                 {
                     RegBag regBag = new RegBag();
                     Storage.Fast.RegistrationLineTryRemove(i, out regBag);
@@ -64,8 +69,9 @@ namespace Data
             {
                 Nick = account.nick,
                 Identifier = (int)account.loginHash,
-                Passphrase = (int)account.passwordHash
-            };//email
+                Passphrase = (int)account.passwordHash,
+                EmailHash = (int)account.emailHash
+            };
 
             Storage.Slow.AddAccount(dbAccount);
         }
@@ -73,9 +79,9 @@ namespace Data
         public void PutRegInfoByTimer()
         {
             PreRegBag temp = new PreRegBag();
-            if (Storage.Fast.PreRegistrationLineCount > 0)
+            if (Storage.Fast.GetPreRegistrationLineCount() > Constants.Zero)
             {
-                Storage.Fast.PreRegistrationLineTryRemove(0, out temp);
+                Storage.Fast.PreRegistrationLineTryRemove(Constants.Zero, out temp);
                 if (temp.captcha == null || temp.login == null
             || temp.password == null || temp.email == null || temp.nick == null)
                 { }
@@ -104,8 +110,8 @@ namespace Data
                         if (!Storage.Fast.LoginPasswordHashesDeltaContainsKey(pair))
                         {
                             Storage.Fast.LoginPasswordHashesTryAdd(pair, null);
-                            Storage.Fast.NicksHashesTryAdd(nickHash, 0);
-                            Storage.Fast.LoginPasswordHashesDeltaTryAdd(pair, 0);
+                            Storage.Fast.NicksHashesTryAdd(nickHash, Constants.Zero);
+                            Storage.Fast.LoginPasswordHashesDeltaTryAdd(pair, Constants.Zero);
                             Storage.Fast.CopyDialogPagesArraysToIncreasedSizeArraysAndFillGapsLocked();
                             result = true;
                         }
@@ -133,15 +139,16 @@ namespace Data
                                 uint loginHash = XXHash32.Hash(login);
                                 uint passwordHash = XXHash32.Hash(password);
                                 uint nickHash = XXHash32.Hash(nick);
+                                uint emailHash = XXHash32.Hash(email);
 
                                 if (Register(loginHash, passwordHash, nickHash))
                                 {
-                                    Storage.Fast.RegistrationLineTryAdd(Storage.Fast.RegistrationLineCount,
+                                    Storage.Fast.RegistrationLineTryAdd(Storage.Fast.GetRegistrationLineCount(),
                                         new RegBag
                                         {
                                             loginHash = loginHash,
                                             passwordHash = passwordHash,
-                                            email = email,
+                                            emailHash = emailHash,
                                             nick = nick
                                         }
                                         );
@@ -201,7 +208,7 @@ namespace Data
                             (Char.IsUpper(x) ?
                                  !Constants.AlphabetRusLower.Contains(Char.ToLower(x)) :
                                     !Constants.AlphabetRusLower.Contains(x)) &&
-                        (!Constants.Special.Contains(x)))
+                        (!Storage.Fast.SpecialSearch(x)))
                     {
                         flag = true;
 
@@ -230,17 +237,17 @@ namespace Data
         {
             bool result = false;
             int len = nick.Length;
-            if ((len >= 4) && (len <= 25))
+            if ((len >= 4) && (len <= Constants.MaxNickTextLength))
             {
                 if (new Regex(nick).Matches(" ").Count <= 3)
                 {
-                    if ((nick[0] != ' ')
-                          && (nick[len - 1] != ' '))
+                    if ((nick[Constants.Zero] != ' ')
+                          && (nick[len - Constants.One] != ' '))
                     {
                         string nik = String.Join(Constants.SE, nick.Split(' '));
                         len = nik.Length;
 
-                        if ((len >= 1) && (len <= 22))
+                        if ((len >= Constants.One) && (len <= 22))
                         {
                             bool flag = false;
 

@@ -20,16 +20,16 @@ namespace Data
                 return Constants.SE;
             else
             {
-                if (Id > 0
+                if (Id > Constants.Zero
                     && Id <= Storage.Fast.GetThreadPagesLengthLocked())
                 {
-                    int index = (int)Id - 1;
+                    int index = (int)Id - Constants.One;
 
-                    if (page > 0
+                    if (page > Constants.Zero
                         && page <= Storage.Fast.GetThreadPagesPageDepthLocked(index))
                         return Storage.Fast
                             .GetThreadPagesPageLocked(index,
-                                (int)page - 1);
+                                (int)page - Constants.One);
                     else
                         return Constants.SE;
                 }
@@ -47,7 +47,7 @@ namespace Data
             Storage.Fast.InitializeThreadPagesPageDepthLocked
                     (new int[Storage.Fast.GetThreadPagesLengthLocked()]);
 
-            for (int i = 0; i < threadsCount; i++)
+            for (int i = Constants.Zero; i < threadsCount; i++)
             {
                 AddThread(i);
             }
@@ -56,41 +56,41 @@ namespace Data
         internal void AddThread(int Num)
         {
 
-            int amount = Num + 1;
+            int amount = Num + Constants.One;
             int number = Num;
             int count = Storage.Slow.CountMessagesByAmount(amount);
 
-            if (count == 0)
+            if (count == Constants.Zero)
                 count++;
             int pagesCount = count / Constants.five;
 
-            if (count - pagesCount * Constants.five > 0)
+            if (count - pagesCount * Constants.five > Constants.Zero)
                 pagesCount++;
             Storage.Fast.SetThreadPagesArrayLocked
                     (number, new string[pagesCount]);
             Storage.Fast.SetThreadPagesPageDepthLocked(number, pagesCount);
             ProcessThreadReader
                             (Storage.Slow.GetMessagesByAmount(amount),
-                             number, pagesCount, Storage.Slow.GetSectionNumById(Num + 1));
+                             number, pagesCount, Storage.Slow.GetSectionNumById(Num + Constants.One));
         }
         private void ProcessThreadReader
        (IEnumerable<Message> messages, int number,
            int pagesCount, int sectionNum)
         {
 
-            int pageNumber = 0;
-            string threadName = Storage.Slow.GetThreadNameById(number + 1);
+            int pageNumber = Constants.Zero;
+            string threadName = Storage.Slow.GetThreadNameById(number + Constants.One);
             Storage.Fast.AddToThreadPagesPageLocked(number, pageNumber,
                 ThreadMarkupHandler.GetSectionHeader(number, sectionNum, threadName));
             bool first = false;
 
             if (messages.Any())
             {
-                int i = 0;
+                int i = Constants.Zero;
 
                 foreach (var message in messages)
                 {
-                    if (i == 0 && first)
+                    if (i == Constants.Zero && first)
                     {
                         Storage.Fast.AddToThreadPagesPageLocked(number, pageNumber,
                             ThreadMarkupHandler.GetSectionHeader(number, sectionNum, threadName));
@@ -111,15 +111,15 @@ namespace Data
                             Storage.Fast.AddToThreadPagesPageLocked
                                 (number, pageNumber, ThreadMarkupHandler.GetIndicAndA());
 
-                        i = 0;
+                        i = Constants.Zero;
                         pageNumber++;
                     }
 
                     if (!first)
                         first = true;
                 }
-                if ((pageNumber >= 0)
-                        && (i < Constants.five) && (i > 0))
+                if ((pageNumber >= Constants.Zero)
+                        && (i < Constants.five) && (i > Constants.Zero))
                 {
                     Storage.Fast.AddToThreadPagesPageLocked
                         (number, pageNumber,
@@ -139,15 +139,15 @@ namespace Data
         => Storage.Slow.GetNickByAccountId(accountId);
         internal string GetThreadPage(int Id, int page)
         {
-            if (Id > 0
+            if (Id > Constants.Zero
                 && Id <= Storage.Fast.GetThreadPagesLengthLocked())
             {
-                int index = Id - 1;
+                int index = Id - Constants.One;
 
-                if (page > 0
+                if (page > Constants.Zero
                         && page <= Storage.Fast.GetThreadPagesPageDepthLocked(index))
                     return Storage.Fast.GetThreadPagesPageLocked
-                            (index, page - 1);
+                            (index, page - Constants.One);
                 else return Constants.SE;
             }
             else

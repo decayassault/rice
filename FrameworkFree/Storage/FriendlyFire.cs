@@ -2,6 +2,7 @@ using SysThread = System.Threading;
 using SysTime = System.Timers;
 using System;
 using System.Diagnostics;
+using System.Net;
 namespace Data
 {//временная замена Storage - проброс вызовов - Slow делает Fast = Slow
     public sealed class FriendlyFire : IFriendlyFire
@@ -75,9 +76,7 @@ namespace Data
             Process.GetCurrentProcess().PriorityBoostEnabled = true;
             //Process.GetCurrentProcess().PriorityClass = ProcessPriorityClass.High; Exception - permission denied
             SysThread.Thread.CurrentThread.Priority = SysThread.ThreadPriority.Highest;
-            Storage.Fast.SetTimerDivider(0);
             Storage.Fast.InitializeRegistrationLine();
-
             SysTime.Timer commonTimer = new SysTime.Timer(1000);
             commonTimer.Elapsed += TimerEventHandler;
             commonTimer.AutoReset = true;
@@ -93,6 +92,7 @@ namespace Data
             NewPrivateMessageLogic.PublishNextPrivateMessageByTimer();
             NewPrivateDialogLogic.StartNextDialogByTimer();
             RegistrationLogic.PutRegInfoByTimer();
+            Storage.Fast.DecrementAllRemoteIpHashesAttemptsCountersAndRemoveUnnecessaryByTimer();
         }
         public void InitializeStorage()
         {
@@ -102,6 +102,7 @@ namespace Data
             Storage.Fast.InitializePrivateMessages();
             Storage.Fast.InitializePersonalMessagesToPublish();
             Storage.Fast.InitializeDialogsToStart();
+            Storage.Fast.InitializeRemoteIpHashesAttemptsCounter();
         }
 
         public void Initialize()
@@ -114,7 +115,8 @@ namespace Data
             => Storage.Slow.RemoveAccountByNickIfExists(uniqueNick);
         public string ForumLogic_GetMainPageLocked()
            => Storage.Fast.GetMainPageLocked();
-
+        public bool CheckAndIncrementIpHashesCounter(IPAddress ipAddress, byte incValue)
+        => Storage.Fast.IncrementWithValueRemoteIpHashesAttemptsCountersAndGrantAccessAndAddIfNotPresented(ipAddress, incValue);
         public string ThreadData_GetThreadPage(int? id, int? page)
            => ThreadLogic.GetThreadPage(id, page);
         public string ForumLogic_GetMainContentLocked()
@@ -126,7 +128,7 @@ namespace Data
         public string LoginData_CheckAndAuth(string captcha, string login, string password)
          => LoginLogic.CheckAndAuth(captcha, login, password);
         public string GetRegistrationDataPageToReturn()
-        => Storage.Fast.PageToReturnRegistrationData;
+        => Storage.Fast.GetPageToReturnRegistrationData();
         public bool AuthenticationLogic_AccessGranted(string token)
         => AuthenticationLogic.AccessGranted(token);
         public void ReplyData_Start(int? id, Pair pair, string t)
@@ -134,7 +136,7 @@ namespace Data
         public Pair AuthenticationLogic_GetPair(string token)
         => AuthenticationLogic.GetPair(token);
         public string LoginData_GetPageToReturn()
-        => Storage.Fast.CaptchaPageToReturnLogin;
+        => Storage.Fast.GetCaptchaPageToReturn();
         public int GetDialogPagesLengthFast()
         => Storage.Fast.GetDialogPagesLengthLocked();
         public void RegistrationData_PreRegistration(string captcha, string login,
@@ -150,7 +152,5 @@ namespace Data
         => NewPrivateMessageLogic.Start(id, pair, t);
         public void NewPrivateDialogLogic_Start(string nick, Pair pair, string msg)
         => NewPrivateDialogLogic.Start(nick, pair, msg);
-        public void AuthenticationLogic_Logout(string token)
-        => AuthenticationLogic.Logout(token);
     }
 }

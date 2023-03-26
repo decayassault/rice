@@ -46,7 +46,7 @@ namespace MarkupHandlers
                 "<br />",
                 Constants.fullSpanMarker,
                 Constants.endSpanMarker,
-                "<div id='a'><a onClick='replyPM();return false'>Ответить ",
+                "<div id='a'><a onClick='f();return false'>Ответить ",
                 companionNick,
                 "</a></div></div><div class='s'>4</div>");
         }

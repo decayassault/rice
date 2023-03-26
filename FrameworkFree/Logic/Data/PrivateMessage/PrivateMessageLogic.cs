@@ -24,11 +24,11 @@ namespace Data
         {
             int count = Storage.Slow.CountPrivateMessagesByIds(companionId, accountId);
 
-            if (count == 0)
+            if (count == Constants.Zero)
                 count++;
             int pagesCount = count / Constants.five;
 
-            if (count - pagesCount * Constants.five > 0)
+            if (count - pagesCount * Constants.five > Constants.Zero)
                 pagesCount++;
 
             return ProcessCompanionPrivateMessagesReader
@@ -61,11 +61,11 @@ namespace Data
                     int Id = (int)id;
                     int limit = Storage.Fast.GetPersonalPagesPageDepth(index.Value, Id);
 
-                    if (page > 0
+                    if (page > Constants.Zero
                         && page
                         <= limit)
                     {
-                        return Storage.Fast.GetMessage(index.Value, Id, (int)page - 1);
+                        return Storage.Fast.GetMessage(index.Value, Id, (int)page - Constants.One);
                     }
                     else
                         return Constants.SE;
@@ -78,26 +78,27 @@ namespace Data
         {
             int ownersCount = Storage.Slow.GetAccountsCount();
 
-            for (int i = 0; i < ownersCount; i++)
+            for (int i = Constants.Zero; i < ownersCount; i++)
             {
-                SetMessagesDictionary(i + 1);
+                SetMessagesDictionary(i + Constants.One);
             }
         }
         public void AddNewCompanionsIfNotExists
                     (int ownerId, int companionId, string ownerNick,
-            string companionNick)
+            string companionNick, bool notEqualFlag)
         {
             OwnerId ownerIdObj = new OwnerId { Id = ownerId };
             CompanionId companionIdObj = new CompanionId { Id = companionId };
-
             SetNewCompanionDepth(ownerIdObj, companionIdObj);
             SetNewCompanionPage(ownerIdObj, companionIdObj, companionNick);
 
-            ownerIdObj.Id = companionId;
-            companionIdObj.Id = ownerId;
-
-            SetNewCompanionDepth(ownerIdObj, companionIdObj);
-            SetNewCompanionPage(ownerIdObj, companionIdObj, ownerNick);
+            if (notEqualFlag)
+            {
+                ownerIdObj.Id = companionId;
+                companionIdObj.Id = ownerId;
+                SetNewCompanionDepth(ownerIdObj, companionIdObj);
+                SetNewCompanionPage(ownerIdObj, companionIdObj, ownerNick);
+            }
         }
         public void SetNewCompanionPage
             (OwnerId ownerId, CompanionId companionId, string companionNick)
@@ -105,7 +106,7 @@ namespace Data
             bool flag = Storage.Fast.PersonalPagesKeysContains(ownerId);
 
             if (!Storage.Fast.PersonalPagesContainsKey(ownerId, companionId, flag))
-                Storage.Fast.PersonalPagesAdd(ownerId, companionId, new string[1]
+                Storage.Fast.PersonalPagesAdd(ownerId, companionId, new string[Constants.One]
                 {
                     PrivateMessageMarkupHandler.SetNewCompanionPageMarkup(companionId.Id,
                     companionNick)
@@ -129,7 +130,7 @@ namespace Data
             Dictionary<CompanionId, int>
                     temp2 = new();
 
-            for (int i = 0; i < companions.Length; i++)
+            for (int i = Constants.Zero; i < companions.Length; i++)
             {
                 PrivateMessages pm = GetMessages
                                     (companions[i].Id, accountId);

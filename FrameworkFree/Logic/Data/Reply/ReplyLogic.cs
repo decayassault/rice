@@ -32,18 +32,21 @@ namespace Data
 
         public void Start(int? id, Pair pair, string t)
         {
-            MessageData messageData
-                  = new MessageData
-                  {
-                      id = id,
-                      pair = pair,
-                      text = t
-                  };
-            Storage.Fast.MessagesToPublishEnqueue(messageData);
+            if (Storage.Fast.GetMessagesToPublishCount() < Constants.MaxFirstLineLength)
+            {
+                MessageData messageData
+                      = new MessageData
+                      {
+                          id = id,
+                          pair = pair,
+                          text = t
+                      };
+                Storage.Fast.MessagesToPublishEnqueue(messageData);
+            }
         }
         public void PublishNextMessageByTimer()
         {
-            if (Storage.Fast.MessagesToPublishCount != 0)
+            if (Storage.Fast.GetMessagesToPublishCount() != Constants.Zero)
             {
                 MessageData temp;
                 Storage.Fast.MessagesToPublishTryDequeue(out temp);
@@ -82,7 +85,7 @@ namespace Data
             if (accId.HasValue)
             {
                 Storage.Slow.PutMessageInBase(new Msg
-                { ThreadId = id + 1, AccountId = accId.Value, MsgText = text });
+                { ThreadId = id + Constants.One, AccountId = accId.Value, MsgText = text });
                 CorrectArray(id, accId.Value, text);
             }
         }
@@ -94,35 +97,43 @@ namespace Data
             string last =
                 Storage.Fast.GetThreadPagesPageLocked
                     (id, Storage.Fast.GetThreadPagesPageDepthLocked(id)
-                    - 1);
+                    - Constants.One);
+
 
             if (last.Contains(Constants.a))
             {
-                string threadName = Storage.Slow.GetThreadNameById(id + 1);
-                int sectionNum = Storage.Slow.GetSectionNumById(id + 1);
+                int incrementedId = id + Constants.One;
+                string threadName = Storage.Slow.GetThreadNameById(incrementedId);
+                int sectionNum = Storage.Slow.GetSectionNumById(incrementedId);
                 string[] temp = Storage.Fast.GetThreadPagesArrayLocked(id);
-                Storage.Fast.AddToThreadPagesPageDepthLocked(id, 1);
+                Storage.Fast.AddToThreadPagesPageDepthLocked(id, Constants.One);
                 Storage.Fast.SetThreadPagesArrayLocked
                     (id, new string[Storage.Fast.GetThreadPagesPageDepthLocked(id)]);
                 temp.CopyTo(Storage.Fast.GetThreadPagesArrayLocked(id)
-                            , 0);
+                            , Constants.Zero);
                 page = ReplyMarkupHandler.GetPageWithHeader(id, sectionNum, threadName,
                     accId, nick, text);
                 int len = Storage.Fast.GetThreadPagesPageDepthLocked(id);
-                Storage.Fast.SetThreadPagesPageLocked(id, len - 1, page);
+                Storage.Fast.SetThreadPagesPageLocked(id, len - Constants.One, page);
                 string[] thread = Storage.Fast.GetThreadPagesArrayLocked(id);
                 int i;
                 int start;
                 int end;
                 string navigation = Constants.SE;
 
-                for (i = 0; i < len; i++)
+                for (i = Constants.Zero; i < len; i++)
                 {
                     navigation = ThreadMarkupHandler.GetArrows(i, len, id);
                     start = thread[i].LastIndexOf(Constants.spanIndicator);
                     end = thread[i].LastIndexOf(Constants.spanEnd)
                             + Constants.spanEnd.Length;
-                    thread[i] = thread[i].Remove(start, end - start);
+
+                    if (start != -1)
+                    {
+                        thread[i] = thread[i].Remove(start, end - start);
+                    }
+                    else
+                        start = thread[i].LastIndexOf(Constants.brMarker) + Constants.brMarker.Length;
                     thread[i] = thread[i].Insert(start, navigation);
                     Storage.Fast.SetThreadPagesPageLocked(id, i, thread[i]);
                 }
@@ -140,37 +151,39 @@ namespace Data
                     pos++;
                 }
                 last = last.Remove(start, pos - start);
-                last = last.Insert(start, (Convert.ToInt32(countString) - 1).ToString());
+                last = last.Insert(start, (Convert.ToInt32(countString) - Constants.One).ToString());
                 page = ReplyMarkupHandler.GetPage(accId, nick, text);
                 last = last.Insert(position, page);
                 Storage.Fast.SetThreadPagesPageLocked
                     (id, Storage.Fast.GetThreadPagesPageDepthLocked(id)
-                    - 1, last);
+                    - Constants.One, last);
             }
         }
         private bool Check(int id, string text)
         {
-            if (id >= 0
+            if (id >= Constants.Zero
                 && id < Storage.Fast.GetThreadPagesLengthLocked())
             {
-                string temp = Constants.SE;
-                char c;
-                int rusCount = 0;
-                int othCount = 1;
-                int len = text.Length + 1;
+                int textLength = text.Length;
 
-                for (int i = 0; i < len - 1; i++)
+                if (textLength < Constants.One
+                || textLength > Constants.MaxReplyMessageTextLength)
+                    return false;
+                char c;
+                int rusCount = Constants.Zero;
+                int othCount = Constants.One;
+                int len = textLength + Constants.One;
+
+                for (int i = Constants.Zero; i < textLength; i++)
                 {
                     c = text[i];
 
                     if (Constants.AlphabetRusLower.Contains(c))
                     {
-                        temp += c;
                         rusCount++;
                     }
-                    else if (Constants.Special.Contains(c) || char.IsDigit(c))
+                    else if (Storage.Fast.SpecialSearch(c) || char.IsDigit(c))
                     {
-                        temp += c;
                         othCount++;
                     }
                 }

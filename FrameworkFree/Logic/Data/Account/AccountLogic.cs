@@ -23,14 +23,7 @@ namespace Data
 
         public void CheckAccountIdByTimer()
         {
-            lock (locker)
-                foreach (Pair pair in Storage.Fast.LoginPasswordHashesDeltaKeys)//экономим на запросе к БД   
-                {
-                    if (!Storage.Fast.LoginPasswordAccIdHashesContainsKey(pair))
-                    {
-                        GetAccIdAndStore(pair);
-                    }
-                }
+            Storage.Slow.CheckAccountId(GetAccIdAndStore);
         }
 
         public int? GetAccIdAndStore(Pair pair)
@@ -59,7 +52,7 @@ namespace Data
             {
                 foreach (Pair pair in pairs)
                 {
-                    if (pair.LoginHash != 0 && pair.PasswordHash != 0)
+                    if (pair.LoginHash != Constants.Zero && pair.PasswordHash != Constants.Zero)
                     {
                         if (!Storage.Fast.LoginPasswordAccIdHashesContainsKey(pair))
                         {
@@ -111,7 +104,7 @@ namespace Data
 
             if (nicks.Any())
                 foreach (var nick in nicks)
-                    Storage.Fast.NicksHashesTryAdd(XXHash.XXHash32.Hash(nick), 0);
+                    Storage.Fast.NicksHashesTryAdd(XXHash.XXHash32.Hash(nick), Constants.Zero);
         }
     }
 }

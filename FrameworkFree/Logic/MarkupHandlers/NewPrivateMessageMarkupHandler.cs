@@ -4,7 +4,7 @@ namespace MarkupHandlers
     internal sealed class NewPrivateMessageMarkupHandler
     {
         internal string GenerateNewPrivateMessagePageIfEmpty(int companionId,
-            string companionNick, int order, int ownerId, string ownerNick, string text)
+            string companionNick, byte order, int ownerId, string ownerNick, string text)
         {
             var result = string.Concat(Constants.indic,
                             companionId,
@@ -12,7 +12,7 @@ namespace MarkupHandlers
                             companionNick,
                             "</h2>");
 
-            if (order == 1)
+            if (order == Constants.One)
                 result = string.Concat(result,
                             Constants.articleStart,
                             "<span onClick='n(&quot;/Profile/",
@@ -37,16 +37,16 @@ namespace MarkupHandlers
                         Constants.brMarker,
                         Constants.spanIndicator,
                         Constants.spanEnd,
-                        "<div id='a'><a onClick='replyPM();return false'>Ответить ",
+                        "<div id='a'><a onClick='f();return false'>Ответить ",
                         companionNick,
                         "</a></div></div><div class='s'>4</div>");
         }
-        internal string GenerateNewPrivateMessagePage(int order, int ownerId,
+        internal string GenerateNewPrivateMessagePage(byte order, int ownerId,
             string ownerNick, int companionId, string companionNick, string text)
         {
             var result = Constants.SE;
 
-            if (order == 1)
+            if (order == Constants.One)
                 result = string.Concat(Constants.articleStart,
                             "<span onClick='n(&quot;/Profile/",
                             ownerId,

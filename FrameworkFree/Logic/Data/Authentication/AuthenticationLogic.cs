@@ -65,47 +65,9 @@ namespace Data
                 if (guid == Guid.Empty)
                 { }
                 else
-                {
-                    if (Storage.Fast.LoginPasswordHashesValuesContains(guid))
-                        foreach (var key in Storage.Fast.LoginPasswordHashesKeys)
-                            if (Storage.Fast.LoginPasswordHashesToken(key) == guid)
-                            {
-                                result = key;
-
-                                break;
-                            }
-                }
+                    Storage.Fast.LoginPasswordHashesThroughIterationCheck(ref result, guid);
 
                 return result;
-            }
-        }
-
-        public void Logout(string token)//make async
-        {
-            lock (locker)
-            {
-                Guid guid;
-
-                try
-                {
-                    guid = new Guid(token);
-                }
-                catch (System.FormatException)
-                {
-                    guid = Guid.Empty;
-                }
-
-                if (guid == Guid.Empty)
-                { }
-                else
-                    if (Storage.Fast.LoginPasswordHashesValuesContains(guid))
-                    foreach (var key in Storage.Fast.LoginPasswordHashesKeys)
-                        if (Storage.Fast.LoginPasswordHashesToken(key) == guid)
-                        {
-                            Storage.Fast.SetLoginPasswordHashesPairToken(key, null);
-
-                            break;
-                        }
             }
         }
     }

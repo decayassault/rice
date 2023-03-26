@@ -22,21 +22,21 @@ namespace Data
         {
             int count;
             int number = Num;
-            int id = number + 1;
+            int id = number + Constants.One;
 
             count = Storage.Slow.CountPrivateMessages(id);
 
-            if (count == 0)
+            if (count == Constants.Zero)
                 count++;
             int pagesCount = count / Constants.DialogsOnPage;
 
-            if (count - pagesCount * Constants.DialogsOnPage > 0)
+            if (count - pagesCount * Constants.DialogsOnPage > Constants.Zero)
                 pagesCount++;
             Storage.Fast.SetDialogPagesArrayLocked
                             (number, new string[pagesCount]);
             Storage.Fast.SetDialogPagesPageDepthLocked(number, pagesCount);
 
-            for (int i = 0; i < pagesCount; i++)
+            for (int i = Constants.Zero; i < pagesCount; i++)
                 Storage.Fast
                     .SetDialogPagesPageLocked(number, i, Constants.NewDialog);
 
@@ -50,12 +50,12 @@ namespace Data
             {
                 /*string endpointHidden = Constants.SE;
                 */
-                int pageNumber = 0;
-                var i = 0;
+                int pageNumber = Constants.Zero;
+                var i = Constants.Zero;
 
                 foreach (var idNick in idNicks)
                 {
-                    if (i == 0)
+                    if (i == Constants.Zero)
                         Storage.Fast.AddToDialogPagesPageLocked
                             (number, pageNumber, string.Concat(Constants.navMarker,
                                                 Constants.brMarker));
@@ -72,7 +72,7 @@ namespace Data
                             Constants.endNavMarker));
                         //+ endpointHidden);
 
-                        i = 0;
+                        i = Constants.Zero;
                         pageNumber++;
                     }
                     else
@@ -82,9 +82,9 @@ namespace Data
 
                 RemoveBrOfIncompletePages(number);
 
-                if ((i < Constants.DialogsOnPage) && (i > 0))
+                if ((i < Constants.DialogsOnPage) && (i > Constants.Zero))
                 {
-                    if (pageNumber > 0)
+                    if (pageNumber > Constants.Zero)
                     {
                         Storage.Fast.AddToDialogPagesPageLocked
                             (number, pageNumber,
@@ -100,12 +100,12 @@ namespace Data
         {
             string temp = Storage.Fast.GetDialogPagesPageLocked(number,
                    Storage.Fast
-                    .GetDialogPagesArrayLocked(number).Length - 1);
+                    .GetDialogPagesArrayLocked(number).Length - Constants.One);
             int pos = temp.LastIndexOf(Constants.brMarker);
             temp = temp.Remove(pos, Constants.brMarker.Length);
             Storage.Fast.SetDialogPagesPageLocked(number,
                 Storage.Fast
-                    .GetDialogPagesArrayLocked(number).Length - 1, temp);
+                    .GetDialogPagesArrayLocked(number).Length - Constants.One, temp);
         }
 
         public string GetDialogPage
@@ -119,15 +119,15 @@ namespace Data
 
                 if (accountId.HasValue)
                 {
-                    int index = accountId.Value - 1;
+                    int index = accountId.Value - Constants.One;
 
-                    if (page > 0
+                    if (page > Constants.Zero
                         && page
                         <= Storage.Fast.GetDialogPagesPageDepthLocked(index))
                     {
                         return Storage.Fast
                           .GetDialogPagesPageLocked(index
-                             , (int)page - 1);
+                             , (int)page - Constants.One);
                     }
                     else
                         return Constants.SE;
@@ -146,7 +146,7 @@ namespace Data
                 (new string[Storage.Fast.GetDialogPagesLengthLocked()][]);
             int len = Storage.Fast.GetDialogPagesLengthLocked();
 
-            for (int i = 0;
+            for (int i = Constants.Zero;
                 i < len; i++)
                 AddDialog(i);
         }

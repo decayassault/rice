@@ -7,31 +7,36 @@ namespace Data
     {
         public readonly IStorage Storage;
         private readonly SectionMarkupHandler SectionMarkupHandler;
+        private readonly NewTopicMarkupHandler NewTopicMarkupHandler;
         public SectionLogic(IStorage storage,
-        SectionMarkupHandler sectionMarkupHandler)
+        SectionMarkupHandler sectionMarkupHandler,
+        NewTopicMarkupHandler newTopicMarkupHandler)
         {
             Storage = storage;
             SectionMarkupHandler = sectionMarkupHandler;
+            NewTopicMarkupHandler = newTopicMarkupHandler;
         }
         public void AddSection(int Num)
         {
             int number = Num;
-            int id = number + 1;
+            int id = number + Constants.One;
             int count = Storage.Slow.CountThreadsById(id);
+            string newTopicText = count == 0 ? NewTopicMarkupHandler.GetLastPage(id)
+            : Constants.buttonTxt;
 
-            if (count == 0)
+            if (count == Constants.Zero)
                 count++;
             int pagesCount = count / Constants.threadsOnPage;
 
-            if (count - pagesCount * Constants.threadsOnPage > 0)
+            if (count - pagesCount * Constants.threadsOnPage > Constants.Zero)
                 pagesCount++;
             Storage.Fast.SetSectionPagesArrayLocked
                             (number, new string[pagesCount]);
             Storage.Fast.
                 SetSectionPagesPageDepthLocked(number, pagesCount);
 
-            for (int i = 0; i < pagesCount; i++)
-                Storage.Fast.SetSectionPagesPageLocked(number, i, Constants.buttonTxt);
+            for (int i = Constants.Zero; i < pagesCount; i++)
+                Storage.Fast.SetSectionPagesPageLocked(number, i, newTopicText);
 
             ProcessSectionReader(Storage.Slow.GetThreadIdNamesById(id),
                 number, pagesCount);
@@ -39,11 +44,11 @@ namespace Data
         public void RemoveBrOfIncompletePages(int number)
         {
             string temp = Storage.Fast.GetSectionPagesPageLocked(number,
-                   Storage.Fast.GetSectionPagesArrayLocked(number).Length - 1);
+                   Storage.Fast.GetSectionPagesArrayLocked(number).Length - Constants.One);
             int pos = temp.LastIndexOf(Constants.brMarker);
             temp = temp.Remove(pos, Constants.brMarker.Length);
             Storage.Fast.SetSectionPagesPageLocked(number,
-                Storage.Fast.GetSectionPagesArrayLocked(number).Length - 1, temp);
+                Storage.Fast.GetSectionPagesArrayLocked(number).Length - Constants.One, temp);
         }
 
         public void ProcessSectionReader
@@ -52,12 +57,12 @@ namespace Data
             if (idNames.Any())
             {
                 string endpointHidden = Constants.SE;
-                int pageNumber = 0;
-                int i = 0;
+                int pageNumber = Constants.Zero;
+                int i = Constants.Zero;
 
                 foreach (var idName in idNames)
                 {
-                    if (i == 0)
+                    if (i == Constants.Zero)
                         Storage.Fast.AddToSectionPagesPageLocked
                             (number, pageNumber, SectionMarkupHandler.GetNav());
                     int id_ = idName.Id;
@@ -77,7 +82,7 @@ namespace Data
                             SectionMarkupHandler.SetNavigationWithEndpoint(pageNumber,
                                 pagesCount, number, endpointHidden));
 
-                        i = 0;
+                        i = Constants.Zero;
                         pageNumber++;
                     }
                     else
@@ -87,9 +92,9 @@ namespace Data
 
                 RemoveBrOfIncompletePages(number);
 
-                if ((i < Constants.threadsOnPage) && (i > 0))
+                if ((i < Constants.threadsOnPage) && (i > Constants.Zero))
                 {
-                    if (pageNumber > 0)
+                    if (pageNumber > Constants.Zero)
                     {
                         Storage.Fast.AddToSectionPagesPageLocked
                             (number, pageNumber,
@@ -108,14 +113,14 @@ namespace Data
                 return Constants.SE;
             else
             {
-                if (Id > 0 && Id <= Storage.Fast.GetSectionPagesLengthLocked())
+                if (Id > Constants.Zero && Id <= Storage.Fast.GetSectionPagesLengthLocked())
                 {
-                    int index = (int)Id - 1;
+                    int index = (int)Id - Constants.One;
 
-                    if (page > 0
+                    if (page > Constants.Zero
                         && page <= Storage.Fast.GetSectionPagesPageDepthLocked(index))
                         return Storage.Fast.GetSectionPagesPageLocked
-                            (index, (int)page - 1);
+                            (index, (int)page - Constants.One);
                     else return Constants.SE;
                 }
                 else
@@ -131,7 +136,7 @@ namespace Data
             Storage.Fast.InitializeSectionPagesLocked
                 (new string[Storage.Fast.GetSectionPagesLengthLocked()][]);
 
-            for (int i = 0;
+            for (int i = Constants.Zero;
                 i < Storage.Fast.GetSectionPagesLengthLocked(); i++)
             {
                 AddSection(i);

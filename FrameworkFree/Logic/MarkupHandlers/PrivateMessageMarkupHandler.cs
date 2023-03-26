@@ -11,7 +11,7 @@ namespace MarkupHandlers
                     id,
                     "</div><div class='l'><h2 onclick='n(&quot;/d/1&quot;);'>Переписка с ",
                     companionNick,
-                    "</h2><div id='a'><a onclick='replyPM();return false'>Ответить ",
+                    "</h2><div id='a'><a onclick='f();return false'>Ответить ",
                     companionNick,
                     "</a></div></div><div class='s'>5</div>");
         }
@@ -23,7 +23,7 @@ namespace MarkupHandlers
             const string a = "<span id='w'><a onClick='n(&quot;/p/";
             const string b = "?p=1&quot;);return false' title='Первая страница'>«</a>&nbsp;&nbsp;&nbsp;&nbsp;<a onClick='n(&quot;/p/";
 
-            if ((pageNumber - 1 >= 1)
+            if ((pageNumber >= 2)
                     && (pageNumber + 3 <= pagesCount))
             {
                 result = string.Concat(a,
@@ -43,7 +43,7 @@ namespace MarkupHandlers
                             pagesCount,
                             "&quot;);return false' title='Последняя страница'>»</a></span>");
             }
-            else if ((pageNumber - 1 >= 1)
+            else if ((pageNumber >= 2)
                     && (pageNumber + 2 == pagesCount))
             {
                 result = string.Concat(a,
@@ -59,8 +59,8 @@ namespace MarkupHandlers
                             pageNumber + 2,
                             "&quot;);return false' title='Следующая страница'>►</a>&nbsp;&nbsp;&nbsp;&nbsp;</span>");
             }
-            else if ((pageNumber - 1 >= 1)
-                && (pageNumber + 1 == pagesCount))
+            else if ((pageNumber >= 2)
+                && (pageNumber + Constants.One == pagesCount))
             {
                 result = string.Concat(a,
                             personal,
@@ -71,7 +71,7 @@ namespace MarkupHandlers
                             "&quot;);return false' title='Предыдущая страница'>◄</a>",
                             "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>");
             }
-            else if ((pageNumber == 1) && (pageNumber + 3 <= pagesCount))
+            else if ((pageNumber == Constants.One) && (pageNumber + 3 <= pagesCount))
             {
                 result = string.Concat("<span id='w'>&nbsp;&nbsp;&nbsp;&nbsp;",
                             "<a onClick='n(&quot;/p/",
@@ -89,7 +89,7 @@ namespace MarkupHandlers
                             pagesCount,
                             "&quot;);return false' title='Последняя страница'>»</a></span>");
             }
-            else if ((pageNumber == 0) && (pageNumber + 3 <= pagesCount))
+            else if ((pageNumber == Constants.Zero) && (pageNumber + 3 <= pagesCount))
             {
                 result = string.Concat("<span id='w'>&nbsp;&nbsp;&nbsp;&nbsp;",
                             "&nbsp;&nbsp;&nbsp;&nbsp;<a onClick='n(&quot;/p/",
@@ -102,7 +102,7 @@ namespace MarkupHandlers
                             pagesCount,
                             "&quot;);return false' title='Последняя страница'>»</a></span>");
             }
-            else if ((pageNumber == 1) && (pagesCount == 3))
+            else if ((pageNumber == Constants.One) && (pagesCount == 3))
             {
                 result = string.Concat("<span id='w'>&nbsp;&nbsp;&nbsp;&nbsp;",
                             "<a onClick='n(&quot;/p/",
@@ -116,7 +116,7 @@ namespace MarkupHandlers
                             pageNumber + 2,
                             "&quot;);return false' title='Следующая страница'>►</a>&nbsp;&nbsp;&nbsp;&nbsp;</span>");
             }
-            else if ((pageNumber == 1) && (pagesCount == 2))
+            else if ((pageNumber == Constants.One) && (pagesCount == 2))
             {
                 result = string.Concat("<span id='w'>&nbsp;&nbsp;&nbsp;&nbsp;",
                             "<a onClick='n(&quot;/p/",
@@ -126,7 +126,7 @@ namespace MarkupHandlers
                             "&quot;);return false' title='Предыдущая страница'>◄</a>",
                             "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>");
             }
-            else if ((pageNumber == 0) && (pagesCount == 2))
+            else if ((pageNumber == Constants.Zero) && (pagesCount == 2))
             {
                 result = string.Concat("<span id='w'>&nbsp;&nbsp;&nbsp;&nbsp;",
                             "&nbsp;&nbsp;&nbsp;&nbsp;<a onClick='n(&quot;/p/",
@@ -142,14 +142,14 @@ namespace MarkupHandlers
             (int pageNumber, int pagesCount, int authorId, string companionNick)
         {
             return string.Concat(GetArrows(pageNumber, pagesCount, authorId),
-                    "<div id='a'><a onClick='replyPM();return false'>Ответить ",
+                    "<div id='a'><a onClick='f();return false'>Ответить ",
                     companionNick,
                     "</a></div>");
         }
         internal PrivateMessages ProcessCompanionReaderMarkup(string companionNick, int companionId,
         IEnumerable<IdText> idTexts, int pagesCount, string accountNick)
         {
-            int pageNumber = 0;
+            int pageNumber = Constants.Zero;
             var result = new PrivateMessages
             { Messages = new string[pagesCount] };
 
@@ -163,15 +163,15 @@ namespace MarkupHandlers
 
             bool first = false;
 
-            if (idTexts.Count() > 0)
+            if (idTexts.Any())
             {
                 int authorId;
-                int i = 0;
+                int i = Constants.Zero;
                 string privateText;
 
                 foreach (var idText in idTexts)
                 {
-                    if (i == 0 && first)
+                    if (i == Constants.Zero && first)
                     {
                         result.Messages[pageNumber] += "<div class='s'>"
                             + companionId.ToString() +
@@ -207,15 +207,15 @@ namespace MarkupHandlers
                             result.Messages[pageNumber] = string.Concat(result.Messages[pageNumber],
                                                             "</div><div class='s'>0</div>");
 
-                        i = 0;
+                        i = Constants.Zero;
                         pageNumber++;
                     }
 
                     if (!first)
                         first = true;
                 }
-                if ((pageNumber >= 0)
-                        && (i < Constants.five) && (i > 0))
+                if ((pageNumber >= Constants.Zero)
+                        && (i < Constants.five) && (i > Constants.Zero))
                 {
                     result.Messages[pageNumber] +=
                                 SetNavigation

@@ -3,7 +3,6 @@ using System.Text;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
-using System.Timers;
 using Data;
 using XXHash;
 // source - https://edi.wang/post/2018/10/13/generate-captcha-code-aspnet-core
@@ -46,11 +45,11 @@ public sealed class Captcha
     public static string GenerateCaptchaString()
     {
         Random rand = new Random();
-        int maxRand = Letters.Length - 1;
+        int maxRand = Letters.Length - Constants.One;
 
         StringBuilder sb = new StringBuilder();
 
-        for (int i = 0; i < 4; i++)
+        for (byte i = Constants.Zero; i < 4; i++)
         {
             int index = rand.Next(maxRand);
             sb.Append(Letters[index]);
@@ -103,7 +102,7 @@ public sealed class Captcha
                 SolidBrush fontBrush = new SolidBrush(Color.Black);
                 int fontSize = GetFontSize(width, captchaCode.Length);
                 Font font = new Font(FontFamily.GenericSerif, fontSize, FontStyle.Bold, GraphicsUnit.Pixel);
-                for (int i = 0; i < captchaCode.Length; i++)
+                for (int i = Constants.Zero; i < captchaCode.Length; i++)
                 {
                     fontBrush.Color = GetRandomDeepColor();
 
@@ -111,8 +110,8 @@ public sealed class Captcha
 
                     float x = i * fontSize + rand.Next(-shiftPx, shiftPx) + rand.Next(-shiftPx, shiftPx);
                     int maxY = height - fontSize;
-                    if (maxY < 0) maxY = 0;
-                    float y = rand.Next(0, maxY);
+                    if (maxY < Constants.Zero) maxY = Constants.Zero;
+                    float y = rand.Next(Constants.Zero, maxY);
 
                     graph.DrawString(captchaCode[i].ToString(), font, fontBrush, x, y);
                 }
@@ -121,18 +120,12 @@ public sealed class Captcha
             void DrawDisorderLine()
             {
                 Pen linePen = new Pen(new SolidBrush(Color.Black), 3);
-                for (int i = 0; i < rand.Next(3, 5); i++)
+                for (byte i = Constants.Zero; i < rand.Next(3, 5); i++)
                 {
                     linePen.Color = GetRandomDeepColor();
-
-                    Point startPoint = new Point(rand.Next(0, width), rand.Next(0, height));
-                    Point endPoint = new Point(rand.Next(0, width), rand.Next(0, height));
+                    Point startPoint = new Point(rand.Next(Constants.Zero, width), rand.Next(Constants.Zero, height));
+                    Point endPoint = new Point(rand.Next(Constants.Zero, width), rand.Next(Constants.Zero, height));
                     graph.DrawLine(linePen, startPoint, endPoint);
-
-                    //Point bezierPoint1 = new Point(rand.Next(0, width), rand.Next(0, height));
-                    //Point bezierPoint2 = new Point(rand.Next(0, width), rand.Next(0, height));
-
-                    //graph.DrawBezier(linePen, startPoint, bezierPoint1, bezierPoint2, endPoint);
                 }
             }
 
@@ -144,9 +137,9 @@ public sealed class Captcha
 
                 Point[,] pt = new Point[nWidth, nHeight];
 
-                for (int x = 0; x < nWidth; ++x)
+                for (int x = Constants.Zero; x < nWidth; ++x)
                 {
-                    for (int y = 0; y < nHeight; ++y)
+                    for (int y = Constants.Zero; y < nHeight; ++y)
                     {
                         var xo = nWave * Math.Sin(2.0 * 3.1415 * y / 128.0);
                         var yo = nWave * Math.Cos(2.0 * 3.1415 * x / 128.0);
@@ -154,31 +147,31 @@ public sealed class Captcha
                         var newX = x + xo;
                         var newY = y + yo;
 
-                        if (newX > 0 && newX < nWidth)
+                        if (newX > Constants.Zero && newX < nWidth)
                         {
                             pt[x, y].X = (int)newX;
                         }
                         else
                         {
-                            pt[x, y].X = 0;
+                            pt[x, y].X = Constants.Zero;
                         }
 
 
-                        if (newY > 0 && newY < nHeight)
+                        if (newY > Constants.Zero && newY < nHeight)
                         {
                             pt[x, y].Y = (int)newY;
                         }
                         else
                         {
-                            pt[x, y].Y = 0;
+                            pt[x, y].Y = Constants.Zero;
                         }
                     }
                 }
 
                 Bitmap bSrc = (Bitmap)baseMap.Clone();
 
-                BitmapData bitmapData = baseMap.LockBits(new Rectangle(0, 0, baseMap.Width, baseMap.Height), ImageLockMode.ReadWrite, PixelFormat.Format24bppRgb);
-                BitmapData bmSrc = bSrc.LockBits(new Rectangle(0, 0, bSrc.Width, bSrc.Height), ImageLockMode.ReadWrite, PixelFormat.Format24bppRgb);
+                BitmapData bitmapData = baseMap.LockBits(new Rectangle(Constants.Zero, Constants.Zero, baseMap.Width, baseMap.Height), ImageLockMode.ReadWrite, PixelFormat.Format24bppRgb);
+                BitmapData bmSrc = bSrc.LockBits(new Rectangle(Constants.Zero, Constants.Zero, bSrc.Width, bSrc.Height), ImageLockMode.ReadWrite, PixelFormat.Format24bppRgb);
 
                 int scanline = bitmapData.Stride;
 
@@ -192,19 +185,19 @@ public sealed class Captcha
 
                     int nOffset = bitmapData.Stride - baseMap.Width * 3;
 
-                    for (int y = 0; y < nHeight; ++y)
+                    for (int y = Constants.Zero; y < nHeight; ++y)
                     {
-                        for (int x = 0; x < nWidth; ++x)
+                        for (int x = Constants.Zero; x < nWidth; ++x)
                         {
                             var xOffset = pt[x, y].X;
                             var yOffset = pt[x, y].Y;
 
-                            if (yOffset >= 0 && yOffset < nHeight && xOffset >= 0 && xOffset < nWidth)
+                            if (yOffset >= Constants.Zero && yOffset < nHeight && xOffset >= Constants.Zero && xOffset < nWidth)
                             {
                                 if (pSrc != null)
                                 {
-                                    p[0] = pSrc[yOffset * scanline + xOffset * 3];
-                                    p[1] = pSrc[yOffset * scanline + xOffset * 3 + 1];
+                                    p[Constants.Zero] = pSrc[yOffset * scanline + xOffset * 3];
+                                    p[Constants.One] = pSrc[yOffset * scanline + xOffset * 3 + Constants.One];
                                     p[2] = pSrc[yOffset * scanline + xOffset * 3 + 2];
                                 }
                             }

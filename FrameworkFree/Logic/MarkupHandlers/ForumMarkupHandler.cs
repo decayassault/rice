@@ -9,7 +9,7 @@ namespace MarkupHandlers
         {
             var result = "<nav class='o'>";
 
-            if (idNames.Count() > 0)
+            if (idNames.Any())
             {
                 string elId;
 

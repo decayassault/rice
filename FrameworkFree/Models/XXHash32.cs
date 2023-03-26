@@ -1,6 +1,7 @@
 ﻿using System.Runtime.CompilerServices;
+using Data;
 namespace XXHash
-{
+{// source - https://github.com/shibox/XXHash
     public static partial class XXHash32
     {
         private const uint PRIME32_1 = 2654435761U;
@@ -9,7 +10,7 @@ namespace XXHash
         private const uint PRIME32_4 = 668265263U;
         private const uint PRIME32_5 = 374761393U;
 
-        public unsafe static uint Hash(string input, uint seed = 0)
+        public unsafe static uint Hash(string input, uint seed = Constants.Zero)
         {
             fixed (char* buffer = input)
             {
@@ -18,7 +19,7 @@ namespace XXHash
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static unsafe uint Hash(byte* buffer, int len, uint seed = 0)
+        public static unsafe uint Hash(byte* buffer, int len, uint seed = Constants.Zero)
         {
             unchecked
             {
@@ -32,7 +33,7 @@ namespace XXHash
 
                     uint v1 = seed + PRIME32_1 + PRIME32_2;
                     uint v2 = seed + PRIME32_2;
-                    uint v3 = seed + 0;
+                    uint v3 = seed + Constants.Zero;
                     uint v4 = seed - PRIME32_1;
 
                     do
@@ -93,7 +94,7 @@ namespace XXHash
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static uint rol1(uint x) { return (x << 1) | (x >> (32 - 1)); }
+        private static uint rol1(uint x) { return (x << Constants.One) | (x >> (32 - Constants.One)); }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static uint rol7(uint x) { return (x << 7) | (x >> (32 - 7)); }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

@@ -1,7 +1,7 @@
 ﻿using Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Primitives;
-
+using System.Net;
 namespace App.Controllers
 {
     public sealed class fController : Controller
@@ -56,9 +56,14 @@ namespace App.Controllers
         public string a
             (string c, string l, string p) // authenticate (captcha, login, password)
         {
-            Response.Headers.Add("X-Frame-Options", "deny");
+            if (Force.CheckAndIncrementIpHashesCounter(Request.HttpContext.Connection.RemoteIpAddress, Constants.five))
+            {
+                Response.Headers.Add("X-Frame-Options", "deny");
 
-            return Force.LoginData_CheckAndAuth(c, l, p);
+                return Force.LoginData_CheckAndAuth(c, l, p);
+            }
+
+            return Constants.SE;
         }
 
         [HttpGet]
@@ -76,7 +81,7 @@ namespace App.Controllers
             StringValues at;
             if (HttpContext.Request.Headers.ContainsKey("a")
                 && HttpContext.Request.Headers.TryGetValue("a", out at)
-                && Force.AuthenticationLogic_AccessGranted(at[0]))
+                && Force.AuthenticationLogic_AccessGranted(at[Constants.Zero]))
                 return Content(Constants.ReplyPage, "text/html");
             else
                 return Content(Constants.LoginRequirement, "text/html");
@@ -85,23 +90,17 @@ namespace App.Controllers
         [HttpGet]
         public void y(int? i, string t) // reply (id, t)
         {
-            Response.Headers.Add("X-Frame-Options", "deny");
-            StringValues at;
+            if (Force.CheckAndIncrementIpHashesCounter(Request.HttpContext.Connection.RemoteIpAddress, Constants.One))
+            {
+                Response.Headers.Add("X-Frame-Options", "deny");
+                StringValues at;
 
-            if (HttpContext.Request.Headers.ContainsKey("a")
-                && HttpContext.Request.Headers.TryGetValue("a", out at)
-                && Force.AuthenticationLogic_AccessGranted(at[0]))
-                Force.ReplyData_Start(i, Force.AuthenticationLogic_GetPair(at[0]), t);
+                if (HttpContext.Request.Headers.ContainsKey("a")
+                    && HttpContext.Request.Headers.TryGetValue("a", out at)
+                    && Force.AuthenticationLogic_AccessGranted(at[Constants.Zero]))
+                    Force.ReplyData_Start(i, Force.AuthenticationLogic_GetPair(at[Constants.Zero]), t);
+            }
         }
-        /*
-                [HttpGet]
-                public ContentResult u() // unknown
-                {
-                    Response.Headers.Add("X-Frame-Options", "deny");
-
-                    return Content(Constants.LoginRequirement, "text/html");
-                }
-        */
         [HttpGet]
         public ContentResult o() // loginpage
         {
@@ -113,8 +112,11 @@ namespace App.Controllers
         public void g(string c, string l, string p,
             string e, string n) // register (captcha, login, password, email, nick)
         {
-            Response.Headers.Add("X-Frame-Options", "deny");
-            Force.RegistrationData_PreRegistration(c, l, p, e, n);
+            if (Force.CheckAndIncrementIpHashesCounter(Request.HttpContext.Connection.RemoteIpAddress, Constants.five))
+            {
+                Response.Headers.Add("X-Frame-Options", "deny");
+                Force.RegistrationData_PreRegistration(c, l, p, e, n);
+            }
         }
 
         [HttpGet]
@@ -124,7 +126,7 @@ namespace App.Controllers
             StringValues at;
             if (HttpContext.Request.Headers.ContainsKey("a")
                 && HttpContext.Request.Headers.TryGetValue("a", out at)
-                && Force.AuthenticationLogic_AccessGranted(at[0]))
+                && Force.AuthenticationLogic_AccessGranted(at[Constants.Zero]))
                 return Content(Constants.PageToReturnTopic, "text/html");
             else
                 return Content(Constants.LoginRequirement, "text/html");
@@ -133,13 +135,16 @@ namespace App.Controllers
         [HttpGet]
         public void h(int? i, string t, string m) // starttopic (id, t, m)
         {
-            Response.Headers.Add("X-Frame-Options", "deny");
-            StringValues at;
+            if (Force.CheckAndIncrementIpHashesCounter(Request.HttpContext.Connection.RemoteIpAddress, Constants.One))
+            {
+                Response.Headers.Add("X-Frame-Options", "deny");
+                StringValues at;
 
-            if (HttpContext.Request.Headers.ContainsKey("a")
-                && HttpContext.Request.Headers.TryGetValue("a", out at)
-                && Force.AuthenticationLogic_AccessGranted(at[0]))
-                Force.NewTopicData_Start(t, i, Force.AuthenticationLogic_GetPair(at[0]), m);
+                if (HttpContext.Request.Headers.ContainsKey("a")
+                    && HttpContext.Request.Headers.TryGetValue("a", out at)
+                    && Force.AuthenticationLogic_AccessGranted(at[Constants.Zero]))
+                    Force.NewTopicData_Start(t, i, Force.AuthenticationLogic_GetPair(at[Constants.Zero]), m);
+            }
         }
 
         [HttpGet]
@@ -152,10 +157,10 @@ namespace App.Controllers
 
             if (HttpContext.Request.Headers.ContainsKey("a")//access token
                 && HttpContext.Request.Headers.TryGetValue("a", out at)
-                && Force.AuthenticationLogic_AccessGranted(at[0]))
+                && Force.AuthenticationLogic_AccessGranted(at[Constants.Zero]))
             {
                 return Content(Force.PrivateDialogLogic_GetDialogPage(i,
-                    Force.AuthenticationLogic_GetPair(at[0])), "text/html");
+                    Force.AuthenticationLogic_GetPair(at[Constants.Zero])), "text/html");
             }
             else
                 return Content(Constants.LoginRequirement, "text/html");
@@ -169,9 +174,9 @@ namespace App.Controllers
 
             if (HttpContext.Request.Headers.ContainsKey("a")
                 && HttpContext.Request.Headers.TryGetValue("a", out at)
-                && Force.AuthenticationLogic_AccessGranted(at[0]))
+                && Force.AuthenticationLogic_AccessGranted(at[Constants.Zero]))
                 return Content(Force.PrivateMessageLogic_GetPersonalPage(i, p,
-                Force.AuthenticationLogic_GetPair(at[0])), "text/html");
+                Force.AuthenticationLogic_GetPair(at[Constants.Zero])), "text/html");
             else
                 return Content(Constants.LoginRequirement, "text/html");
         }
@@ -183,7 +188,7 @@ namespace App.Controllers
             StringValues at;
             if (HttpContext.Request.Headers.ContainsKey("a")
                 && HttpContext.Request.Headers.TryGetValue("a", out at)
-                && Force.AuthenticationLogic_AccessGranted(at[0]))
+                && Force.AuthenticationLogic_AccessGranted(at[Constants.Zero]))
                 return Content(Constants.PrivateReplyPage, "text/html");
             else
                 return Content(Constants.LoginRequirement, "text/html");
@@ -192,14 +197,17 @@ namespace App.Controllers
         [HttpGet]
         public void b(int? i, string t) // sendpersonal (id, t)
         {
-            Response.Headers.Add("X-Frame-Options", "deny");
-            StringValues at;
+            if (Force.CheckAndIncrementIpHashesCounter(Request.HttpContext.Connection.RemoteIpAddress, Constants.One))
+            {
+                Response.Headers.Add("X-Frame-Options", "deny");
+                StringValues at;
 
-            if (HttpContext.Request.Headers.ContainsKey("a")
-                && HttpContext.Request.Headers.TryGetValue("a", out at)
-                && Force.AuthenticationLogic_AccessGranted(at[0]))
-                Force.NewPrivateMessageLogic_Start(i,
-                 Force.AuthenticationLogic_GetPair(at[0]), t);
+                if (HttpContext.Request.Headers.ContainsKey("a")
+                    && HttpContext.Request.Headers.TryGetValue("a", out at)
+                    && Force.AuthenticationLogic_AccessGranted(at[Constants.Zero]))
+                    Force.NewPrivateMessageLogic_Start(i,
+                     Force.AuthenticationLogic_GetPair(at[Constants.Zero]), t);
+            }
         }
 
         [HttpGet]
@@ -210,7 +218,7 @@ namespace App.Controllers
 
             if (HttpContext.Request.Headers.ContainsKey("a")
                 && HttpContext.Request.Headers.TryGetValue("a", out at)
-                && Force.AuthenticationLogic_AccessGranted(at[0]))
+                && Force.AuthenticationLogic_AccessGranted(at[Constants.Zero]))
                 return Content(Constants.PageToReturn, "text/html");
             else
                 return Content(Constants.LoginRequirement, "text/html");
@@ -219,26 +227,17 @@ namespace App.Controllers
         [HttpGet]
         public void j(string n, string m) // startdialog (nick, msg)
         {
-            Response.Headers.Add("X-Frame-Options", "deny");
-            StringValues at;
+            if (Force.CheckAndIncrementIpHashesCounter(Request.HttpContext.Connection.RemoteIpAddress, Constants.One))
+            {
+                Response.Headers.Add("X-Frame-Options", "deny");
+                StringValues at;
 
-            if (HttpContext.Request.Headers.ContainsKey("a")
-                && HttpContext.Request.Headers.TryGetValue("a", out at)
-                && Force.AuthenticationLogic_AccessGranted(at[0]))
-                Force.NewPrivateDialogLogic_Start(n,
-                Force.AuthenticationLogic_GetPair(at[0]), m);
+                if (HttpContext.Request.Headers.ContainsKey("a")
+                    && HttpContext.Request.Headers.TryGetValue("a", out at)
+                    && Force.AuthenticationLogic_AccessGranted(at[Constants.Zero]))
+                    Force.NewPrivateDialogLogic_Start(n,
+                    Force.AuthenticationLogic_GetPair(at[Constants.Zero]), m);
+            }
         }
-        /*
-                [HttpGet]
-                public void k() // exit
-                {
-                    Response.Headers.Add("X-Frame-Options", "deny");
-                    StringValues at;
-
-                    if (HttpContext.Request.Headers.ContainsKey("a")
-                        && HttpContext.Request.Headers.TryGetValue("a", out at)
-                        && Force.AuthenticationLogic_AccessGranted(at[0]))
-                        Force.AuthenticationLogic_Logout(at[0]);
-                }*/
     }
 }
