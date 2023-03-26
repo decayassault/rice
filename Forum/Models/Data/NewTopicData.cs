@@ -63,17 +63,36 @@ namespace Forum.Data
                     string username, string message)
         {
             int accountId = await ReplyData.GetAccountId(username);
+            string nick = await ThreadData.GetNick(accountId); 
             int threadId = await PutTopicInBase
                 (threadName,endpointId,accountId,message);
-            CorrectSectionArray(endpointId, threadId,threadName);
-            CorrectMessagesArray(endpointId, threadId, message, accountId);
+            CorrectSectionArray(endpointId, threadId,threadName);            
+            CorrectMessagesArray(endpointId, threadId,
+                        message, accountId,threadName,nick);
         }
         private static void CorrectMessagesArray
-            (int endpointId,int threadId,string message,int accountId)
+            (int endpointId,int threadId,string message,
+                int accountId,string threadName,string nick)
         {
-            string[] threadMessagesPages 
-                = ThreadLogic.GetThreadPagesArrayLocked(threadId);
-            //TODO
+            string[][] threadPages = ThreadLogic.GetThreadPagesLocked();
+            string newPage = "<div class='s'>" + (threadId-1).ToString()
+                + "</div><div class='l'>" +
+                "<h2 onclick='g(&quot;/section/" + endpointId.ToString()
+                + "?page=1&quot;);'>" + threadName + "</h2><article>"
+                + "<span onclick='g(&quot;/Profile/" + accountId.ToString()
+                + "&quot;);'>"+nick+"</span><br /><p>" + message + "</p></article><br />"
+                + "<div id='a'><a onclick='u();return false'>Ответить</a>" +
+                "</div></div><div class='s'>4</div>";
+            ThreadLogic.SetThreadPagesLengthLocked(threadId);
+            int[] depthOld = ThreadLogic.GetThreadPagesPageDepthLocked();
+            int[] depthNew=new int[threadId];
+            depthOld.CopyTo(depthNew, MvcApplication.Zero);
+            depthNew[threadId - MvcApplication.One] = MvcApplication.One;
+            ThreadLogic.InitializeThreadPagesPageDepthLocked(depthNew);
+            string[][] threadPagesNew = new string[threadId][];
+            threadPages.CopyTo(threadPagesNew, MvcApplication.Zero);
+            threadPagesNew[threadId - 1] = new string[] { newPage };
+            ThreadLogic.InitializeThreadPagesLocked(threadPagesNew);
         }
         private static void CorrectSectionArray
                                 (int endpointId,int threadId,string threadName)
@@ -105,7 +124,8 @@ namespace Forum.Data
                 }
             }
             SectionLogic.SetSectionPagesArrayLocked
-                                (endpointId - 1,pages);            
+                                (endpointId - 1,pages);
+            
         }
         private static void AddThreadToSingle
             (int threadId,string threadName,int endpointId)
@@ -270,15 +290,13 @@ namespace Forum.Data
             MoveThreads(threadId, threadName);
         }
         private static void MoveThreads(int threadId,string threadName)
-        {
-            int i = 0;
-            int len=pages.Length;
+        {            
+            int len=pages.Length-1;
             string data;
-            while(i<len)
-            {                  
-                data=GetLastThread(i);
-                i++;
-                AddNextThread(i,threadId,threadName,data);                
+            for (int i = 0; i < len;i++)
+            {
+                data = GetLastThread(i);                
+                AddNextThread(i+1, threadId, threadName, data);
             }
         }
       
@@ -306,7 +324,7 @@ namespace Forum.Data
             int position=pages[i].IndexOf(navMarker)
                 + navMarker.Length;
             pages[i]=pages[i]
-                .Insert(pos, data);
+                .Insert(position, data);
         }
         private static void SetPosAndTemp
             (int i, int threadId, string threadName)

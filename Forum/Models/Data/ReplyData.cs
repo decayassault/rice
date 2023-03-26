@@ -166,6 +166,7 @@ namespace Forum.Data
 
         private static bool Check(int id, string text)
         {
+            int test = ThreadLogic.GetThreadPagesLengthLocked();
             if (id >= MvcApplication.Zero 
                 && id < ThreadLogic.GetThreadPagesLengthLocked())
             {

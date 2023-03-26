@@ -244,6 +244,7 @@ GO
 insert into Msg values 
 (1,1,'test 1'),(2,1,N'тест 2'),
 (4,1,N'тест4'),
+(77,1,N'Всем привет!'),
 (76,1,N'Some text.'),
 (76,1,N'Some text.'),
 (76,1,N'Some text.'),

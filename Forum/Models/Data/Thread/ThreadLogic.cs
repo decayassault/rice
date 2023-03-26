@@ -94,6 +94,11 @@ namespace Forum.Data.Thread
             lock (ThreadPagesLock)
                 ThreadPages = value;
         }
+        internal static string[][] GetThreadPagesLocked()
+        {
+            lock (ThreadPagesLock)
+                return ThreadPages;
+        }        
         internal static int GetThreadPagesPageDepthLocked(int index)
         {
             lock (ThreadPagesPageDepthLock)
@@ -113,6 +118,11 @@ namespace Forum.Data.Thread
         {
             lock (ThreadPagesPageDepthLock)
                 ThreadPagesPageDepth = value;
+        }
+        internal static int[] GetThreadPagesPageDepthLocked()
+        {
+            lock (ThreadPagesPageDepthLock)
+                return ThreadPagesPageDepth;
         }
         internal static int GetThreadPagesLengthLocked()
         {
