@@ -37,12 +37,11 @@ namespace Forum
                 = ProcessPriorityClass.High;
         }
 
-        protected void Application_Error()
+        /*protected void Application_Error()
         {
-            /*System.Web.HttpContext.Current
-                .ApplicationInstance.CompleteRequest();*/
+            
             Response.Close();
-        }
+        }*/
 
         protected void Session_End()
         {            

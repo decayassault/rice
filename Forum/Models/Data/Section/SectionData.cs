@@ -22,7 +22,7 @@ namespace Forum.Data.Section
                         (@"GetThreadsCount", SqlCon, Num + MvcApplication.One))
                 {
                     object o = await cmdThreadsCount.ExecuteScalarAsync();
-                    if (o == DBNull.Value)
+                    if (o == DBNull.Value||o==null)
                         count = MvcApplication.One;
                     else
                         count = Convert.ToInt32(o);                    
@@ -40,27 +40,7 @@ namespace Forum.Data.Section
                 
                     for (int i = MvcApplication.Zero; i < pagesCount; i++)
                         SectionLogic.SetSectionPagesPageLocked(number,i,buttonTxt);                
-               /*
-                int msgCount;
-                int number = Num;
-                
-                
-                using (var cmdThreadsCount =
-                    Command.InitializeCommandForInputThreadId
-                        (@"GetMessagesCount", SqlCon, Num + MvcApplication.One))
-                {
-                    o = await cmdThreadsCount.ExecuteScalarAsync();                    
-                }
-                
-                if (o == DBNull.Value||o==null)
-                    msgCount = MvcApplication.One;
-                else
-                    msgCount = Convert.ToInt32(o);
-                if (msgCount == MvcApplication.Zero)
-                    msgCount++;
-                int pagesCount =msgCount / threadsOnPage;
-                if (msgCount - pagesCount * five > MvcApplication.Zero)
-                    pagesCount++;*/
+               
                 using (var cmdThreads = 
                     Command.InitializeCommandForInputEndpointId(@"GetThreadsAll",
                         SqlCon,Num+MvcApplication.One))
@@ -80,36 +60,36 @@ namespace Forum.Data.Section
             string result = SE;
             string section = (number + MvcApplication.One).ToString();
             const string a = "<span id='arrows'><a onClick='g(&quot;/section/";
-            const string b = "?page=1&quot;);return false'>«</a>&nbsp;&nbsp;&nbsp;&nbsp;<a onClick='g(&quot;/section/";
+            const string b = "?page=1&quot;);return false' title='Первая страница'>«</a>&nbsp;&nbsp;&nbsp;&nbsp;<a onClick='g(&quot;/section/";
 
             if ((pageNumber - MvcApplication.One >= MvcApplication.One)
                     && (pageNumber + 3 <= pagesCount))
             {
                 result = a + section +
                     b +
-                  section + "?page=" + pageNumber.ToString() + "&quot;);return false'>◄</a>";
+                  section + "?page=" + pageNumber.ToString() + "&quot;);return false' title='Предыдущая страница'>◄</a>";
                 result += "&nbsp;&nbsp;&nbsp;&nbsp;<a onClick='g(&quot;/section/" +
                section + "?page=" + (pageNumber + 2).ToString() +
-               "&quot;);return false'>►</a>&nbsp;&nbsp;&nbsp;&nbsp;<a onClick='g(&quot;/section/"
+               "&quot;);return false' title='Следующая страница'>►</a>&nbsp;&nbsp;&nbsp;&nbsp;<a onClick='g(&quot;/section/"
                + section +
-                    "?page=" + pagesCount.ToString() + "&quot;);return false'>»</a></span>";
+                    "?page=" + pagesCount.ToString() + "&quot;);return false' title='Последняя страница'>»</a></span>";
             }
             else if ((pageNumber - MvcApplication.One >= MvcApplication.One)
                     && (pageNumber + 2 == pagesCount))
             {
                 result = a + section +
                     b +
-                  section + "?page=" + pageNumber.ToString() + "&quot;);return false'>◄</a>";
+                  section + "?page=" + pageNumber.ToString() + "&quot;);return false' title='Предыдущая страница'>◄</a>";
                 result += "&nbsp;&nbsp;&nbsp;&nbsp;<a onClick='g(&quot;/section/" +
                section + "?page=" + (pageNumber + 2).ToString() +
-               "&quot;);return false'>►</a>&nbsp;&nbsp;&nbsp;&nbsp;</span>";
+               "&quot;);return false' title='Следующая страница'>►</a>&nbsp;&nbsp;&nbsp;&nbsp;</span>";
             }
             else if ((pageNumber - MvcApplication.One >= MvcApplication.One)
                     && (pageNumber + MvcApplication.One == pagesCount))
             {
                 result = a + section +
                     b +
-                  section + "?page=" + pageNumber.ToString() + "&quot;);return false'>◄</a>";
+                  section + "?page=" + pageNumber.ToString() + "&quot;);return false' title='Предыдущая страница'>◄</a>";
                 result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>";
             }
             else if ((pageNumber == MvcApplication.One) 
@@ -117,12 +97,12 @@ namespace Forum.Data.Section
             {
                 result = "<span id='arrows'>&nbsp;&nbsp;&nbsp;&nbsp;" +
                     "<a onClick='g(&quot;/section/" +
-                  section + "?page=" + pageNumber.ToString() + "&quot;);return false'>◄</a>";
+                  section + "?page=" + pageNumber.ToString() + "&quot;);return false' title='Предыдущая страница'>◄</a>";
                 result += "&nbsp;&nbsp;&nbsp;&nbsp;<a onClick='g(&quot;/section/" +
                section + "?page=" + (pageNumber + 2).ToString() +
-               "&quot;);return false'>►</a>&nbsp;&nbsp;&nbsp;&nbsp;<a onClick='g(&quot;/section/"
+               "&quot;);return false' title='Следующая страница'>►</a>&nbsp;&nbsp;&nbsp;&nbsp;<a onClick='g(&quot;/section/"
                + section +
-                    "?page=" + pagesCount.ToString() + "&quot;);return false'>»</a></span>";
+                    "?page=" + pagesCount.ToString() + "&quot;);return false' title='Последняя страница'>»</a></span>";
             }
             else if ((pageNumber == MvcApplication.Zero) 
                     && (pageNumber + 3 <= pagesCount))
@@ -130,24 +110,24 @@ namespace Forum.Data.Section
                 result = "<span id='arrows'>&nbsp;&nbsp;&nbsp;&nbsp;";
                 result += "&nbsp;&nbsp;&nbsp;&nbsp;<a onClick='g(&quot;/section/" +
                section + "?page=" + (pageNumber + 2).ToString() +
-               "&quot;);return false'>►</a>&nbsp;&nbsp;&nbsp;&nbsp;<a onClick='g(&quot;/section/"
+               "&quot;);return false' title='Следующая страница'>►</a>&nbsp;&nbsp;&nbsp;&nbsp;<a onClick='g(&quot;/section/"
                + section +
-                    "?page=" + pagesCount.ToString() + "&quot;);return false'>»</a></span>";
+                    "?page=" + pagesCount.ToString() + "&quot;);return false' title='Последняя страница'>»</a></span>";
             }
             else if ((pageNumber == MvcApplication.One) && (pagesCount == 3))
             {
                 result = "<span id='arrows'>&nbsp;&nbsp;&nbsp;&nbsp;" +
                     "<a onClick='g(&quot;/section/" +
-                  section + "?page=" + pageNumber.ToString() + "&quot;);return false'>◄</a>";
+                  section + "?page=" + pageNumber.ToString() + "&quot;);return false' title='Предыдущая страница'>◄</a>";
                 result += "&nbsp;&nbsp;&nbsp;&nbsp;<a onClick='g(&quot;/section/" +
                section + "?page=" + (pageNumber + 2).ToString() +
-               "&quot;);return false'>►</a>&nbsp;&nbsp;&nbsp;&nbsp;</span>";
+               "&quot;);return false' title='Следующая страница'>►</a>&nbsp;&nbsp;&nbsp;&nbsp;</span>";
             }
             else if ((pageNumber == MvcApplication.One) && (pagesCount == 2))
             {
                 result = "<span id='arrows'>&nbsp;&nbsp;&nbsp;&nbsp;" +
                     "<a onClick='g(&quot;/section/" +
-                  section + "?page=" + pageNumber.ToString() + "&quot;);return false'>◄</a>";
+                  section + "?page=" + pageNumber.ToString() + "&quot;);return false' title='Предыдущая страница'>◄</a>";
                 result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>";
             }
             else if ((pageNumber == MvcApplication.Zero) && (pagesCount == 2))
@@ -155,7 +135,7 @@ namespace Forum.Data.Section
                 result = "<span id='arrows'>&nbsp;&nbsp;&nbsp;&nbsp;";
                 result += "&nbsp;&nbsp;&nbsp;&nbsp;<a onClick='g(&quot;/section/" +
                section + "?page=" + (pageNumber + 2).ToString() +
-               "&quot;);return false'>►</a>&nbsp;&nbsp;&nbsp;&nbsp;</span>";
+               "&quot;);return false' title='Следующая страница'>►</a>&nbsp;&nbsp;&nbsp;&nbsp;</span>";
             }
 
             return result;

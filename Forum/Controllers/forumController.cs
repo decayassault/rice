@@ -4,8 +4,10 @@ using Forum.Data.Account;
 using Forum.Data.EndPoint;
 using Forum.Data.Forum;
 using Forum.Data.Section;
+using Forum.Data.PrivateDialog;
 using System.Web.Mvc;
 using System.Web.Security;
+using System.Threading.Tasks;
 
 namespace Forum.Controllers
 {
@@ -107,6 +109,20 @@ namespace Forum.Controllers
         public void starttopic(int id, string t, string m)
         {            
             NewTopicData.Start(t,id,User.Identity.Name,m);
+        }
+        
+        [Authorize]
+        [HttpGet]
+        public Task<string> dialog(int id)
+        {
+            return PrivateDialogLogic
+                    .GetDialog(id-MvcApplication.One, User.Identity.Name);          
+        }
+        [Authorize]
+        [HttpGet]
+        public string personal()
+        {
+            return "Всем привет!";
         }
     }
 }

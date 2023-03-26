@@ -30,7 +30,10 @@ namespace Forum.Data.Forum
                 "<link rel='stylesheet' type='text/css' href='c.css'>" +
                 "<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no' />" +
                 "<base target='_blank' />" +
-                "<title>Форум знакомств Upsense.ru</title></head><body><header><h1 onClick='p();'>Форум знакомств</h1></header><div id='content'>");
+                "<title>Форум знакомств Upsense.ru</title></head><body><header><h1 onClick='p();' title='На главную'>Форум знакомств</h1>"
+                + "<div id='back' title='Назад' onClick='back();'>&#8617;</div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" +
+                "<div id='pm' title='Личные сообщения' onClick='openDialogsList();'>&#9993;</div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" +
+                "<div id='forward' title='Вперёд' onClick='forward();'>&#8618;</div></header><div id='content'>");
 
             SetMainContentLocked("<nav class='o'>" 
                 + await ForumData.LoadForumsOnMain() + "</nav>");

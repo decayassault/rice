@@ -3,6 +3,7 @@ using Forum.Data.Account;
 using Forum.Data.EndPoint;
 using Forum.Data.Forum;
 using Forum.Data.Section;
+using Forum.Data.PrivateDialog;
 using Forum.Models.Threads;
 using System.Threading;
 using System.Threading.Tasks;
@@ -29,6 +30,7 @@ namespace Forum.Models
                 Task c = Task.Run(() => SectionLogic.LoadSectionPages());
                 Task d = Task.Run(() => ThreadData.LoadThreadPages());
                 Task e = Task.Run(() => EndPointLogic.LoadEndPointPages());
+                Task f = Task.Run(() => PrivateDialogLogic.LoadDialogPages());
                 RegistrationData.LoadRegistrationPages();
                 LoginData.LoadLoginPages();  
                 
@@ -43,7 +45,7 @@ namespace Forum.Models
                 Registrator.Start();
                 TopicStarter.Start();
                 Messenger.Start();
-                Task.WaitAll(new Task[] { a, b, c, d, e });
+                Task.WaitAll(new Task[] { a, b, c, d, e,f });
             /*}
             catch { Initialize(); }//проверить на дедлоки*/
         }

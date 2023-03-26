@@ -500,10 +500,15 @@ function startTopic()
         var url = '/starttopic/' + id + '?t=' + title+'&m='+msg;
         xmlhttp.onreadystatechange = function () {
             if (isOkXhr()) {
+                n('/maincontent/');
                 //correctCacheAnswer(title);
             }
         }
         xhrStart(url);
     }
     //TODO
+}
+function openDialogsList()
+{
+    n('/dialog/1');
 }

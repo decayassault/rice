@@ -34,8 +34,31 @@ namespace Forum.Data.Account
 
         private const string NickField = @"Nick";
 
-        private const string PassphraseField = @"Passphrase";  
-  
+        private const string PassphraseField = @"Passphrase";
+
+
+        internal async static Task<int> GetAccountsCount()
+        {
+            var sw = new System.Diagnostics.Stopwatch();
+            sw.Start();
+            int result = MvcApplication.One;
+            using (var SqlCon = await Connection.GetConnection())
+            {
+                using (var cmdSection =
+                        Command.InitializeCommandForGetAccountsCount
+                            (@"GetAccountsCount", SqlCon))
+                {
+                    object oo;
+                    oo = await cmdSection.ExecuteScalarAsync();
+                    if (oo == DBNull.Value || oo == null)
+                        result = MvcApplication.One;
+                    else result = Convert.ToInt32(oo);
+                }
+            }
+            sw.Stop();
+            TimeSpan t = sw.Elapsed;
+            return result;
+        }
 
         internal async static Task LoadAccounts()
         {            

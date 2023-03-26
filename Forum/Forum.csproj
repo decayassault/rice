@@ -125,6 +125,10 @@
     <Compile Include="Models\Data\LoginData.cs" />
     <Compile Include="Models\Attributes\NoCacheAttribute.cs" />
     <Compile Include="Models\Data\NewTopicData.cs" />
+    <Compile Include="Models\Data\PrivateDialog\PrivateDialogData.cs" />
+    <Compile Include="Models\Data\PrivateDialog\PrivateDialogLogic.cs" />
+    <Compile Include="Models\Data\PrivateMessage\PrivateMessageData.cs" />
+    <Compile Include="Models\Data\PrivateMessage\PrivateMessageLogic.cs" />
     <Compile Include="Models\Data\RegistrationData.cs" />
     <Compile Include="Models\Data\ReplyData.cs" />
     <Compile Include="Models\Data\Section\SectionData.cs" />

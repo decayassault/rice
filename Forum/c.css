@@ -12,6 +12,11 @@ body
         word-wrap: break-word;
     }
 
+input, textarea
+{
+    border: 1px solid lightgray;
+}
+
 #content 
     {
         position:relative;
@@ -47,7 +52,7 @@ body
         color: red;
     }
 
-body h1
+body h1 
     {
         text-align: center;
         font-family: "Buxton Sketch";
@@ -63,6 +68,23 @@ body h1
         cursor:pointer;
         display:block;
     }
+
+#pm,#back,#forward
+{
+        font-variant:normal;
+        font-weight:normal;
+        font-stretch:normal;
+        color: red;
+        cursor:pointer;        
+        text-align: center;        
+        font-size: 26pt;
+        display:inline;
+}
+
+header{
+    text-align:center;
+    cursor:default;
+}
 
 #m
     {       
@@ -171,7 +193,7 @@ center.l div, #msg, #registration div
         color:black;        
     }
 
-.l center a, #arrows a 
+.l center a, #arrows a
     {
         font-family: "Segoe UI Symbol";
         cursor:pointer;
@@ -239,6 +261,7 @@ body h2
     text-align:justify;       
     color:black; 
 }
+
 #topic p {
     font-family: "Candara";
     font-size: 14pt;	
@@ -246,7 +269,7 @@ body h2
     text-indent: 1.5cm;        
     color:black;
 }
-#topic span{
+#topic span, #needauth{
     color: red;
     display: block;
     font-family: "Candara";
@@ -261,7 +284,7 @@ body h2
     font-size: 14pt;
     cursor:default;
 }
-#topic a{
+#topic a, #needauth a{
         cursor: pointer;
 }
 div#logon,div#registration, #arrows

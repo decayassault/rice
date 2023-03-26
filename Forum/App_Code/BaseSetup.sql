@@ -4,6 +4,7 @@ drop table Forum;
 drop table Thread;
 drop table Msg;
 drop table Endpoint_;
+drop table PrivateMessage;
 drop procedure GetForums;
 drop procedure GetThreadsTop5;
 drop procedure GetMessages;
@@ -21,6 +22,10 @@ drop procedure GetNicks;
 drop procedure PutMessage;
 drop procedure GetAccountId;
 drop procedure StartTopic;
+drop procedure AddPrivateMessage;
+drop procedure GetAccountsCount;
+drop procedure GetPrivateMessagesCount;
+drop procedure GetPrivateMessagesAuthors;
 
 create table Account
 (
@@ -36,7 +41,49 @@ create nonclustered index Register on Account(Nick,Identifier,Passphrase);
 create nonclustered index GetNicks on Account(Nick);
 create nonclustered index GetNick on Account(Id,Nick);
 insert into Account values (N'Хороший',-1665853436,1396495841),
-(N'Владелец',786985486,2057336495);
+(N'Владеле34ц',78698586,57336495),
+(N'Владел1324ец',78695486,205733495),
+(N'Влад45елец',78698,2057339),
+(N'Вла2345делец',7869856,205336495),
+(N'Влад56елец',786985,205736495),
+(N'Влад53елец',78,2057336495),
+(N'Вл132аделец',7869856,2057336495),
+(N'Владе3124лец',7869,205795),
+(N'Владелafец',78698586,20573495),
+(N'Влаghдеasdfлец',7869886,2036495),
+(N'Влаdfhgделец',786985486,57336495),
+(N'Влаdделец',7869896,2057336495),
+(N'Владелiuец',78698996,2057336495),
+(N'Влuytiаделец',786985486,2336495),
+(N'Влtyuiаделец',7869486,2057336495),
+(N'Владелtuiец',78486,20536495),
+(N'Владеtyuiлец',985486,2336495),
+(N'Влtuiаделец',786486,20336495),
+(N'Влasdfаделец',785486,20573495),
+(N'Влаasdделaец',786486,2036495),
+(N'Владелaец',7886,2057395),
+(N'Влfаделец',7866,2336495),
+(N'Владduелец',78698546,27336495),
+(N'Владеsлец',78698548,205733495),
+(N'Владdелец',78698546,207336495),
+(N'Влfаде0лец',7869856,20573365),
+(N'Владеdwrлец',78685486,257336495),
+(N'Владеweлец',7898586,20573645),
+(N'Владеqлец',7869886,20573395),
+(N'Владweелец',78695486,205733649),
+(N'Влаtyделец',78685486,205336495),
+(N'Владfgелец',78486,205736495),
+(N'Владfgе4лец',784186,205736495),
+(N'Вла2дfgелец',784286,205736495),
+(N'Вл3адfgелец',784386,205736495),
+(N'Владfgе41лец',784486,205736495),
+(N'Владfgе5лец',784586,205736495),
+(N'Вл6адfgелец',784686,205736495),
+(N'Влад7fgелец',784786,205736495),
+(N'Владfgеле8ц',784886,205736495),
+(N'Владfg9елец',784986,205736495),
+(N'Владfg10елец',784086,205736495),
+(N'Тест', 4543263,76475865);
 GO
 CREATE PROCEDURE GetAccounts 
 AS 
@@ -71,6 +118,13 @@ CREATE PROCEDURE GetAccountId (@LoginHash int=1,@PasswordHash int=1)
 AS 
 BEGIN
 	select Id from Account where Identifier=@LoginHash and Passphrase=@PasswordHash;
+   set nocount on;
+end
+GO
+CREATE PROCEDURE GetAccountsCount
+AS 
+BEGIN
+	select Count(Id) from Account;
    set nocount on;
 end
 GO
@@ -240,7 +294,6 @@ BEGIN
 END
 GO
 
-
 insert into Msg values 
 (1,1,'test 1'),(2,1,N'тест 2'),
 (4,1,N'тест4'),
@@ -353,3 +406,92 @@ insert into Msg values
 (9,1,'test 1'),(10,2,N'тест 2'),(11,2,N'тест3'),(12,1,N'тест4'),
 (13,1,'test 1'),(14,2,N'тест 2'),(15,2,N'тест3'),(16,1,N'тест4'),
 (17,1,'test 1'),(18,2,N'тест 2'),(19,2,N'тест3'),(20,1,N'тест4');
+
+create table PrivateMessage
+(
+	Id INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
+	SenderAccountId INT NOT NULL DEFAULT 1,
+	AcceptorAccountId int NOT NULL DEFAULT 1,
+	PrivateText NVARCHAR(1000) NOT NULL DEFAULT N'Сообщение'	
+);
+create nonclustered index AddPrivateMessage
+ on PrivateMessage(SenderAccountId,AcceptorAccountId);
+create nonclustered index GetPrivateMessagesCount
+	on PrivateMessage(Id,SenderAccountId,AcceptorAccountId);
+go
+create procedure AddPrivateMessage
+	(@SenderAccountId int=1, @AcceptorAccountId int=1, 
+		@PrivateText nvarchar(1000)=N'Сообщение')
+as
+begin transaction
+	insert into PrivateMessage 
+		values (@SenderAccountId, @AcceptorAccountId, @PrivateText);
+	set nocount on;
+commit
+go
+create procedure GetPrivateMessagesCount
+	(@AccountId int=1)
+as
+begin 
+	select Count(Id) from PrivateMessage 
+		where SenderAccountId=@AccountId or AcceptorAccountId=@AccountId;
+	set nocount on;
+end
+go
+CREATE PROCEDURE GetPrivateMessagesAuthors(@AccountId int=1)
+AS 
+BEGIN	
+	(select distinct Account.Id,Nick from Account 
+	inner join PrivateMessage on Account.Id=SenderAccountId
+	where AcceptorAccountId=@AccountId)union
+	(select distinct Account.Id,Nick from Account 
+	inner join PrivateMessage on Account.Id=AcceptorAccountId
+	where SenderAccountId=@AccountId);
+	set nocount on;
+end
+go
+insert into PrivateMessage values (1,2,'adfsadf'),
+(2,1,'rtrewet'),
+(3,1,'fgfdsg'),
+(4,1,'fgfdsg'),
+(5,1,'fgfdsg'),
+(6,1,'fgfdsg'),
+(7,1,'fgfdsg'),
+(8,1,'fgfdsg'),
+(9,1,'fgfdsg'),
+(10,1,'fgfdsg'),
+(11,1,'fgfdsg'),
+(12,1,'fgfdsg'),
+(13,1,'fgfdsg'),
+(14,1,'fgfdsg'),
+(15,1,'fgfdsg'),
+(16,1,'fgfdsg'),
+(17,1,'fgfdsg'),
+(18,1,'fgfdsg'),
+(19,1,'fgfdsg'),
+(20,1,'fgfdsg'),
+(21,1,'fgfdsg'),
+(22,1,'fgfdsg'),
+(23,1,'fgfdsg'),
+(24,1,'fgfdsg'),
+(25,1,'fgfdsg'),
+(26,1,'fgfdsg'),
+(27,1,'fgfdsg'),
+(28,1,'fgfdsg'),
+(29,1,'fgfdsg'),
+(30,1,'fgfdsg'),
+(31,1,'fgfdsg'),
+(32,1,'fgfdsg'),
+(33,1,'fgfdsg'),
+(34,1,'fgfdsg'),
+(35,1,'fgfdsg'),
+(36,1,'fgfdsg'),
+(37,1,'fgfdsg'),
+(38,1,'fgfdsg'),
+(39,1,'fgfdsg'),
+(40,1,'fgfdsg'),
+(41,1,'fgfdsg'),
+(42,1,'fgfdsg'),
+(43,1,'fgfdsg'),
+(44,1,'fgfdsg'),
+(1,2,'trwertewr');
