@@ -1,0 +1,53 @@
+#m {
+    width: 10%;
+    font-size: x-small;
+}
+
+.l input,
+#g input,
+#r input,
+#t input,
+#d input,
+body h1,
+#r img,
+#g img {
+    width: 25%;
+}
+
+body h2,
+.o span {
+    font-size: large;
+}
+
+#o,
+#t input,
+#d input,
+.x,
+#x {
+    width: 60%;
+}
+
+.o div,
+.n p,
+.l a,
+#g a,
+#r a,
+.l span,
+.l input,
+#g input,
+#r input,
+#s,
+#t p,
+#d p,
+#t input,
+#d input,
+#x,
+#c,
+#r div,
+.l p,
+#a span,
+#t span,
+#d span,
+#n {
+    font-size: medium;
+}

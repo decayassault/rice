@@ -1,5 +1,12 @@
-internal struct CaptchaStringAndImage
+using System.Text.Json.Serialization;
+namespace Own.Types
 {
-    internal uint stringHash;
-    internal string image;
+    [JsonSerializable(typeof(CaptchaStringAndImage))]
+    public sealed class CaptchaStringAndImage
+    {
+        [JsonPropertyName("key")]
+        public uint stringHash { get; set; }
+        [JsonPropertyName("image")]
+        public string image { get; set; }
+    }
 }

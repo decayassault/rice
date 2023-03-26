@@ -1,20 +1,4 @@
-﻿use master
-IF (EXISTS(SELECT TOP 1 1 FROM sys.sql_logins WHERE [name] = 'forumadminuser'))
-    DROP LOGIN forumadminuser;
-drop database if exists TotalForum;
-create database TotalForum;
-EXEC sp_configure 'CONTAINED DATABASE AUTHENTICATION', 1
-GO
-RECONFIGURE
-GO
-USE [master]
-GO
-ALTER DATABASE TotalForum SET CONTAINMENT = PARTIAL
-GO
-go
-use TotalForum;
-drop user if exists forumadminuser;
-drop table if exists Account;
+﻿drop table if exists Account;
 drop table if exists Forum;
 drop table if exists Thread;
 drop table if exists Msg;
@@ -23,20 +7,24 @@ drop table if exists PrivateMessage;
 drop table if exists LoginLog;
 drop table if exists BlockedIpHash;
 drop table if exists Profile;
-create login forumadminuser with password = 'password';
-go
-create user forumadminuser for login forumadminuser;
-grant all to forumadminuser;
-exec sp_addrolemember 'db_owner', 'forumadminuser'
+
 go
 create table Account
 (
 Id INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
-Nick NVARCHAR(25) NOT NULL UNIQUE,
+Nick NVARCHAR(25) NOT NULL,
 Identifier INT NOT NULL,
 Passphrase INT NOT NULL,
-EmailHash INT NOT NULL UNIQUE
+SecretHash INT NOT NULL
 );
+go
+ALTER TABLE Account
+ADD CONSTRAINT UQ_Account_NickSecretHash 
+UNIQUE (Nick, SecretHash);
+go
+ALTER TABLE Account
+ADD CONSTRAINT UQ_Account_Nick 
+UNIQUE (Nick);
 go
 ALTER TABLE Account   
 ADD CONSTRAINT UQ_Account_LoginPassword UNIQUE (Identifier, Passphrase); 
@@ -68,17 +56,21 @@ INSERT INTO Endpoint_ VALUES (1,N'Ищу девушку для брака'),(1,N
 create table Forum
 (
 	Id INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
-	Name NVARCHAR(24) NOT NULL UNIQUE
+	Name NVARCHAR(24) NOT NULL
 );
 create nonclustered index GetForums on Forum(Id,Name);
 GO
+ALTER TABLE Forum
+ADD CONSTRAINT UQ_Forum_Name 
+UNIQUE (Name);
+go
 INSERT INTO Forum VALUES (N'Ищу девушку'),(N'Ищу парня'),
 (N'Ищу компаньона'),(N'Ищу друзей'),(N'Беседы');
 
 create table Thread -- можно полностью чистить без удаления сообщений и последующей поломки приложения
 (
 	Id INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
-	Name Nvarchar(99) NOT NULL UNIQUE,
+	Name Nvarchar(99) NOT NULL,
 	EndpointId int NOT NULL
 );
 create nonclustered index GetThreads on Thread(Id,Name,EndpointId);
@@ -86,6 +78,10 @@ create nonclustered index ThreadsCountByEndpointId on Thread(EndpointId);
 create nonclustered index GetThreadName on Thread(Id,Name);
 create nonclustered index GetThreadsCount on Thread(Id, EndpointId);
 GO
+ALTER TABLE Thread
+ADD CONSTRAINT UQ_Thread_Name 
+UNIQUE (Name);
+go
 create table Msg
 (
 	Id INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
@@ -134,7 +130,7 @@ create table Profile
 	Id int identity(1,1) not null primary key,
 	AccountId int not null,
 	PublicationDate date not null,
-	PhotoBase64Gif nvarchar(max),
+	PhotoBase64Jpeg nvarchar(max),
 	AboutMe nvarchar(1000) not null,
 	CanPlayChess bit not null,
 	WantToMeetInFirstWeek bit not null,

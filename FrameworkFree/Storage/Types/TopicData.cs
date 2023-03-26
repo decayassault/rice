@@ -1,4 +1,4 @@
-namespace Logic
+namespace Own.Types
 {
     public struct TopicData
     {

@@ -1,5 +1,5 @@
 using System.Net;
-namespace Logic
+namespace Own.Types
 {
     public struct AccountIdentifierRemoteIp
     {

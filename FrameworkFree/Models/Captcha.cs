@@ -1,45 +1,36 @@
 using System;
 using System.Text;
-using Logic;
-using MarkupHandlers;
-using XXHash;
-
-internal sealed class Captcha
+using Own.Types;
+using Own.MarkupHandlers;
+using Inclusions;
+using Own.Permanent;
+using Own.Storage;
+namespace Own.Security
 {
-    private readonly ICaptchaGenerator CaptchaGenerator;
-    private readonly IStorage Storage;
-    private readonly CaptchaMarkupHandler CaptchaMarkupHandler;
-    public Captcha(ICaptchaGenerator captchaGenerator,
-    IStorage storage,
-    CaptchaMarkupHandler captchaMarkupHandler)
+    internal static class Captcha
     {
-        CaptchaGenerator = captchaGenerator;
-        Storage = storage;
-        CaptchaMarkupHandler = captchaMarkupHandler;
-    }
-
-    internal CaptchaStringAndImage GenerateCaptchaStringAndImage()
-    {
-        var captchaString = GenerateCaptchaString();
-        var bag = new CaptchaStringAndImage
+        internal static CaptchaStringAndImage GenerateCaptchaStringAndImage(in bool nonSecret = false)
         {
-            stringHash = XXHash32.Hash(captchaString),
-            image = CaptchaMarkupHandler.GenerateCaptchaMarkup(
-                Convert.ToBase64String(
-                CaptchaGenerator.GenerateImageAsByteArray(captchaString)))
-        };
+            var captchaString = GenerateCaptchaString();
+            var bag = new CaptchaStringAndImage
+            {
+                stringHash = nonSecret ? Convert.ToUInt32(captchaString) : XXHash32.Hash(captchaString),
+                image = Marker.GenerateCaptchaMarkup(
+                    Convert.ToBase64String(
+                    CaptchaGenerator.GenerateImageAsByteArray(captchaString)))
+            };
 
-        return bag;
-    }
+            return bag;
+        }
 
+        private static string GenerateCaptchaString()
+        {
+            StringBuilder sb = new StringBuilder();
 
-    public string GenerateCaptchaString()
-    {
-        StringBuilder sb = new StringBuilder();
+            for (byte i = Constants.Zero; i < Constants.CaptchaLength; i++)
+                sb.Append(Fast.GetNextRandomCaptchaSymbolLocked(i == Constants.Zero ? true : false));
 
-        for (byte i = Constants.Zero; i < Constants.CaptchaLength; i++)
-            sb.Append(Storage.Fast.GetNextRandomCaptchaSymbol());
-
-        return sb.ToString();
+            return sb.ToString();
+        }
     }
 }

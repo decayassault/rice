@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Models;
-namespace Logic
+using Own.Database;
+using Own.Storage;
+namespace Inclusions
 {
     public partial class TotalForumDbContext : DbContext
     {
@@ -25,12 +26,10 @@ namespace Logic
         public virtual DbSet<Profile> Profile { get; set; }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            if (!optionsBuilder.IsConfigured)
-            {
-                //#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseSqlServer("Server=localhost; Database=TotalForum;User ID=forumadminuser; Password=Dctv1ghbdtn");
-                //optionsBuilder.UseSqlServer("Data Source=localhost; Database=u1446013_webtest; Integrated Security=False; User ID=u1446013_webtestuser; Password=Dctv1ghbdtn!Pass1Word!");
-            }
+            if (optionsBuilder.IsConfigured)
+            { }
+            else
+                optionsBuilder.UseSqlServer(Fast.GetConnectionStringLocked());
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -48,6 +47,14 @@ namespace Logic
                     .HasDatabaseName("UQ_Account_LoginPassword")
                     .IsUnique();
 
+                entity.HasIndex(e => new { e.Nick })
+                    .HasDatabaseName("UQ_Account_Nick")
+                    .IsUnique();
+
+                entity.HasIndex(e => new { e.Nick, e.SecretHash })
+                    .HasDatabaseName("UQ_Account_NickSecretHash")
+                    .IsUnique();
+
                 entity.HasIndex(e => new { e.Id, e.Identifier, e.Passphrase })
                     .HasDatabaseName("GetAccounts");
             });
@@ -61,7 +68,7 @@ namespace Logic
             modelBuilder.Entity<Forum>(entity =>
             {
                 entity.HasIndex(e => e.Name)
-                    .HasDatabaseName("UQ__Forum__737584F6DBD66E38")
+                    .HasDatabaseName("UQ_Forum_Name")
                     .IsUnique();
 
                 entity.HasIndex(e => new { e.Id, e.Name })
@@ -89,7 +96,7 @@ namespace Logic
                     .HasDatabaseName("ThreadsCountByEndpointId");
 
                 entity.HasIndex(e => e.Name)
-                    .HasDatabaseName("UQ__Thread__737584F626CEEBC2")
+                    .HasDatabaseName("UQ_Thread_Name")
                     .IsUnique();
 
                 entity.HasIndex(e => new { e.Id, e.EndpointId })
@@ -105,7 +112,7 @@ namespace Logic
             modelBuilder.Entity<LoginLog>(entity =>
             {
                 entity.HasIndex(e => new { e.AccountIdentifier, e.IpHash })
-                    .HasDatabaseName("UQ_LoginLog_AccountIdentifierIpHash ")
+                    .HasDatabaseName("UQ_LoginLog_AccountIdentifierIpHash")
                     .IsUnique();
             });
 
