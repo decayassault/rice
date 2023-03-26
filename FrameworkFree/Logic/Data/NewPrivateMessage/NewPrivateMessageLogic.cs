@@ -40,8 +40,7 @@
         {
             if (Storage.Fast.GetPersonalMessagesToPublishCount() != Constants.Zero)
             {
-                MessageData temp;
-                Storage.Fast.PersonalMessagesToPublishTryDequeue(out temp);
+                MessageData temp = Storage.Fast.PersonalMessagesToPublishDequeue();
 
                 if (temp.id == null || temp.pair == null
                     || temp.text == null)
@@ -160,31 +159,24 @@
                 if (textLength < Constants.One
                 || textLength > Constants.MaxReplyMessageTextLength)
                     return false;
-
                 char c;
-                int rusCount = Constants.Zero;
-                int othCount = Constants.One;
 
                 for (int i = Constants.Zero; i < textLength; i++)
                 {
                     c = text[i];
 
-                    if (Constants.AlphabetRusLower.Contains(c))
+                    if (Constants.AlphabetRusLower.Contains(char.ToLowerInvariant(c))
+                        || char.IsDigit(c) || Storage.Fast.SpecialSearch(c))
                     {
-                        rusCount++;
                     }
-                    else if (Storage.Fast.SpecialSearch(c) || char.IsDigit(c))
-                    {
-                        othCount++;
-                    }
+                    else
+                        return false;
                 }
 
-                if ((((double)rusCount) / ((double)(textLength + Constants.One)) < 0.5)
-                    || (rusCount / othCount) < 0.8)
-                    return false;
-                else return true;
+                return true;
             }
-            else return false;
+            else
+                return false;
         }
     }
 }

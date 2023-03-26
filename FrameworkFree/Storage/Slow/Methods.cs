@@ -2,6 +2,8 @@ using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using System;
+using System.Net;
+using XXHash;
 using Models;
 using static Data.DataLockers.Lockers;
 namespace Data
@@ -47,7 +49,7 @@ namespace Data
         public IList<Pair> GetPairs()
         {
             using (var bag = new TotalForumDbContext())
-                return bag.Account.Select(a => new Pair { LoginHash = unchecked((uint)a.Identifier), PasswordHash = unchecked((uint)a.Passphrase) }).ToList();
+                return bag.Account.AsNoTracking().Select(a => new Pair { LoginHash = unchecked((uint)a.Identifier), PasswordHash = unchecked((uint)a.Passphrase) }).ToList();
         }
         public IEnumerable<string> GetNicks()
         {
@@ -107,6 +109,24 @@ namespace Data
                     PrivateText = privateText
                 }); //в БД должно быть хотя бы одно приватное сообщение
                 bag.SaveChanges();
+            }
+        }
+        public void PutAccountIdentifierIpHashInBaseIfNotExists
+            (uint accountIdentifierHash, IPAddress ip)
+        {
+            using (var bag = new TotalForumDbContext())
+            {
+                var loginLog = new LoginLog()
+                {
+                    AccountIdentifier = unchecked((int)accountIdentifierHash),
+                    IpHash = unchecked((int)XXHash32.Hash(ip.ToString()))
+                };
+
+                if (!bag.LoginLog.AsNoTracking().Contains(loginLog))
+                {
+                    bag.Add(loginLog);
+                    bag.SaveChanges();
+                }
             }
         }
         public int PutThreadAndMessageInBase(Thread thread, int accountId, string message)

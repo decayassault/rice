@@ -58,8 +58,7 @@ namespace Data
         {
             if (Storage.Fast.GetDialogsToStartCount() != Constants.Zero)
             {
-                DialogData temp;
-                Storage.Fast.DialogsToStartTryDequeue(out temp);
+                DialogData temp = Storage.Fast.DialogsToStartDequeue();
 
                 if (temp.acceptorNick == null
                     || temp.message == null

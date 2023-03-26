@@ -6,27 +6,27 @@ namespace Data
     public sealed partial class Memory
     {
         public static
-            ConcurrentDictionary<Pair, int> LoginPasswordAccIdHashes;
+            Dictionary<Pair, int> LoginPasswordAccIdHashes;
         public static
-            ConcurrentDictionary<uint, byte> NicksHashes;
+            Dictionary<uint, byte> NicksHashes;
         public static
-            ConcurrentDictionary<Pair, Guid?> LoginPasswordHashes;
+            Dictionary<Pair, Guid?> LoginPasswordHashes;
         public static
-            ConcurrentDictionary<Pair, byte> LoginPasswordHashesDelta;
+            Dictionary<Pair, byte> LoginPasswordHashesDelta;
         public static
-            ConcurrentDictionary<OwnerId, Dictionary<CompanionId, PrivateMessages>> PersonalPages;
+            Dictionary<OwnerId, Dictionary<CompanionId, PrivateMessages>> PersonalPages;
         private static
-            ConcurrentDictionary<OwnerId, Dictionary<CompanionId, int>> PersonalPagesDepths;
+            Dictionary<OwnerId, Dictionary<CompanionId, int>> PersonalPagesDepths;
 
-        internal static ConcurrentDictionary<int, RegBag> RegistrationLine;
-        internal static ConcurrentDictionary<int, PreRegBag> PreRegistrationLine;
-        public static ConcurrentQueue<DialogData> DialogsToStart;
-        public static ConcurrentQueue<MessageData> PersonalMessagesToPublish;
-        public static ConcurrentQueue<MessageData> MessagesToPublish;
-        public static ConcurrentQueue<TopicData> TopicsToStart;
+        internal static Dictionary<int, RegBag> RegistrationLine;
+        internal static Dictionary<int, PreRegBag> PreRegistrationLine;
+        public static Queue<DialogData> DialogsToStart;
+        public static Queue<MessageData> PersonalMessagesToPublish;
+        public static Queue<MessageData> MessagesToPublish;
+        public static Queue<TopicData> TopicsToStart;
         public static Dictionary<uint, byte> RemoteIpHashesAttemptsCounter;
-        public volatile static Queue<uint> CaptchaMessages;
-        public volatile static Queue<uint> CaptchaMessages_RegistrationData;
+        public static Queue<uint> CaptchaMessages;
+        public static Queue<uint> CaptchaMessages_RegistrationData;
         public static string[][] DialogPages;
         public static string[][] SectionPages;
         public static string[][] ThreadPages;

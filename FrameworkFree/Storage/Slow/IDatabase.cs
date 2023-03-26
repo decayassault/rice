@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System;
+using System.Net;
 using Models;
 namespace Data
 {
@@ -8,6 +9,8 @@ namespace Data
         void RemoveAccountByNickIfExists(string nick);
         int GetAccountsCount();
         IList<Pair> GetPairs();
+        void PutAccountIdentifierIpHashInBaseIfNotExists
+            (uint accountIdentifierHash, IPAddress ip);
         IEnumerable<string> GetNicks();
         int? GetAccountIdFromBase(uint loginHash, uint passwordHash);
         IEnumerable<IdName> GetEndpointIdNames(int id);

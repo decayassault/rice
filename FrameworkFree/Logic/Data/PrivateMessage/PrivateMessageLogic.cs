@@ -138,8 +138,8 @@ namespace Data
                 temp1.Add(companions[i], pm);
                 temp2.Add(companions[i], pm.Messages.Length);
             }
-            Storage.Fast.PersonalPagesTryAdd(new OwnerId { Id = accountId }, temp1);
-            Storage.Fast.PersonalPagesDepthsTryAdd(new OwnerId { Id = accountId }, temp2);
+            Storage.Fast.PersonalPagesAdd(new OwnerId { Id = accountId }, temp1);
+            Storage.Fast.PersonalPagesDepthsAdd(new OwnerId { Id = accountId }, temp2);
         }
     }
 }

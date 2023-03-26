@@ -20,6 +20,7 @@ namespace Data
         public virtual DbSet<Msg> Msg { get; set; }
         public virtual DbSet<PrivateMessage> PrivateMessage { get; set; }
         public virtual DbSet<Thread> Thread { get; set; }
+        public virtual DbSet<LoginLog> LoginLog { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -97,6 +98,12 @@ namespace Data
 
                 entity.HasIndex(e => new { e.Id, e.Name, e.EndpointId })
                     .HasDatabaseName("GetThreads");
+            });
+
+            modelBuilder.Entity<LoginLog>(entity =>
+            {
+                entity.HasIndex(e => new { e.AccountIdentifier, e.IpHash })
+                    .HasDatabaseName("GetAccountIdentifiersWithIpHashes");
             });
 
             OnModelCreatingPartial(modelBuilder);

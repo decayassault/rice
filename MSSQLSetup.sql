@@ -20,6 +20,7 @@ drop table if exists Thread;
 drop table if exists Msg;
 drop table if exists Endpoint_;
 drop table if exists PrivateMessage;
+drop table if exists LoginLog;
 create login forumadminuser with password = 'Dctv1ghbdtn';
 go
 create user forumadminuser for login forumadminuser;
@@ -104,3 +105,12 @@ create nonclustered index GetPrivateMessagesCount
 	on PrivateMessage(Id,SenderAccountId,AcceptorAccountId);
 go
 insert into PrivateMessage values (1,1,N'Тестовое сообщение');
+go
+create table LoginLog
+(
+	Id INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
+	AccountIdentifier INT NOT NULL,
+	IpHash int NOT NULL
+);
+create nonclustered index GetAccountIdentifiersWithIpHashes
+	on LoginLog(AccountIdentifier,IpHash);

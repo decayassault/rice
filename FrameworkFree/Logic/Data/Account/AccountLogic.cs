@@ -35,9 +35,9 @@ namespace Data
 
             if (accountId.HasValue)
             {
-                Storage.Fast.LoginPasswordAccIdHashesTryAdd(pair, accountId.Value);
+                Storage.Fast.LoginPasswordAccIdHashesAdd(pair, accountId.Value);
                 byte result;
-                Storage.Fast.LoginPasswordHashesDeltaTryRemove(pair, out result);//проверить на коллизии
+                Storage.Fast.LoginPasswordHashesDeltaRemove(pair, out result);//проверить на коллизии
             }
 
             return accountId;
@@ -60,12 +60,12 @@ namespace Data
                                 (pair.LoginHash, pair.PasswordHash);
 
                             if (accountId.HasValue)
-                                Storage.Fast.LoginPasswordAccIdHashesTryAdd(pair, accountId.Value);
+                                Storage.Fast.LoginPasswordAccIdHashesAdd(pair, accountId.Value);
                         }
 
                         if (!Storage.Fast.LoginPasswordHashesContainsKey(pair))
                         {
-                            Storage.Fast.LoginPasswordHashesTryAdd(pair, null);
+                            Storage.Fast.LoginPasswordHashesAdd(pair, null);
                         }
                     }
                 }
@@ -104,7 +104,7 @@ namespace Data
 
             if (nicks.Any())
                 foreach (var nick in nicks)
-                    Storage.Fast.NicksHashesTryAdd(XXHash.XXHash32.Hash(nick), Constants.Zero);
+                    Storage.Fast.NicksHashesAdd(XXHash.XXHash32.Hash(nick), Constants.Zero);
         }
     }
 }

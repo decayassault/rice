@@ -346,8 +346,7 @@ namespace Data
         {
             if (Storage.Fast.GetTopicsToStartCount() != Constants.Zero)
             {
-                TopicData temp;
-                Storage.Fast.TopicsToStartTryDequeue(out temp);
+                TopicData temp = Storage.Fast.TopicsToStartDequeue();
                 if (temp.endpointId == null || temp.message == null
                     || temp.threadName == null || temp.pair == null)
                 { }
@@ -380,28 +379,21 @@ namespace Data
                 || messageLength > Constants.MaxForumThreadNameTextLength)
                 return false;
             char c;
-            int rusCount = Constants.Zero;
-            int othCount = Constants.One;
-            int len = messageLength + Constants.One;
 
             for (int i = Constants.Zero; i < messageLength; i++)
             {
                 c = message[i];
 
-                if (Constants.AlphabetRusLower.Contains(c))
+                if (Constants.AlphabetRusLower.Contains(char.ToLowerInvariant(c))
+                    || char.IsDigit(c) || Storage.Fast.SpecialSearch(c))
                 {
-                    rusCount++;
+
                 }
-                else if (Storage.Fast.SpecialSearch(c) || char.IsDigit(c))
-                {
-                    othCount++;
-                }
+                else
+                    return false;
             }
-            if ((((double)rusCount) / ((double)len) < 0.6)
-                || (rusCount / othCount) < 0.8)
-                return false;
-            else
-                return true;
+
+            return true;
         }
         public bool CheckText(string message)
         {
@@ -411,27 +403,20 @@ namespace Data
             || messageLength > Constants.MaxReplyMessageTextLength)
                 return false;
             char c;
-            int rusCount = Constants.Zero;
-            int othCount = Constants.One;
 
             for (int i = Constants.Zero; i < messageLength; i++)
             {
                 c = message[i];
 
-                if (Constants.AlphabetRusLower.Contains(c))
+                if (Constants.AlphabetRusLower.Contains(char.ToLowerInvariant(c))
+                    || char.IsDigit(c) || Storage.Fast.SpecialSearch(c))
                 {
-                    rusCount++;
                 }
-                else if (Storage.Fast.SpecialSearch(c) || char.IsDigit(c))
-                {
-                    othCount++;
-                }
+                else
+                    return false;
             }
-            if ((((double)rusCount) / ((double)(messageLength + Constants.One)) < 0.5)
-                || (rusCount / othCount) < 0.8)
-                return false;
-            else
-                return true;
+
+            return true;
         }
     }
 }

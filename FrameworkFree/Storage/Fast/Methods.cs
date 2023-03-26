@@ -13,20 +13,20 @@ namespace Data
             lock (LoginPasswordAccIdHashesLocker)
                 return LoginPasswordAccIdHashes.ContainsKey(pair);
         }
-        public void LoginPasswordAccIdHashesTryAdd(Pair pair, int accountId)
+        public void LoginPasswordAccIdHashesAdd(Pair pair, int accountId)
         {
             lock (LoginPasswordAccIdHashesLocker)
-                LoginPasswordAccIdHashes.TryAdd(pair, accountId);
+                LoginPasswordAccIdHashes.Add(pair, accountId);
         }
-        public void LoginPasswordHashesDeltaTryRemove(Pair pair, out byte result)
+        public void LoginPasswordHashesDeltaRemove(Pair pair, out byte result)
         {
             lock (LoginPasswordHashesDeltaLocker)
-                LoginPasswordHashesDelta.TryRemove(pair, out result);
+                LoginPasswordHashesDelta.Remove(pair, out result);
         }
-        public void LoginPasswordHashesDeltaTryAdd(Pair pair, byte val)
+        public void LoginPasswordHashesDeltaAdd(Pair pair, byte val)
         {
             lock (LoginPasswordHashesDeltaLocker)
-                LoginPasswordHashesDelta.TryAdd(pair, Constants.Zero);
+                LoginPasswordHashesDelta.Add(pair, Constants.Zero);
         }
         public bool LoginPasswordHashesDeltaContainsKey(Pair pair)
         {
@@ -41,12 +41,12 @@ namespace Data
         public void InitializeLoginPasswordAccIdHashes()
         {
             lock (LoginPasswordAccIdHashesLocker)
-                Memory.LoginPasswordAccIdHashes = new ConcurrentDictionary<Pair, int>();
+                Memory.LoginPasswordAccIdHashes = new Dictionary<Pair, int>();
         }
         public void InitializeLoginPasswordHashes()
         {
             lock (LoginPasswordHashesLocker)
-                Memory.LoginPasswordHashes = new ConcurrentDictionary<Pair, Guid?>();
+                Memory.LoginPasswordHashes = new Dictionary<Pair, Guid?>();
         }
         public IEnumerable<Pair> GetLoginPasswordHashesDeltaKeys()
         {
@@ -56,19 +56,19 @@ namespace Data
         public void InitializeLoginPasswordHashesDelta()
         {
             lock (LoginPasswordHashesDeltaLocker)
-                Memory.LoginPasswordHashesDelta = new ConcurrentDictionary<Pair, byte>();
+                Memory.LoginPasswordHashesDelta = new Dictionary<Pair, byte>();
         }
         public void InitializePrivateMessages()
         {
             lock (PersonalPagesLocker)
             {
                 Memory.PersonalPages = new
-                    ConcurrentDictionary
+                    Dictionary
                         <OwnerId, Dictionary<CompanionId, PrivateMessages>>();
 
                 lock (PersonalPagesDepthsLocker)
                     Memory.PersonalPagesDepths = new
-                    ConcurrentDictionary<OwnerId, Dictionary<CompanionId, int>>();
+                    Dictionary<OwnerId, Dictionary<CompanionId, int>>();
             }
         }
         public bool LoginPasswordHashesContainsKey(Pair pair)
@@ -76,8 +76,8 @@ namespace Data
             lock (LoginPasswordHashesLocker)
                 return LoginPasswordHashes.ContainsKey(pair);
         }
-        public void LoginPasswordHashesTryAdd(Pair pair, Guid? guid)
-        => LoginPasswordHashes.TryAdd(pair, null);
+        public void LoginPasswordHashesAdd(Pair pair, Guid? guid)
+        => LoginPasswordHashes.Add(pair, null);
         public bool NicksHashesKeysContains(uint hash)
         {
             lock (NicksHashesLocker)
@@ -86,12 +86,12 @@ namespace Data
         public void InitializeNicksHashes()
         {
             lock (NicksHashesLocker)
-                NicksHashes = new ConcurrentDictionary<uint, byte>();
+                NicksHashes = new Dictionary<uint, byte>();
         }
-        public void NicksHashesTryAdd(uint nickHash, byte temp)
+        public void NicksHashesAdd(uint nickHash, byte temp)
         {
             lock (NicksHashesLocker)
-                NicksHashes.TryAdd(nickHash, temp);
+                NicksHashes.Add(nickHash, temp);
         }
         public string GetEndPointPageLocked(int index)
         {
@@ -141,27 +141,27 @@ namespace Data
         public void InitializeDialogsToStart()
         {
             lock (DialogsToStartLocker)
-                DialogsToStart = new ConcurrentQueue<DialogData>();
+                DialogsToStart = new Queue<DialogData>();
         }
-        public void DialogsToStartTryDequeue(out DialogData value)
+        public DialogData DialogsToStartDequeue()
         {
             lock (DialogsToStartLocker)
-                DialogsToStart.TryDequeue(out value);
+                return DialogsToStart.Dequeue();
         }
         public void InitializePersonalMessagesToPublish()
         {
             lock (PersonalMessagesToPublishLocker)
-                PersonalMessagesToPublish = new ConcurrentQueue<MessageData>();
+                PersonalMessagesToPublish = new Queue<MessageData>();
         }
         public void PersonalMessagesToPublishEnqueue(MessageData value)
         {
             lock (PersonalMessagesToPublishLocker)
                 PersonalMessagesToPublish.Enqueue(value);
         }
-        public void PersonalMessagesToPublishTryDequeue(out MessageData value)
+        public MessageData PersonalMessagesToPublishDequeue()
         {
             lock (PersonalMessagesToPublishLocker)
-                PersonalMessagesToPublish.TryDequeue(out value);
+                return PersonalMessagesToPublish.Dequeue();
         }
         public string[] GetDialogPagesArrayLocked(int index)
         {
@@ -301,7 +301,7 @@ namespace Data
             lock (PersonalPagesLocker)
             {
                 if (!flag)
-                    PersonalPages.TryAdd(ownerId, new Dictionary<CompanionId, PrivateMessages>());
+                    PersonalPages.Add(ownerId, new Dictionary<CompanionId, PrivateMessages>());
                 PersonalPages[ownerId].Add(companionId,
                         new PrivateMessages { Messages = newMsg });
             }
@@ -321,7 +321,7 @@ namespace Data
             lock (PersonalPagesDepthsLocker)
             {
                 if (!flag)
-                    PersonalPagesDepths.TryAdd(ownerId, new Dictionary<CompanionId, int>());
+                    PersonalPagesDepths.Add(ownerId, new Dictionary<CompanionId, int>());
                 PersonalPagesDepths[ownerId].Add(companionId, Constants.One);
             }
         }
@@ -337,17 +337,17 @@ namespace Data
                     [new OwnerId { Id = accountId }]
                     [new CompanionId { Id = companionId }];//проверить границы 
         }
-        public void PersonalPagesTryAdd(OwnerId ownerId,
+        public void PersonalPagesAdd(OwnerId ownerId,
                                          Dictionary<CompanionId, PrivateMessages> temp1)
         {
             lock (PersonalPagesLocker)
-                PersonalPages.TryAdd(ownerId, temp1);
+                PersonalPages.Add(ownerId, temp1);
         }
-        public void PersonalPagesDepthsTryAdd(OwnerId ownerId,
+        public void PersonalPagesDepthsAdd(OwnerId ownerId,
                                                 Dictionary<CompanionId, int> temp2)
         {
             lock (PersonalPagesDepthsLocker)
-                PersonalPagesDepths.TryAdd(ownerId, temp2);
+                PersonalPagesDepths.Add(ownerId, temp2);
         }
         public string[] GetSectionPagesArrayLocked(int index)
         {
@@ -407,7 +407,7 @@ namespace Data
         public void InitializeTopicsToStart()
         {
             lock (TopicsToStartLocker)
-                TopicsToStart = new ConcurrentQueue<TopicData>();
+                TopicsToStart = new Queue<TopicData>();
         }
         public void SetSectionPagesArray(int endpointId)
         {
@@ -562,12 +562,11 @@ namespace Data
             lock (TopicsToStartLocker)
                 TopicsToStart.Enqueue(value);
         }
-        public void TopicsToStartTryDequeue(out TopicData topicData)
+        public TopicData TopicsToStartDequeue()
         {
             lock (TopicsToStartLocker)
             {
-                TopicsToStart.TryDequeue(out TopicData data);
-                topicData = data;
+                return TopicsToStart.Dequeue();
             }
         }
         public void SetThreadPagesPageLocked
@@ -647,35 +646,34 @@ namespace Data
         public void InitializeMessagesToPublish()
         {
             lock (MessagesToPublishLocker)
-                MessagesToPublish = new ConcurrentQueue<MessageData>();
+                MessagesToPublish = new Queue<MessageData>();
         }
         public void MessagesToPublishEnqueue(MessageData messageData)
         {
             lock (MessagesToPublishLocker)
                 MessagesToPublish.Enqueue(messageData);
         }
-        public void MessagesToPublishTryDequeue(out MessageData value)
+        public MessageData MessagesToPublishDequeue()
         {
             lock (MessagesToPublishLocker)
             {
-                MessagesToPublish.TryDequeue(out MessageData data);
-                value = data;
+                return MessagesToPublish.Dequeue();
             }
         }
-        public bool PreRegistrationLineTryAdd(int val, PreRegBag bag)
+        public void PreRegistrationLineAdd(int val, PreRegBag bag)
         {
             lock (PreRegistrationLineLocker)
-                return PreRegistrationLine.TryAdd(val, bag);
+                PreRegistrationLine.Add(val, bag);
         }
         public void InitializePreRegistrationLine()
         {
             lock (PreRegistrationLineLocker)
-                PreRegistrationLine = new ConcurrentDictionary<int, PreRegBag>();
+                PreRegistrationLine = new Dictionary<int, PreRegBag>();
         }
         public void InitializeRegistrationLine()
         {
             lock (RegistrationLineLocker)
-                RegistrationLine = new ConcurrentDictionary<int, RegBag>();
+                RegistrationLine = new Dictionary<int, RegBag>();
         }
         public void CaptchaMessagesRegistrationDataEnqueue(uint captchaHash)
         {
@@ -697,26 +695,26 @@ namespace Data
             lock (CaptchaMessages_RegistrationDataLocker)
                 return CaptchaMessages_RegistrationData.Contains(captcha);
         }
-        public void RegistrationLineTryRemove(int i, out RegBag regBag)
+        public void RegistrationLineRemove(int i, out RegBag regBag)
         {
             lock (RegistrationLineLocker)
             {
-                RegistrationLine.TryRemove(i, out RegBag bag);
+                RegistrationLine.Remove(i, out RegBag bag);
                 regBag = bag;
             }
         }
-        public void PreRegistrationLineTryRemove(int key, out PreRegBag preRegBag)
+        public void PreRegistrationLineRemove(int key, out PreRegBag preRegBag)
         {
             lock (PreRegistrationLineLocker)
             {
-                PreRegistrationLine.TryRemove(key, out PreRegBag temp);
+                PreRegistrationLine.Remove(key, out PreRegBag temp);
                 preRegBag = temp;
             }
         }
-        public void RegistrationLineTryAdd(int val, RegBag regBag)
+        public void RegistrationLineAdd(int val, RegBag regBag)
         {
             lock (RegistrationLineLocker)
-                RegistrationLine.TryAdd(val, regBag);
+                RegistrationLine.Add(val, regBag);
         }
         public void CaptchaMessagesEnqueue(uint captchaHash)
         {
@@ -741,7 +739,7 @@ namespace Data
         public bool LoginPasswordHashesValuesContains(Guid guid)
         {
             lock (LoginPasswordHashesLocker)
-                return LoginPasswordHashes.Values.Contains(guid);
+                return LoginPasswordHashes.ContainsValue(guid);
         }
         public void SetLoginPasswordHashesPairToken(Pair pair, Guid? token)
         {
@@ -794,7 +792,7 @@ namespace Data
         public void LoginPasswordHashesThroughIterationCheck(ref Pair pair, Guid guid)
         {
             lock (LoginPasswordHashesLocker)
-                if (LoginPasswordHashes.Values.Contains(guid))
+                if (LoginPasswordHashes.ContainsValue(guid))
                     foreach (var key in LoginPasswordHashes.Keys)
                         if (LoginPasswordHashes[key] == guid)
                         {

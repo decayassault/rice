@@ -48,8 +48,7 @@ namespace Data
         {
             if (Storage.Fast.GetMessagesToPublishCount() != Constants.Zero)
             {
-                MessageData temp;
-                Storage.Fast.MessagesToPublishTryDequeue(out temp);
+                MessageData temp = Storage.Fast.MessagesToPublishDequeue();
 
                 if (temp.id == null || temp.pair == null
                     || temp.text == null)
@@ -170,28 +169,20 @@ namespace Data
                 || textLength > Constants.MaxReplyMessageTextLength)
                     return false;
                 char c;
-                int rusCount = Constants.Zero;
-                int othCount = Constants.One;
-                int len = textLength + Constants.One;
 
                 for (int i = Constants.Zero; i < textLength; i++)
                 {
                     c = text[i];
 
-                    if (Constants.AlphabetRusLower.Contains(c))
+                    if (Constants.AlphabetRusLower.Contains(char.ToLowerInvariant(c))
+                    || char.IsDigit(c) || Storage.Fast.SpecialSearch(c))
                     {
-                        rusCount++;
                     }
-                    else if (Storage.Fast.SpecialSearch(c) || char.IsDigit(c))
-                    {
-                        othCount++;
-                    }
+                    else
+                        return false;
                 }
-                if ((((double)rusCount) / ((double)len) < 0.5)
-                    || (rusCount / othCount) < 0.8)
-                    return false;
-                else
-                    return true;
+
+                return true;
             }
             else
                 return false;

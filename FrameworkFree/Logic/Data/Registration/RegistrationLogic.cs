@@ -30,7 +30,7 @@ namespace Data
                     email = email,
                     nick = nick
                 };
-                Storage.Fast.PreRegistrationLineTryAdd(Storage.Fast.GetPreRegistrationLineCount(), bag);
+                Storage.Fast.PreRegistrationLineAdd(Storage.Fast.GetPreRegistrationLineCount(), bag);
             }
         }
 
@@ -57,7 +57,7 @@ namespace Data
                         i < len; i++)
                 {
                     RegBag regBag = new RegBag();
-                    Storage.Fast.RegistrationLineTryRemove(i, out regBag);
+                    Storage.Fast.RegistrationLineRemove(i, out regBag);
                     SendToBase(regBag);
                 }
             }
@@ -81,7 +81,7 @@ namespace Data
             PreRegBag temp = new PreRegBag();
             if (Storage.Fast.GetPreRegistrationLineCount() > Constants.Zero)
             {
-                Storage.Fast.PreRegistrationLineTryRemove(Constants.Zero, out temp);
+                Storage.Fast.PreRegistrationLineRemove(Constants.Zero, out temp);
                 if (temp.captcha == null || temp.login == null
             || temp.password == null || temp.email == null || temp.nick == null)
                 { }
@@ -109,9 +109,9 @@ namespace Data
                     if (!Storage.Fast.NicksHashesKeysContains(nickHash))
                         if (!Storage.Fast.LoginPasswordHashesDeltaContainsKey(pair))
                         {
-                            Storage.Fast.LoginPasswordHashesTryAdd(pair, null);
-                            Storage.Fast.NicksHashesTryAdd(nickHash, Constants.Zero);
-                            Storage.Fast.LoginPasswordHashesDeltaTryAdd(pair, Constants.Zero);
+                            Storage.Fast.LoginPasswordHashesAdd(pair, null);
+                            Storage.Fast.NicksHashesAdd(nickHash, Constants.Zero);
+                            Storage.Fast.LoginPasswordHashesDeltaAdd(pair, Constants.Zero);
                             Storage.Fast.CopyDialogPagesArraysToIncreasedSizeArraysAndFillGapsLocked();
                             result = true;
                         }
@@ -143,7 +143,7 @@ namespace Data
 
                                 if (Register(loginHash, passwordHash, nickHash))
                                 {
-                                    Storage.Fast.RegistrationLineTryAdd(Storage.Fast.GetRegistrationLineCount(),
+                                    Storage.Fast.RegistrationLineAdd(Storage.Fast.GetRegistrationLineCount(),
                                         new RegBag
                                         {
                                             loginHash = loginHash,
