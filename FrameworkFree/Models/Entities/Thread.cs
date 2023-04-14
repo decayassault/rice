@@ -4,8 +4,8 @@ namespace Own.Database
     public partial class Thread
     {
         [Key]
-        public int Id { get; set; }
+        public long Id { get; set; }
         public string Name { get; set; }
-        public int EndpointId { get; set; }
+        public long EndpointId { get; set; }
     }
 }

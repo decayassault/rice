@@ -29,7 +29,7 @@ namespace Inclusions
             if (optionsBuilder.IsConfigured)
             { }
             else
-                optionsBuilder.UseSqlServer(Fast.GetConnectionStringLocked());
+                optionsBuilder.UseSqlite(Fast.GetConnectionStringLocked());
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

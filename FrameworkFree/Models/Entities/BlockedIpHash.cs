@@ -4,7 +4,7 @@ namespace Own.Database
     public partial class BlockedIpHash
     {
         [Key]
-        public int Id { get; set; }
-        public int IpHash { get; set; }
+        public long Id { get; set; }
+        public long IpHash { get; set; }
     }
 }

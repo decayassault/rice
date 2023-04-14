@@ -7,8 +7,8 @@ namespace Own.Database
     public partial class Endpoint
     {
         [Key]
-        public int Id { get; set; }
-        public int ForumId { get; set; }
+        public long Id { get; set; }
+        public long ForumId { get; set; }
         public string Name { get; set; }
     }
 }

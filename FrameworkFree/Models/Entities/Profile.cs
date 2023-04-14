@@ -5,35 +5,35 @@ namespace Own.Database
     public partial class Profile
     {
         [Key]
-        public int Id { get; set; }
-        public int AccountId { get; set; }
+        public long Id { get; set; }
+        public long AccountId { get; set; }
         public DateTime PublicationDate { get; set; }
         public string PhotoBase64Jpeg { get; set; }
         public string AboutMe { get; set; }
-        public bool CanPlayChess { get; set; }
-        public bool WantToMeetInFirstWeek { get; set; }
-        public bool CanSupportALargeFamily { get; set; }
-        public bool HaveBadHabits { get; set; }
-        public bool HaveChildren { get; set; }
-        public bool IsAdult { get; set; }
-        public bool HadRelationship { get; set; }
-        public bool LikeReading { get; set; }
-        public bool HaveProfession { get; set; }
-        public bool HavePermanentResidenceInRussia { get; set; }
-        public bool DoPhysicalEducation { get; set; }
-        public bool HaveManyHobbies { get; set; }
-        public bool SpeakAForeignLanguage { get; set; }
-        public bool LikeDriving { get; set; }
-        public bool LikeTravelling { get; set; }
-        public bool PreferMindActivity { get; set; }
-        public bool CanMakeMinorRepairs { get; set; }
-        public bool IsOppositeGenderCute { get; set; }
-        public bool FollowADiet { get; set; }
-        public bool HavePets { get; set; }
-        public bool TakeCareOfPlants { get; set; }
-        public bool ReadyToWaitForALove { get; set; }
-        public bool ReadyToSaveFamilyForKids { get; set; }
-        public bool IsAltruist { get; set; }
-        public bool AcceptAgression { get; set; }
+        public long CanPlayChess { get; set; }
+        public long WantToMeetInFirstWeek { get; set; }
+        public long CanSupportALargeFamily { get; set; }
+        public long HaveBadHabits { get; set; }
+        public long HaveChildren { get; set; }
+        public long IsAdult { get; set; }
+        public long HadRelationship { get; set; }
+        public long LikeReading { get; set; }
+        public long HaveProfession { get; set; }
+        public long HavePermanentResidenceInRussia { get; set; }
+        public long DoPhysicalEducation { get; set; }
+        public long HaveManyHobbies { get; set; }
+        public long SpeakAForeignLanguage { get; set; }
+        public long LikeDriving { get; set; }
+        public long LikeTravelling { get; set; }
+        public long PreferMindActivity { get; set; }
+        public long CanMakeMinorRepairs { get; set; }
+        public long IsOppositeGenderCute { get; set; }
+        public long FollowADiet { get; set; }
+        public long HavePets { get; set; }
+        public long TakeCareOfPlants { get; set; }
+        public long ReadyToWaitForALove { get; set; }
+        public long ReadyToSaveFamilyForKids { get; set; }
+        public long IsAltruist { get; set; }
+        public long AcceptAgression { get; set; }
     }
 }

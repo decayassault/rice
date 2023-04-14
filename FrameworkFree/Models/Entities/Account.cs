@@ -4,10 +4,10 @@ namespace Own.Database
     public partial class Account
     {
         [Key]
-        public int Id { get; set; }
+        public long Id { get; set; }
         public string Nick { get; set; }
-        public int Identifier { get; set; }
-        public int Passphrase { get; set; }
-        public int SecretHash { get; set; }
+        public long Identifier { get; set; }
+        public long Passphrase { get; set; }
+        public long SecretHash { get; set; }
     }
 }

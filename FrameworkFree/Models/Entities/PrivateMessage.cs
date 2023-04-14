@@ -4,9 +4,9 @@ namespace Own.Database
     public partial class PrivateMessage
     {
         [Key]
-        public int Id { get; set; }
-        public int SenderAccountId { get; set; }
-        public int AcceptorAccountId { get; set; }
+        public long Id { get; set; }
+        public long SenderAccountId { get; set; }
+        public long AcceptorAccountId { get; set; }
         public string PrivateText { get; set; }
     }
 }

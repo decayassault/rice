@@ -4,7 +4,7 @@ namespace Own.Database
     public partial class Forum
     {
         [Key]
-        public int Id { get; set; }
+        public long Id { get; set; }
         public string Name { get; set; }
     }
 }

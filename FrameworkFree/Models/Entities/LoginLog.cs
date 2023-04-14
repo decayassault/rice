@@ -4,8 +4,8 @@ namespace Own.Database
     public partial class LoginLog
     {
         [Key]
-        public int Id { get; set; }
-        public int AccountIdentifier { get; set; }
-        public int IpHash { get; set; }
+        public long Id { get; set; }
+        public long AccountIdentifier { get; set; }
+        public long IpHash { get; set; }
     }
 }
